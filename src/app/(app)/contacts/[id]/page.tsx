@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useContacts } from '@/hooks/useContacts';
 import type { Contact, ContactTag } from '@/types/contact';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
