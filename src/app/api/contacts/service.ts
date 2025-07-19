@@ -20,3 +20,7 @@ export const updateContactById = async (id: string, input: contactInsert) => {
     .set(input)
     .where(eq(contactsTable.id, id));
 };
+
+export const getAllContacts = async () => {
+  return await db.select().from(contactsTable);
+};

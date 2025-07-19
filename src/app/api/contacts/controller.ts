@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as ContactService from "@/api/contacts/service";
+import * as ContactService from "@/app/api/contacts/service";
+import { createId } from "@paralleldrive/cuid2";
 
 export async function createContact(req: NextRequest) {
   const body = await req.json();
-  const created = await ContactService.createContact(body);
+  const object = {
+    ...body,
+    id: createId(),
+  };
+  const created = await ContactService.createContact(object);
   return NextResponse.json({ status: "success", data: created });
 }
 
@@ -19,4 +24,9 @@ export async function updateContact(req: NextRequest, id: string) {
   const updates = await req.json();
   const updated = await ContactService.updateContactById(id, updates);
   return NextResponse.json({ status: "success", data: updated });
+}
+
+export async function getAllContacts(req: NextRequest) {
+  const contacts = await ContactService.getAllContacts();
+  return NextResponse.json({ data: contacts });
 }

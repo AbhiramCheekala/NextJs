@@ -8,6 +8,13 @@
       "when": 1752910355046,
       "tag": "0000_rainy_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1752922440272,
+      "tag": "0001_aspiring_mephistopheles",
+      "breakpoints": true
     }
   ]
 }
