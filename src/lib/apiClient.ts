@@ -12,6 +12,7 @@ export const apiRequest = async (
     },
     body: body ? JSON.stringify(body) : undefined,
   });
+  console.log("API Request:", { body, url, method, status: res.status });
 
   if (!res.ok) throw new Error("API error");
   return res.json();

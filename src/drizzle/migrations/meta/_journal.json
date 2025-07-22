@@ -15,6 +15,13 @@
       "when": 1752922440272,
       "tag": "0001_aspiring_mephistopheles",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1753039471806,
+      "tag": "0002_workable_peter_parker",
+      "breakpoints": true
     }
   ]
 }

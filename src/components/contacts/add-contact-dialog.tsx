@@ -1,7 +1,6 @@
+"use client";
 
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,11 +13,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus, X, Tag as TagIcon, PlusCircle } from 'lucide-react';
-import type { ContactTag } from '@/types/contact';
-import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
+import { UserPlus, X, Tag as TagIcon, PlusCircle } from "lucide-react";
+import type { ContactTag } from "@/types/contact";
+import {
+  Command,
+  CommandInput,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { apiRequest } from "@/lib/apiClient";
+import axios from "axios";
 
 interface AddContactDialogProps {
   isOpen: boolean;
@@ -27,13 +38,18 @@ interface AddContactDialogProps {
   existingTags?: ContactTag[];
 }
 
-export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags = [] }: AddContactDialogProps) {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  
+export function AddContactDialog({
+  isOpen,
+  onOpenChange,
+  onSuccess,
+  existingTags = [],
+}: AddContactDialogProps) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
   const [selectedTags, setSelectedTags] = useState<ContactTag[]>([]);
-  const [tagInput, setTagInput] = useState('');
+  const [tagInput, setTagInput] = useState("");
   const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
 
   useEffect(() => {
@@ -43,11 +59,11 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
   }, [isOpen]);
 
   const resetForm = () => {
-    setName('');
-    setPhone('');
-    setEmail('');
+    setName("");
+    setPhone("");
+    setEmail("");
     setSelectedTags([]);
-    setTagInput('');
+    setTagInput("");
     setIsTagPopoverOpen(false);
   };
 
@@ -55,25 +71,39 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
     if (tagToAdd && !selectedTags.includes(tagToAdd)) {
       setSelectedTags([...selectedTags, tagToAdd]);
     }
-    setTagInput(''); // Clear input after selection or adding
+    setTagInput(""); // Clear input after selection or adding
   };
 
   const handleRemoveTag = (tagToRemove: ContactTag) => {
-    setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove));
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleSubmit = async () => {
-    // TODO: Implement actual API call using a hook like useCreateContact
-    console.log("Submitting new contact:", { name, phone, email, tags: selectedTags });
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    onSuccess();
-    onOpenChange(false);
-    // resetForm() is called by useEffect when isOpen becomes false
+    try {
+      const payload = {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        label: selectedTags.join("++"),
+      };
+
+      console.log("Sending payload:", payload);
+
+      const res = await axios.post("/api/contacts", payload);
+
+      console.log("Server response:", res.data);
+
+      onSuccess();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
   };
 
   const filteredSuggestedTags = existingTags.filter(
-    (tag) => !selectedTags.includes(tag) && tag.toLowerCase().includes(tagInput.toLowerCase())
+    (tag) =>
+      !selectedTags.includes(tag) &&
+      tag.toLowerCase().includes(tagInput.toLowerCase())
   );
 
   return (
@@ -89,38 +119,82 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name-add" className="text-right">Name</Label>
-            <Input id="name-add" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" placeholder="John Doe" />
+            <Label htmlFor="name-add" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name-add"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="col-span-3"
+              placeholder="John Doe"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="phone-add" className="text-right">Phone</Label>
-            <Input id="phone-add" value={phone} onChange={(e) => setPhone(e.target.value)} className="col-span-3" placeholder="+1234567890" />
+            <Label htmlFor="phone-add" className="text-right">
+              Phone
+            </Label>
+            <Input
+              id="phone-add"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="col-span-3"
+              placeholder="+1234567890"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="email-add" className="text-right">Email</Label>
-            <Input id="email-add" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="col-span-3" placeholder="name@example.com" />
+            <Label htmlFor="email-add" className="text-right">
+              Email
+            </Label>
+            <Input
+              id="email-add"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="col-span-3"
+              placeholder="name@example.com"
+            />
           </div>
-          
+
           <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="tags-add-popover-trigger" className="text-right pt-2 flex items-center">
+            <Label
+              htmlFor="tags-add-popover-trigger"
+              className="text-right pt-2 flex items-center"
+            >
               <TagIcon className="h-4 w-4 mr-1" /> Labels
             </Label>
             <div className="col-span-3 space-y-2">
-              <Popover open={isTagPopoverOpen} onOpenChange={setIsTagPopoverOpen}>
+              <Popover
+                open={isTagPopoverOpen}
+                onOpenChange={setIsTagPopoverOpen}
+              >
                 <PopoverTrigger asChild>
-                  <Button variant="outline" role="combobox" aria-expanded={isTagPopoverOpen} className="w-full justify-between" id="tags-add-popover-trigger">
-                    {selectedTags.length > 0 ? `${selectedTags.length} selected` : "Add or create labels..."}
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={isTagPopoverOpen}
+                    className="w-full justify-between"
+                    id="tags-add-popover-trigger"
+                  >
+                    {selectedTags.length > 0
+                      ? `${selectedTags.length} selected`
+                      : "Add or create labels..."}
                     <PlusCircle className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                   <Command>
-                    <CommandInput 
+                    <CommandInput
                       placeholder="Type to search or create..."
                       value={tagInput}
                       onValueChange={setTagInput}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' && tagInput.trim() && !existingTags.includes(tagInput.trim()) && !selectedTags.includes(tagInput.trim())) {
+                        if (
+                          e.key === "Enter" &&
+                          tagInput.trim() &&
+                          !existingTags.includes(tagInput.trim()) &&
+                          !selectedTags.includes(tagInput.trim())
+                        ) {
                           e.preventDefault();
                           handleAddTag(tagInput.trim());
                         }
@@ -128,7 +202,9 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
                     />
                     <CommandList>
                       <CommandEmpty>
-                        {tagInput.trim() && !existingTags.includes(tagInput.trim()) && !selectedTags.includes(tagInput.trim()) ? (
+                        {tagInput.trim() &&
+                        !existingTags.includes(tagInput.trim()) &&
+                        !selectedTags.includes(tagInput.trim()) ? (
                           <CommandItem
                             onSelect={() => handleAddTag(tagInput.trim())}
                             className="cursor-pointer"
@@ -157,10 +233,20 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
               </Popover>
 
               <div className="flex flex-wrap gap-1 min-h-[20px]">
-                {selectedTags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="flex items-center">
+                {selectedTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="flex items-center"
+                  >
                     {tag}
-                    <Button variant="ghost" size="icon" className="ml-1 h-4 w-4 p-0" onClick={() => handleRemoveTag(tag)} aria-label={`Remove ${tag}`}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-1 h-4 w-4 p-0"
+                      onClick={() => handleRemoveTag(tag)}
+                      aria-label={`Remove ${tag}`}
+                    >
                       <X className="h-3 w-3" />
                     </Button>
                   </Badge>
@@ -170,8 +256,16 @@ export function AddContactDialog({ isOpen, onOpenChange, onSuccess, existingTags
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit}>Save Contact</Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" onClick={handleSubmit}>
+            Save Contact
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

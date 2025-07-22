@@ -1,7 +1,7 @@
-
 export type ContactTag = string; // Allow any string for dynamic tags
 
 export interface Contact {
+  label: any;
   id: string;
   name: string;
   phone: string;
