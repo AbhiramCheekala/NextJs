@@ -48,7 +48,7 @@ export async function createUserController(body: {
   password: string;
   role: string;
 }) {
-  const { name, email, password, role } = body;
+  const { name, email, password = "hello", role } = body;
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds

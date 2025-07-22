@@ -24,11 +24,20 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { AddTeamMemberDialog } from "@/components/team/add-team-member-dialog";
 import { useToast } from "@/hooks/use-toast";
 
-// Internal hook to fetch users
+// 🔷 Pagination settings
+const ITEMS_PER_PAGE = 3;
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  lastLoginAt?: string;
+};
+
 function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,21 +54,11 @@ function useUsers() {
         setIsLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
 
   return { users, isLoading };
 }
-
-// Type definition for User
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role?: string;
-  lastLoginAt?: string;
-};
 
 const roleVariant = (role: string) => {
   switch (role.toLowerCase()) {
@@ -76,6 +75,7 @@ const roleVariant = (role: string) => {
 
 export default function TeamPage() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   const { users, isLoading } = useUsers();
 
@@ -100,6 +100,11 @@ export default function TeamPage() {
       variant: "destructive",
     });
   };
+
+  // 🔷 Pagination logic
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
 
   return (
     <div className="flex flex-col gap-6">
@@ -147,8 +152,8 @@ export default function TeamPage() {
                 <TableRow>
                   <TableCell colSpan={5}>Loading team members...</TableCell>
                 </TableRow>
-              ) : users.length > 0 ? (
-                users.map((user) => (
+              ) : paginatedUsers.length > 0 ? (
+                paginatedUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell className="font-medium flex items-center">
                       <Avatar className="h-8 w-8 mr-3">
@@ -201,6 +206,28 @@ export default function TeamPage() {
               )}
             </TableBody>
           </Table>
+
+          {/* 🔷 Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <Button
+              variant="outline"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </Button>
+          </div>
+
           <p className="text-center text-muted-foreground mt-6">
             Role-based access control, chat assignment, and activity log
             features will be implemented here.
@@ -219,10 +246,7 @@ export default function TeamPage() {
           <p className="text-muted-foreground">
             Activity log will be displayed here...
           </p>
-          <div
-            data-ai-hint="activity feed"
-            className="h-40 bg-muted rounded-md flex items-center justify-center text-sm"
-          >
+          <div className="h-40 bg-muted rounded-md flex items-center justify-center text-sm">
             Activity Feed Area
           </div>
         </CardContent>
