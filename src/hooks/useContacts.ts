@@ -15,7 +15,7 @@ type UseContactsProps = {
   search?: string;
 };
 
-export function useContacts({ search = "" }: UseContactsProps) {
+export function useContacts({ search = "" }: UseContactsProps = {}) {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +28,6 @@ export function useContacts({ search = "" }: UseContactsProps) {
 
       setAllContacts(data);
 
-      // Apply optional search filter
       const filtered = data.filter((c: Contact) =>
         c.name.toLowerCase().includes(search.toLowerCase())
       );
@@ -40,9 +39,37 @@ export function useContacts({ search = "" }: UseContactsProps) {
     }
   };
 
+  const saveContact = async (updatedContact: Contact) => {
+    try {
+      await axios.put(
+        `http://localhost:9002/api/contacts/${updatedContact.id}`,
+        updatedContact
+      );
+      await fetchContacts(); // Refresh after saving
+    } catch (err) {
+      console.error("Failed to save contact:", err);
+    }
+  };
+
+  const deleteContact = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:9002/api/contacts/${id}`);
+      await fetchContacts(); // Refresh after deletion
+    } catch (err) {
+      console.error("Failed to delete contact:", err);
+    }
+  };
+
   useEffect(() => {
     fetchContacts();
   }, [search]);
 
-  return { contacts, allContacts, isLoading, refetch: fetchContacts };
+  return {
+    contacts,
+    allContacts,
+    isLoading,
+    refetch: fetchContacts,
+    saveContact,
+    deleteContact,
+  };
 }
