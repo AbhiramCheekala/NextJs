@@ -1,56 +1,82 @@
 import { eq } from "drizzle-orm";
-import { contactInsert, contactsTable } from "@/lib/drizzle/schema/contacts";
+import {
+  contactInsert,
+  contactSelect,
+  contactsTable,
+} from "@/lib/drizzle/schema/contacts";
 import logger from "@/lib/logger";
 
-export const createContact = async (input: contactInsert, db: any) => {
+export const createContact = async (
+  input: contactInsert,
+  db: any
+): Promise<contactSelect> => {
   await db.insert(contactsTable).values(input);
 
-  // Fetch and return the full inserted row by contact_id
   const [createdContact] = await db
     .select()
     .from(contactsTable)
     .where(eq(contactsTable.id, input.id));
 
+  logger.info(`Contact created successfully: ${input.id}`);
   return createdContact;
 };
 
-export const getContactById = async (id: string, db: any) => {
-  const result = await db
+export const getContactById = async (
+  id: string,
+  db: any
+): Promise<contactSelect | null> => {
+  const [contact] = await db
     .select()
     .from(contactsTable)
     .where(eq(contactsTable.id, id));
-  return result[0];
+
+  if (!contact) {
+    logger.warn(`No contact found for ID: ${id}`);
+    return null;
+  }
+  return contact;
 };
 
-export const checkContactExistence = async (phone: string, db: any) => {
+export const checkContactExistence = async (
+  phone: string,
+  db: any
+): Promise<boolean> => {
   const result = await db
     .select()
     .from(contactsTable)
     .where(eq(contactsTable.phone, phone));
-  return result.length > 0 ? true : false;
+
+  const exists = result.length > 0 ? true : false;
+  logger.info(`Contact existence check for phone ${phone}: ${exists}`);
+  return exists;
 };
 
 export const updateContactById = async (
   id: string,
-  input: contactInsert,
+  updates: contactInsert,
   db: any
-) => {
+): Promise<contactSelect> => {
+  logger.info(`Updating contact with ID: ${id}`);
+
+  await db.update(contactsTable).set(updates).where(eq(contactsTable.id, id));
+
   const [updatedContact] = await db
-    .update(contactsTable)
-    .set(input)
-    .where(eq(contactsTable.id, id));
-  const result = await db
     .select()
     .from(contactsTable)
     .where(eq(contactsTable.id, id));
-  logger.info(`Contact with ID ${id} updated successfully.`);
-  if (result.length === 0) {
+
+  if (!updatedContact) {
     logger.error(`Contact with ID ${id} not found after update.`);
     throw new Error(`Contact with ID ${id} not found`);
   }
-  return result[0];
+
+  logger.info(`Contact updated successfully: ${id}`);
+  return updatedContact;
 };
 
-export const getAllContacts = async (db: any) => {
-  return await db.select().from(contactsTable);
+export const getAllContacts = async (db: any): Promise<contactSelect> => {
+  logger.info("Fetching all contacts");
+  const contacts = await db.select().from(contactsTable);
+  logger.info(`Total contacts retrieved: ${contacts.length}`);
+  return contacts;
 };
