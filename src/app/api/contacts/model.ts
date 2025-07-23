@@ -74,6 +74,16 @@ export const updateContactById = async (
   return updatedContact;
 };
 
+export const deleteContactById = async (id: string, db: any): Promise<void> => {
+  const result = await db.delete(contactsTable).where(eq(contactsTable.id, id));
+
+  if (result.numDeletedRows === 0) {
+    throw new Error(`No contact found with ID: ${id}`);
+  }
+
+  logger.info(`Contact deleted successfully: ${id}`);
+};
+
 export const getAllContacts = async (db: any): Promise<contactSelect> => {
   logger.info("Fetching all contacts");
   const contacts = await db.select().from(contactsTable);

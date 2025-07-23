@@ -49,6 +49,19 @@ export async function updateContact(req: NextRequest, id: string) {
   return NextResponse.json({ status: "success", data: updated });
 }
 
+export async function deleteContact(req: NextRequest, id: string) {
+  const contact = await ContactService.getContactById(id);
+  if (!contact) {
+    return NextResponse.json({ error: "No Contact found" }, { status: 404 });
+  } else {
+    await ContactService.deleteContactById(id);
+    return NextResponse.json({
+      status: "success",
+      message: "Contact deleted successfully",
+    });
+  }
+}
+
 export async function getAllContacts(req: NextRequest) {
   logger.info("Fetching all contacts");
 

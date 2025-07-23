@@ -17,6 +17,10 @@ export const checkContactExistence = async (
   return await contactModel.checkContactExistence(phone, db);
 };
 
+export const deleteContactById = async (id: string) => {
+  return await contactModel.deleteContactById(id, db);
+};
+
 export const updateContactById = async (id: string, input: contactInsert) => {
   return await contactModel.updateContactById(id, input, db);
 };
