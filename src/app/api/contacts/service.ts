@@ -1,26 +1,26 @@
 import { db } from "@/lib/db";
-import { contactInsert, contactsTable } from "@/lib/drizzle/schema/contacts";
+import * as contactModel from "@/app/api/contacts/model";
 import { eq } from "drizzle-orm";
+import { contactInsert } from "@/lib/drizzle/schema/contacts";
 
 export const createContact = async (input: contactInsert) => {
-  return await db.insert(contactsTable).values(input);
+  return await contactModel.createContact(input, db);
 };
 
 export const getContactById = async (id: string) => {
-  const result = await db
-    .select()
-    .from(contactsTable)
-    .where(eq(contactsTable.id, id));
-  return result[0];
+  return await contactModel.getContactById(id, db);
+};
+
+export const checkContactExistence = async (
+  phone: string
+): Promise<boolean> => {
+  return await contactModel.checkContactExistence(phone, db);
 };
 
 export const updateContactById = async (id: string, input: contactInsert) => {
-  return await db
-    .update(contactsTable)
-    .set(input)
-    .where(eq(contactsTable.id, id));
+  return await contactModel.updateContactById(id, input, db);
 };
 
 export const getAllContacts = async () => {
-  return await db.select().from(contactsTable);
+  return await contactModel.getAllContacts(db);
 };

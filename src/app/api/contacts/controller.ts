@@ -8,6 +8,15 @@ export async function createContact(req: NextRequest) {
     ...body,
     id: createId(),
   };
+  const existingContact = await ContactService.checkContactExistence(
+    body.phone
+  );
+  if (existingContact) {
+    return NextResponse.json(
+      { error: "Contact already exists" },
+      { status: 400 }
+    );
+  }
   const created = await ContactService.createContact(object);
   return NextResponse.json({ status: "success", data: created });
 }
