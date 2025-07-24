@@ -11,5 +11,8 @@ export const contactsTable = mysqlTable("contacts", {
   updatedAt: timestamp("updated_at").onUpdateNow().defaultNow(),
 });
 
-export type contactSelect = InferSelectModel<typeof contactsTable>;
+export type contactSelect = Omit<
+  InferSelectModel<typeof contactsTable>,
+  "createdAt" | "updatedAt"
+>;
 export type contactInsert = InferInsertModel<typeof contactsTable>;
