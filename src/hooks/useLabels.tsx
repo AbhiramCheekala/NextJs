@@ -3,35 +3,32 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-type Contact = {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  label: string;
-};
-
-type UseContactsProps = {
+type UseLabelProps = {
   search?: string;
 };
 
-export function useContacts({ search = "" }: UseContactsProps = {}) {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [allContacts, setAllContacts] = useState<Contact[]>([]);
+type Label = {
+  id?: string;
+  name: string;
+};
+
+export function useLabels({ search = "" }: UseLabelProps = {}) {
+  const [labels, setLabels] = useState<Label[]>([]);
+  const [allContacts, setAllLabels] = useState<Label[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const fetchContacts = async () => {
+  const fetchLabels = async () => {
     setIsLoading(true);
     try {
       const res = await axios.get("http://localhost:9002/api/contacts");
       const data = res.data?.data ?? [];
 
-      setAllContacts(data);
+      setAllLabels(data);
 
-      const filtered = data.filter((c: Contact) =>
+      const filtered = data.filter((c: Label) =>
         c.name.toLowerCase().includes(search.toLowerCase())
       );
-      setContacts(filtered);
+      setLabels(filtered);
     } catch (err) {
       console.error("Failed to fetch contacts:", err);
     } finally {
@@ -39,37 +36,24 @@ export function useContacts({ search = "" }: UseContactsProps = {}) {
     }
   };
 
-  const saveContact = async (updatedContact: Contact) => {
+  const saveLabel = async (updatedContact: Label) => {
     try {
       await axios.put(
         `http://localhost:9002/api/contacts/${updatedContact.id}`,
         updatedContact
       );
-      await fetchContacts();
+      await fetchLabels();
     } catch (err) {
       console.error("Failed to save contact:", err);
     }
   };
 
-  const deleteContact = async (id: string) => {
+  const deleteLabel = async (id: string) => {
     try {
       await axios.delete(`http://localhost:9002/api/contacts/${id}`);
-      await fetchContacts();
+      await fetchLabels();
     } catch (err) {
       console.error("Failed to delete contact:", err);
     }
-  };
-
-  useEffect(() => {
-    fetchContacts();
-  }, [search]);
-
-  return {
-    contacts,
-    allContacts,
-    isLoading,
-    refetch: fetchContacts,
-    saveContact,
-    deleteContact,
   };
 }
