@@ -35,6 +35,7 @@ export async function POST(req: Request) {
     let status = "SUBMITTED";
     if (metaResponse?.error) {
       status = "FAILED";
+      console.error("Meta API error:", metaResponse.error);
     }
 
     // 3. Save locally in your DB
