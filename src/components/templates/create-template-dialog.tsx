@@ -1,6 +1,6 @@
+"use client";
 
-'use client';
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,20 +10,55 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FilePlus2 } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FilePlus2 } from "lucide-react";
 
 interface CreateTemplateDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSuccess: () => void; 
+  onSuccess: () => void;
 }
 
-export function CreateTemplateDialog({ isOpen, onOpenChange, onSuccess }: CreateTemplateDialogProps) {
-  
-  // Simplified for "dummy pop up"
-  const handleSave = () => {
-    onSuccess(); // Simulate success
-    onOpenChange(false);
+export function CreateTemplateDialog({
+  isOpen,
+  onOpenChange,
+  onSuccess,
+}: CreateTemplateDialogProps) {
+  const [form, setForm] = useState({
+    name: "",
+    category: "UTILITY",
+    language: "en_US",
+    body: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || result?.error) {
+        throw new Error(result?.error?.message || "Submission failed.");
+      }
+
+      onSuccess(); // Notify parent to refresh or refetch
+      onOpenChange(false); // Close dialog
+    } catch (err: any) {
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,28 +66,60 @@ export function CreateTemplateDialog({ isOpen, onOpenChange, onSuccess }: Create
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center">
-            <FilePlus2 className="mr-2 h-5 w-5" /> 
-            Create New Template (Dummy)
+            <FilePlus2 className="mr-2 h-5 w-5" />
+            Create New WhatsApp Template
           </DialogTitle>
           <DialogDescription>
-            This is a placeholder dialog for creating a new template.
-            Full functionality will be implemented soon.
+            Enter the required details and submit the template to WhatsApp.
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="py-4">
-          <p className="text-sm text-muted-foreground">Template creation form will appear here.</p>
-          <div data-ai-hint="form fields placeholder" className="h-20 bg-muted rounded-md flex items-center justify-center text-xs mt-2">
-            Form Fields Area
-          </div>
+
+        <div className="space-y-4 py-2">
+          <Input
+            placeholder="Template Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+
+          <select
+            value={form.category}
+            onChange={(e) => setForm({ ...form, category: e.target.value })}
+            className="w-full border rounded p-2 text-sm"
+          >
+            <option value="UTILITY">UTILITY</option>
+            <option value="MARKETING">MARKETING</option>
+            <option value="TRANSACTIONAL">TRANSACTIONAL</option>
+          </select>
+
+          <Input
+            placeholder="Language (e.g. en_US)"
+            value={form.language}
+            onChange={(e) => setForm({ ...form, language: e.target.value })}
+          />
+
+          <Textarea
+            placeholder="Body (e.g., Hi {{1}}, your OTP is {{2}}.)"
+            value={form.body}
+            onChange={(e) => setForm({ ...form, body: e.target.value })}
+          />
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button type="button" onClick={handleSave}>Save Draft (Dummy)</Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button type="button" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Submitting..." : "Submit Template"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-
