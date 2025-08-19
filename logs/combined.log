@@ -51,3 +51,51 @@
 2025-08-09 14:55:57 [INFO]: Fetching all contacts 
 2025-08-09 14:55:57 [INFO]: Fetching all contacts 
 2025-08-09 14:55:57 [INFO]: Total contacts retrieved: 5 
+2025-08-19 21:23:42 [INFO]: Fetching all contacts 
+2025-08-19 21:23:42 [INFO]: Fetching all contacts 
+2025-08-19 21:23:42 [INFO]: Total contacts retrieved: 5 
+2025-08-19 21:43:14 [INFO]: Fetching all contacts 
+2025-08-19 21:43:14 [INFO]: Fetching all contacts 
+2025-08-19 21:43:14 [INFO]: Total contacts retrieved: 5 
+2025-08-19 21:43:56 [INFO]: Fetching all contacts 
+2025-08-19 21:43:56 [INFO]: Fetching all contacts 
+2025-08-19 21:43:56 [INFO]: Total contacts retrieved: 5 
+2025-08-19 22:11:44 [INFO]: Fetching all contacts 
+2025-08-19 22:11:44 [INFO]: Fetching all contacts 
+2025-08-19 22:11:44 [INFO]: Total contacts retrieved: 5 
+2025-08-19 22:13:16 [INFO]: Creating bulk contacts with data: %o 
+2025-08-19 22:15:26 [INFO]: Creating bulk contacts with data: %o 
+2025-08-19 22:20:54 [INFO]: Creating bulk contacts with data: %o 
+2025-08-19 22:20:56 [INFO]: 10 contacts created successfully 
+2025-08-19 22:20:56 [INFO]: Bulk contacts created successfully 
+2025-08-19 22:20:57 [INFO]: Fetching all contacts 
+2025-08-19 22:20:57 [INFO]: Fetching all contacts 
+2025-08-19 22:20:57 [INFO]: Total contacts retrieved: 15 
+2025-08-19 22:31:34 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-08-19 22:31:43 [INFO]: Total contacts retrieved: 10 
+2025-08-19 22:31:49 [INFO]: Fetching contacts with page: 2, limit: 10, search:  
+2025-08-19 22:31:49 [INFO]: Total contacts retrieved: 5 
+2025-08-19 22:31:54 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-08-19 22:31:54 [INFO]: Total contacts retrieved: 10 
+2025-08-19 22:31:56 [INFO]: Fetching contacts with page: 1, limit: 10, search: s 
+2025-08-19 22:31:56 [INFO]: Total contacts retrieved: 9 
+2025-08-19 22:31:56 [INFO]: Fetching contacts with page: 1, limit: 10, search: sr 
+2025-08-19 22:31:56 [INFO]: Total contacts retrieved: 2 
+2025-08-19 22:31:57 [INFO]: Fetching contacts with page: 1, limit: 10, search: sra 
+2025-08-19 22:31:57 [INFO]: Total contacts retrieved: 2 
+2025-08-19 22:32:01 [INFO]: Fetching contacts with page: 1, limit: 10, search: sr 
+2025-08-19 22:32:01 [INFO]: Total contacts retrieved: 2 
+2025-08-19 22:32:01 [INFO]: Fetching contacts with page: 1, limit: 10, search: s 
+2025-08-19 22:32:01 [INFO]: Total contacts retrieved: 9 
+2025-08-19 22:32:01 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-08-19 22:32:01 [INFO]: Total contacts retrieved: 10 
+2025-08-19 22:32:36 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-19 22:32:36 [INFO]: Total contacts retrieved: 6 
+2025-08-19 22:32:41 [INFO]: Fetching contacts with page: 2, limit: 6, search:  
+2025-08-19 22:32:41 [INFO]: Total contacts retrieved: 6 
+2025-08-19 22:32:43 [INFO]: Fetching contacts with page: 3, limit: 6, search:  
+2025-08-19 22:32:43 [INFO]: Total contacts retrieved: 3 
+2025-08-19 22:32:46 [INFO]: Fetching contacts with page: 2, limit: 6, search:  
+2025-08-19 22:32:46 [INFO]: Total contacts retrieved: 6 
+2025-08-19 22:32:47 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-19 22:32:47 [INFO]: Total contacts retrieved: 6 

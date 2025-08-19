@@ -13,25 +13,35 @@ type Contact = {
 
 type UseContactsProps = {
   search?: string;
+  page?: number;
+  limit?: number;
 };
 
-export function useContacts({ search = "" }: UseContactsProps = {}) {
+export function useContacts({
+  search = "",
+  page = 1,
+  limit = 10,
+}: UseContactsProps = {}) {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [meta, setMeta] = useState(null);
 
   const fetchContacts = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:9002/api/contacts");
-      const data = res.data?.data ?? [];
+      const res = await axios.get("http://localhost:9002/api/contacts", {
+        params: {
+          search,
+          page,
+          limit,
+        },
+      });
+      const { data, meta } = res.data;
 
       setAllContacts(data);
-
-      const filtered = data.filter((c: Contact) =>
-        c.name.toLowerCase().includes(search.toLowerCase())
-      );
-      setContacts(filtered);
+      setContacts(data);
+      setMeta(meta);
     } catch (err) {
       console.error("Failed to fetch contacts:", err);
     } finally {
@@ -62,7 +72,7 @@ export function useContacts({ search = "" }: UseContactsProps = {}) {
 
   useEffect(() => {
     fetchContacts();
-  }, [search]);
+  }, [search, page, limit]);
 
   return {
     contacts,
@@ -71,5 +81,6 @@ export function useContacts({ search = "" }: UseContactsProps = {}) {
     refetch: fetchContacts,
     saveContact,
     deleteContact,
+    meta,
   };
 }

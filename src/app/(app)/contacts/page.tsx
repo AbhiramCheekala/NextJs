@@ -61,8 +61,11 @@ const getTagColor = (tagName: ContactTag) => {
 
 export default function ContactsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { contacts, isLoading, refetch, allContacts } = useContacts({
+  const [page, setPage] = useState(1);
+  const { contacts, isLoading, refetch, allContacts, meta } = useContacts({
     search: searchTerm,
+    page,
+    limit: 6,
   });
   const router = useRouter();
 
@@ -299,6 +302,24 @@ export default function ContactsPage() {
               )}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-end space-x-2 py-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page + 1)}
+              disabled={page === meta?.totalPages}
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

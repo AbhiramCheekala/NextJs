@@ -25,6 +25,17 @@ export const updateContactById = async (id: string, input: contactInsert) => {
   return await contactModel.updateContactById(id, input, db);
 };
 
-export const getAllContacts = async () => {
-  return await contactModel.getAllContacts(db);
+export const getAllContacts = async (options: {
+  page: number;
+  limit: number;
+  search: string;
+}) => {
+  return await contactModel.getAllContacts(db, options);
+};
+
+export const createBulkContacts = async (
+  contacts: contactInsert[],
+  tags: string
+) => {
+  return await contactModel.createBulkContacts(contacts, db);
 };

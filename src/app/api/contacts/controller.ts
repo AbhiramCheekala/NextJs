@@ -63,9 +63,37 @@ export async function deleteContact(req: NextRequest, id: string) {
 }
 
 export async function getAllContacts(req: NextRequest) {
-  logger.info("Fetching all contacts");
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const search = searchParams.get("search") || "";
 
-  const contacts = await ContactService.getAllContacts();
+  logger.info(
+    `Fetching contacts with page: ${page}, limit: ${limit}, search: ${search}`
+  );
 
-  return NextResponse.json({ data: contacts });
+  const { contacts, total } = await ContactService.getAllContacts({
+    page,
+    limit,
+    search,
+  });
+
+  return NextResponse.json({
+    data: contacts,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  });
+}
+
+export async function createBulkContacts(req: NextRequest) {
+  const { contacts, tags } = await req.json();
+  logger.info("Creating bulk contacts with data: %o", contacts);
+
+  const created = await ContactService.createBulkContacts(contacts, tags);
+  logger.info("Bulk contacts created successfully");
+  return NextResponse.json({ status: "success", data: created });
 }

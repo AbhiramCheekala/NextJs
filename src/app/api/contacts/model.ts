@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, like, sql } from "drizzle-orm";
 import {
   contactInsert,
   contactSelect,
@@ -10,14 +10,12 @@ export const createContact = async (
   input: contactInsert,
   db: any
 ): Promise<contactSelect> => {
-  await db.insert(contactsTable).values(input);
-
   const [createdContact] = await db
-    .select()
-    .from(contactsTable)
-    .where(eq(contactsTable.id, input.id));
+    .insert(contactsTable)
+    .values(input)
+    .returning();
 
-  logger.info(`Contact created successfully: ${input.id}`);
+  logger.info(`Contact created successfully: ${createdContact.id}`);
   return createdContact;
 };
 
@@ -84,9 +82,49 @@ export const deleteContactById = async (id: string, db: any): Promise<void> => {
   logger.info(`Contact deleted successfully: ${id}`);
 };
 
-export const getAllContacts = async (db: any): Promise<contactSelect> => {
-  logger.info("Fetching all contacts");
-  const contacts = await db.select().from(contactsTable);
+export const getAllContacts = async (
+  db: any,
+  options: {
+    page: number;
+    limit: number;
+    search: string;
+  }
+): Promise<{ contacts: contactSelect[]; total: number }> => {
+  const { page, limit, search } = options;
+  const offset = (page - 1) * limit;
+
+  const where = search
+    ? like(contactsTable.name, `%${search}%`)
+    : undefined;
+
+  const [contacts, totalResult] = await Promise.all([
+    db
+      .select()
+      .from(contactsTable)
+      .where(where)
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(contactsTable)
+      .where(where),
+  ]);
+
   logger.info(`Total contacts retrieved: ${contacts.length}`);
-  return contacts;
+  return { contacts, total: totalResult[0].count };
+};
+
+export const createBulkContacts = async (
+  contacts: contactInsert[],
+  db: any
+): Promise<contactSelect[]> => {
+  const createdContacts = await db
+    .insert(contactsTable)
+    .values(contacts)
+    .returning();
+
+  logger.info(`${contacts.length} contacts created successfully`);
+  return createdContacts;
 };
