@@ -1,7 +1,6 @@
+"use client";
 
-'use client';
-
-import React from 'react';
+import React from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -11,13 +10,14 @@ import {
   SidebarTrigger,
   SidebarInset,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { Logo } from '@/components/icons/logo';
-import { navItems, siteConfig } from '@/config/nav';
-import { SidebarNav } from '@/components/navigation/sidebar-nav';
-import { UserNav } from '@/components/navigation/user-nav';
-import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+} from "@/components/ui/sidebar";
+import { Logo } from "@/components/icons/logo";
+import { navItems, siteConfig } from "@/config/nav";
+import { SidebarNav } from "@/components/navigation/sidebar-nav";
+import { UserNav } from "@/components/navigation/user-nav";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import router from "next/router";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -26,25 +26,50 @@ interface AppLayoutProps {
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { state, isMobile } = useSidebar();
-  const isCollapsed = state === 'collapsed';
+  const isCollapsed = state === "collapsed";
 
   return (
     <>
-      <Sidebar side="left" variant="sidebar" collapsible={isMobile ? "offcanvas" : "icon"}>
+      <Sidebar
+        side="left"
+        variant="sidebar"
+        collapsible={isMobile ? "offcanvas" : "icon"}
+      >
         <SidebarHeader className="flex items-center gap-2 p-4 border-b border-sidebar-border">
           <Logo className="h-7 w-7 text-primary" />
-          {!isCollapsed && !isMobile && <h1 className="font-headline text-lg font-semibold text-sidebar-foreground">{siteConfig.name}</h1>}
+          {!isCollapsed && !isMobile && (
+            <h1 className="font-headline text-lg font-semibold text-sidebar-foreground">
+              {siteConfig.name}
+            </h1>
+          )}
         </SidebarHeader>
         <SidebarContent className="p-2">
           <SidebarNav items={navItems} isCollapsed={isCollapsed && !isMobile} />
         </SidebarContent>
         <SidebarFooter className="p-4 border-t border-sidebar-border">
           {isCollapsed && !isMobile ? (
-             <Button variant="ghost" size="icon" className="w-full" onClick={() => alert('Logout action placeholder')}>
-                <LogOut className="h-5 w-5 text-sidebar-foreground" />
-             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-full"
+              onClick={() => {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("user");
+                window.location.href = "/login"; // or use router.push if in a client component
+              }}
+            >
+              <LogOut className="h-5 w-5 text-sidebar-foreground" />
+            </Button>
           ) : (
-            <Button variant="ghost" className="w-full justify-start text-sidebar-foreground" onClick={() => alert('Logout action placeholder')}>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-sidebar-foreground"
+              onClick={() => {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("user");
+                router.push("/login");
+              }}
+            >
               <LogOut className="mr-2 h-5 w-5" />
               Logout
             </Button>
@@ -64,7 +89,10 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function AppLayout({ children, defaultCollapsed = false }: AppLayoutProps) {
+export function AppLayout({
+  children,
+  defaultCollapsed = false,
+}: AppLayoutProps) {
   // Initialize state based on defaultCollapsed for consistent SSR and initial client render
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(!defaultCollapsed);
   const [isClientRendered, setIsClientRendered] = React.useState(false);
@@ -74,13 +102,13 @@ export function AppLayout({ children, defaultCollapsed = false }: AppLayoutProps
     setIsClientRendered(true); // Mark that client-side hydration is done
 
     const cookieValue = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('sidebar_state='))
-      ?.split('=')[1];
+      .split("; ")
+      .find((row) => row.startsWith("sidebar_state="))
+      ?.split("=")[1];
 
     if (cookieValue !== undefined) {
       // Update the state based on the cookie. This will trigger a re-render on the client.
-      setIsSidebarOpen(cookieValue === 'true');
+      setIsSidebarOpen(cookieValue === "true");
     }
     // If no cookie, isSidebarOpen remains based on defaultCollapsed, which is fine.
   }, [defaultCollapsed]); // defaultCollapsed is part of initial state logic
