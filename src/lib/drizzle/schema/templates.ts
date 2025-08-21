@@ -2,7 +2,7 @@ import {
   mysqlTable,
   serial,
   varchar,
-  text,
+  json,
   timestamp,
 } from "drizzle-orm/mysql-core";
 
@@ -11,7 +11,7 @@ export const templates = mysqlTable("templates", {
   name: varchar("name", { length: 255 }).unique().notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   language: varchar("language", { length: 50 }).notNull(),
-  body: text("body").notNull(),
+  components: json("components").notNull(),
   status: varchar("status", { length: 50 }).default("LOCAL"),
   lastUpdated: timestamp("last_updated", { mode: "date" })
     .defaultNow()

@@ -6,10 +6,10 @@ export default defineConfig({
   out: "./src/drizzle/migrations",
   dialect: "mysql",
   dbCredentials: {
-    host: process.env.DB_HOST!,
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASS!,
-    database: process.env.DB_NAME!,
-    port: Number(process.env.DB_PORT) || 3306,
+    host: "127.0.0.1",
+    user: "root",
+    password: "kali",
+    database: "whatsappDb",
+    port: 3306,
   },
 });

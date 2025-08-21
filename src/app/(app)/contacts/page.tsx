@@ -204,102 +204,99 @@ export default function ContactsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={`skeleton-${i}`}>
-                    <TableCell>
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-40" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-28" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Skeleton className="h-8 w-8 ml-auto" />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : contacts.length > 0 ? (
-                contacts.map((contact) => (
-                  <TableRow key={contact.id}>
-                    <TableCell>
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback>
-                          {contact.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {contact.name}
-                    </TableCell>
-                    <TableCell>{contact.phone}</TableCell>
-                    <TableCell>{contact.email}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {contact.label
-                          ?.split("++")
-                          .filter(Boolean)
-                          .map((label: string) => (
-                            <Badge
-                              key={label}
-                              className={`text-white ${getTagColor(label)}`}
+              {isLoading
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={`skeleton-${i}`}>
+                      <TableCell>
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-32" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-40" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-28" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-8 w-8 ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : contacts.length > 0
+                ? contacts.map((contact) => (
+                    <TableRow key={contact.id}>
+                      <TableCell>
+                        <Avatar className="h-10 w-10">
+                          <AvatarFallback>
+                            {contact.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {contact.name}
+                      </TableCell>
+                      <TableCell>{contact.phone}</TableCell>
+                      <TableCell>{contact.email}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {contact.label
+                            ?.split("++")
+                            .filter(Boolean)
+                            .map((label: string) => (
+                              <Badge
+                                key={label}
+                                className={`text-white ${getTagColor(label)}`}
+                              >
+                                {label}
+                              </Badge>
+                            ))}
+                        </div>
+                      </TableCell>
+                      <TableCell />
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() =>
+                                router.push(`/contacts/${contact.id}`)
+                              }
                             >
-                              {label}
-                            </Badge>
-                          ))}
-                      </div>
+                              <Edit3 className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteContact(contact.name)}
+                              className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : <TableRow>
+                    <TableCell colSpan={7} className="text-center h-24">
+                      No contacts found.
                     </TableCell>
-                    <TableCell></TableCell>{" "}
-                    {/* Last Interaction - intentionally left empty */}
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(`/contacts/${contact.id}`)
-                            }
-                          >
-                            <Edit3 className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteContact(contact.name)}
-                            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center h-24">
-                    No contacts found.
-                  </TableCell>
-                </TableRow>
-              )}
+                  </TableRow>}
             </TableBody>
           </Table>
           <div className="flex items-center justify-end space-x-2 py-4">

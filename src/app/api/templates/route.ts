@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   try {
-    const { name, category, language, body } = await req.json();
+    const { name, category, language, components } = await req.json();
 
     // 1. Submit to Meta (WhatsApp Cloud API)
     const metaRes = await fetch(
@@ -19,12 +19,7 @@ export async function POST(req: Request) {
           name,
           category,
           language,
-          components: [
-            {
-              type: "BODY",
-              text: body,
-            },
-          ],
+          components,
         }),
       }
     );
@@ -43,12 +38,14 @@ export async function POST(req: Request) {
       name,
       category,
       language,
-      body,
+      components,
       status,
     });
 
     return Response.json({
-      message: `Template ${status === "FAILED" ? "not " : ""}submitted to Meta`,
+      message: `Template ${
+        status === "FAILED" ? "not " : ""
+      }submitted to Meta`,
       metaResponse,
       saved,
     });
@@ -58,13 +55,43 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+import { count, like } from "drizzle-orm";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "6", 10);
+    const search = searchParams.get("search");
+    const offset = (page - 1) * limit;
+
+    const whereCondition = search
+      ? like(templates.name, `%${search}%`)
+      : undefined;
+
+    const [totalTemplates] = await db
+      .select({ value: count() })
+      .from(templates)
+      .where(whereCondition);
+
     const allTemplates = await db
       .select()
       .from(templates)
-      .orderBy(templates.lastUpdated);
-    return Response.json(allTemplates);
+      .where(whereCondition)
+      .orderBy(templates.lastUpdated)
+      .limit(limit)
+      .offset(offset);
+
+    return NextResponse.json({
+      data: allTemplates,
+      meta: {
+        total: totalTemplates.value,
+        limit,
+        currentPage: page,
+        totalPages: Math.ceil(totalTemplates.value / limit),
+      },
+    });
   } catch (error) {
     console.error("Error fetching templates:", error);
     return new Response("Failed to fetch templates", { status: 500 });

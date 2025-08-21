@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { apiRequest } from "@/lib/apiClient";
 
 type Contact = {
   id: string;
@@ -30,14 +30,9 @@ export function useContacts({
   const fetchContacts = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:9002/api/contacts", {
-        params: {
-          search,
-          page,
-          limit,
-        },
-      });
-      const { data, meta } = res.data;
+      const url = `/api/contacts?search=${search}&page=${page}&limit=${limit}`;
+      const res = await apiRequest(url, "GET");
+      const { data, meta } = res;
 
       setAllContacts(data);
       setContacts(data);
@@ -51,10 +46,7 @@ export function useContacts({
 
   const saveContact = async (updatedContact: Contact) => {
     try {
-      await axios.put(
-        `http://localhost:9002/api/contacts/${updatedContact.id}`,
-        updatedContact
-      );
+      await apiRequest(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
       await fetchContacts();
     } catch (err) {
       console.error("Failed to save contact:", err);
@@ -63,7 +55,7 @@ export function useContacts({
 
   const deleteContact = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:9002/api/contacts/${id}`);
+      await apiRequest(`/contacts/${id}`, "DELETE");
       await fetchContacts();
     } catch (err) {
       console.error("Failed to delete contact:", err);

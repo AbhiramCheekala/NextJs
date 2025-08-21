@@ -6,9 +6,10 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FilePlus2, RefreshCcw, Eye } from "lucide-react";
+import { FilePlus2, RefreshCcw, Eye, RefreshCw } from "lucide-react";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import {
   Table,
@@ -32,6 +33,13 @@ type Template = {
   lastUpdated: string;
 };
 
+type Meta = {
+  total: number;
+  limit: number;
+  currentPage: number;
+  totalPages: number;
+};
+
 type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 
 const statusVariant = (status: string): BadgeVariant => {
@@ -51,15 +59,19 @@ export default function TemplatesPage() {
   const { toast } = useToast();
 
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [meta, setMeta] = useState<Meta | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isCreateTemplateOpen, setIsCreateTemplateOpen] = useState(false);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch("/api/templates");
-      const data = await res.json();
+      const res = await fetch(`/api/templates?page=${page}&limit=6`);
+      const { data, meta } = await res.json();
       setTemplates(data);
+      setMeta(meta);
+      setCurrentPage(page);
     } catch (err) {
       console.error("Failed to load templates", err);
     } finally {
@@ -68,15 +80,15 @@ export default function TemplatesPage() {
   };
 
   useEffect(() => {
-    fetchTemplates();
-  }, []);
+    fetchTemplates(currentPage);
+  }, [currentPage]);
 
   const handleCreateTemplateSuccess = () => {
     toast({
       title: "Template Draft Saved",
       description: "Your new template draft has been saved (dummy action).",
     });
-    fetchTemplates(); // refresh the list
+    fetchTemplates(1); // refresh the list and go to the first page
   };
 
   const handlePreview = (templateName: string) => {
@@ -93,11 +105,39 @@ export default function TemplatesPage() {
     });
   };
 
+  const handleSync = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/templates/sync");
+      const data = await res.json();
+      toast({
+        title: "Sync Complete",
+        description: `${data.syncedCount} new templates were synced from Meta.`,
+      });
+      fetchTemplates(1); // Refresh the list and go to the first page
+    } catch (err) {
+      console.error("Failed to sync templates", err);
+      toast({
+        title: "Sync Failed",
+        description: "An error occurred while syncing templates from Meta.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEdit = (templateName: string) => {
     toast({
       title: "Edit Template",
       description: `Opening editor for ${templateName}. (Not implemented)`,
     });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && meta && newPage <= meta.totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   return (
@@ -112,9 +152,14 @@ export default function TemplatesPage() {
         <h1 className="text-3xl font-headline font-semibold">
           Message Templates
         </h1>
-        <Button onClick={() => setIsCreateTemplateOpen(true)}>
-          <FilePlus2 className="mr-2 h-4 w-4" /> Create New Template
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleSync} disabled={loading}>
+            <RefreshCw className="mr-2 h-4 w-4" /> Sync with Meta
+          </Button>
+          <Button onClick={() => setIsCreateTemplateOpen(true)}>
+            <FilePlus2 className="mr-2 h-4 w-4" /> Create New Template
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -182,11 +227,29 @@ export default function TemplatesPage() {
               ))}
             </TableBody>
           </Table>
-          <p className="text-center text-muted-foreground mt-6">
-            Template builder, submission to Meta, status polling, and preview
-            functionality will be implemented here.
-          </p>
         </CardContent>
+        <CardFooter className="flex justify-between items-center">
+          <div className="text-sm text-muted-foreground">
+            {meta &&
+              `Showing ${templates.length} of ${meta.total} templates.`}
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!meta || currentPage === meta.totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );

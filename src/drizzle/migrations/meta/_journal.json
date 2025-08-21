@@ -36,6 +36,20 @@
       "when": 1754219901429,
       "tag": "0004_bizarre_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1755800854250,
+      "tag": "0005_great_kronos",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1755804089505,
+      "tag": "0006_opposite_lionheart",
+      "breakpoints": true
     }
   ]
 }

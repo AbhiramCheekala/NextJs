@@ -26,10 +26,20 @@ export function CreateTemplateDialog({
   onSuccess,
 }: CreateTemplateDialogProps) {
   const [form, setForm] = useState({
-    name: "",
+    name: "sent_for_client_approvals",
     category: "UTILITY",
     language: "en_US",
-    body: "",
+    components: [
+      {
+        type: "HEADER",
+        format: "TEXT",
+        text: "Need to Send for Client Approval",
+      },
+      {
+        type: "BODY",
+        text: "Hi {{1}}, we need your approval for the {{2}} campaign.",
+      },
+    ],
   });
 
   const [loading, setLoading] = useState(false);
@@ -95,12 +105,6 @@ export function CreateTemplateDialog({
             placeholder="Language (e.g. en_US)"
             value={form.language}
             onChange={(e) => setForm({ ...form, language: e.target.value })}
-          />
-
-          <Textarea
-            placeholder="Body (e.g., Hi {{1}}, your OTP is {{2}}.)"
-            value={form.body}
-            onChange={(e) => setForm({ ...form, body: e.target.value })}
           />
 
           {error && <p className="text-sm text-red-500">{error}</p>}
