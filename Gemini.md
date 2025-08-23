@@ -34,3 +34,17 @@ This document outlines the recent features implemented in the Next.js applicatio
   - The backend API (`/api/contacts`) was updated to accept a `search` query parameter to filter contacts by name.
   - The frontend `useContacts` hook was updated to include the search term in the API request.
   - A search input was added to the contacts page UI to allow users to enter their search query.
+
+## 5. Search Functionality for Templates
+
+- **Feature:** Users can now search for templates by name in the new campaign page.
+- **Implementation:**
+  - The `Combobox` component was updated to support a search input.
+  - The `useTemplates` hook was updated to accept a search term and pass it to the API.
+  - The backend API (`/api/templates`) was updated to filter templates by name based on the search query.
+
+## 6. Bug Fixes
+
+- **`handleSelectAllContacts` not found:** Fixed a bug in the new campaign page where the "Select All" checkbox was not working.
+- **Campaign creation crash:** Fixed a bug that caused the server to crash when creating a campaign due to a database error.
+- **Message creation crash:** Fixed a bug that caused the server to crash when creating a message due to a database error.

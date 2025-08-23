@@ -230,8 +230,7 @@ export default function TemplatesPage() {
         </CardContent>
         <CardFooter className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-            {meta &&
-              `Showing ${templates.length} of ${meta.total} templates.`}
+            {meta && `Showing ${templates.length} of ${meta.total} templates.`}
           </div>
           <div className="flex gap-2">
             <Button

@@ -43,9 +43,7 @@ export async function POST(req: Request) {
     });
 
     return Response.json({
-      message: `Template ${
-        status === "FAILED" ? "not " : ""
-      }submitted to Meta`,
+      message: `Template ${status === "FAILED" ? "not " : ""}submitted to Meta`,
       metaResponse,
       saved,
     });
@@ -62,7 +60,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "6", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
     const search = searchParams.get("search");
     const offset = (page - 1) * limit;
 

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useContacts } from "@/hooks/useContacts";
 import { useTemplates } from "@/hooks/useTemplates";
+import { useDebounce } from "@/hooks/useDebounce";
 import { Combobox } from "@/components/ui/combobox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { apiRequest } from "@/lib/apiClient";
@@ -22,15 +23,22 @@ export default function NewCampaignPage() {
   const { contacts, isLoading: isLoadingContacts } = useContacts({
     limit: 1000,
   });
+
   const [templateSearch, setTemplateSearch] = useState("");
+  const debouncedSearch = useDebounce(templateSearch, 400);
   const { templates, isLoading: isLoadingTemplates } =
-    useTemplates(templateSearch);
+    useTemplates(debouncedSearch);
+
   const { toast } = useToast();
   const router = useRouter();
 
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [selectedTemplateObject, setSelectedTemplateObject] = useState<any | null>(null);
-  const [templateVariables, setTemplateVariables] = useState<Record<string, string>>({});
+  const [selectedTemplateObject, setSelectedTemplateObject] = useState<
+    any | null
+  >(null);
+  const [templateVariables, setTemplateVariables] = useState<
+    Record<string, string>
+  >({});
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [campaignName, setCampaignName] = useState("");
 
@@ -52,9 +60,9 @@ export default function NewCampaignPage() {
 
   const handleTemplateChange = (templateId: string) => {
     setSelectedTemplate(templateId);
-    const template = templates.find((t) => t.id.toString() === templateId);
+    const template = templates.find((t: any) => t.id.toString() === templateId);
     setSelectedTemplateObject(template || null);
-    setTemplateVariables({}); // Reset variables when template changes
+    setTemplateVariables({});
   };
 
   const handleVariableChange = (variable: string, value: string) => {
@@ -62,9 +70,8 @@ export default function NewCampaignPage() {
   };
 
   const getTemplateVariables = () => {
-    if (!selectedTemplateObject || !selectedTemplateObject.components) {
+    if (!selectedTemplateObject || !selectedTemplateObject.components)
       return [];
-    }
     const variables = new Set<string>();
     selectedTemplateObject.components.forEach((component: any) => {
       if (component.text) {
@@ -110,7 +117,7 @@ export default function NewCampaignPage() {
     }
   };
 
-  const templateOptions = templates.map((template) => ({
+  const templateOptions = templates.map((template: any) => ({
     value: template.id.toString(),
     label: template.name,
   }));
@@ -170,7 +177,9 @@ export default function NewCampaignPage() {
                 selectedContacts.length === contacts.length &&
                 contacts.length > 0
               }
-              onCheckedChange={(checked: boolean) => handleSelectAllContacts(checked)}
+              onCheckedChange={(checked: boolean) =>
+                handleSelectAllContacts(checked)
+              }
             />
             <label htmlFor="select-all">Select All</label>
           </div>
@@ -178,7 +187,7 @@ export default function NewCampaignPage() {
             {isLoadingContacts ? (
               <p>Loading contacts...</p>
             ) : (
-              contacts.map((contact) => (
+              contacts.map((contact: any) => (
                 <div key={contact.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={contact.id}

@@ -10,10 +10,19 @@ import { db } from "@/lib/db";
 export const createContact = async (
   input: contactInsert
 ): Promise<contactSelect> => {
+  const result: any = await db.insert(contactsTable).values(input);
+
+  // MySQL gives insertId for autoincrement PK
+  const id = result.insertId;
+
   const [createdContact] = await db
-    .insert(contactsTable)
-    .values(input)
-    .returning();
+    .select()
+    .from(contactsTable)
+    .where(eq(contactsTable.id, id));
+
+  if (!createdContact) {
+    throw new Error("Failed to fetch created contact after insert");
+  }
 
   logger.info(`Contact created successfully: ${createdContact.id}`);
   return createdContact;
@@ -42,7 +51,7 @@ export const checkContactExistence = async (
     .from(contactsTable)
     .where(eq(contactsTable.phone, phone));
 
-  const exists = result.length > 0 ? true : false;
+  const exists = result.length > 0;
   logger.info(`Contact existence check for phone ${phone}: ${exists}`);
   return exists;
 };
@@ -70,9 +79,11 @@ export const updateContactById = async (
 };
 
 export const deleteContactById = async (id: string): Promise<void> => {
-  const result = await db.delete(contactsTable).where(eq(contactsTable.id, id));
+  const result: any = await db
+    .delete(contactsTable)
+    .where(eq(contactsTable.id, id));
 
-  if (result.numDeletedRows === 0) {
+  if (result.affectedRows === 0) {
     throw new Error(`No contact found with ID: ${id}`);
   }
 
@@ -87,17 +98,10 @@ export const getAllContacts = async (options: {
   const { page, limit, search } = options;
   const offset = (page - 1) * limit;
 
-  const where = search
-    ? like(contactsTable.name, `%${search}%`)
-    : undefined;
+  const where = search ? like(contactsTable.name, `%${search}%`) : undefined;
 
   const [contacts, totalResult] = await Promise.all([
-    db
-      .select()
-      .from(contactsTable)
-      .where(where)
-      .limit(limit)
-      .offset(offset),
+    db.select().from(contactsTable).where(where).limit(limit).offset(offset),
     db
       .select({
         count: sql<number>`count(*)`.mapWith(Number),
@@ -113,12 +117,17 @@ export const getAllContacts = async (options: {
 export const createBulkContacts = async (
   contacts: contactInsert[]
 ): Promise<contactSelect[]> => {
-  const createdContacts = await db
-    .insert(contactsTable)
-    .values(contacts)
-    .returning();
+  await db.insert(contactsTable).values(contacts);
 
-  logger.info(`${contacts.length} contacts created successfully`);
+  // Re-fetch by phone numbers (assuming phone is unique per contact)
+  const phones = contacts.map((c) => c.phone);
+
+  const createdContacts = await db
+    .select()
+    .from(contactsTable)
+    .where(inArray(contactsTable.phone, phones));
+
+  logger.info(`${createdContacts.length} contacts created successfully`);
   return createdContacts;
 };
 

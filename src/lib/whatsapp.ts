@@ -14,7 +14,6 @@ const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
  *
  */
 
-
 export async function getTemplatesFromMeta() {
   const res = await fetch(
     `https://graph.facebook.com/v19.0/${WABA_ID}/message_templates`,
@@ -48,18 +47,27 @@ export async function getSingleTemplateStatus(name: string) {
 // This is the real implementation for sending a message via Meta's API
 export async function sendMessage(
   to: string,
-  template: { name: string; language: string; components?: any[] }
+  template: { name: string; language: string; variables?: string[] }
 ) {
   const payload = {
     messaging_product: "whatsapp",
-    to: to,
+    to,
     type: "template",
     template: {
       name: template.name,
-      language: {
-        code: template.language,
-      },
-      components: template.components,
+      language: { code: template.language },
+      components:
+        template.variables && template.variables.length > 0
+          ? [
+              {
+                type: "body",
+                parameters: template.variables.map((val) => ({
+                  type: "text",
+                  text: val,
+                })),
+              },
+            ]
+          : [],
     },
   };
 
@@ -75,13 +83,13 @@ export async function sendMessage(
     }
   );
 
+  const data = await res.json();
+
   if (!res.ok) {
-    const errorData = await res.json();
-    console.error("Failed to send message:", errorData);
-    throw new Error(`Failed to send message: ${JSON.stringify(errorData)}`);
+    console.error("Failed to send message:", data);
+    throw new Error(`Failed to send message: ${JSON.stringify(data)}`);
   }
 
-  const data = await res.json();
   return data;
 }
 

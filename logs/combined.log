@@ -165,3 +165,73 @@
 2025-08-22 01:37:38 [ERROR]: An unexpected error occurred during campaign creation {"error":{"name":"Error","message":"Failed to find newly created message with id 0","stack":"Error: Failed to find newly created message with id 0\n    at createMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__3c520e5b._.js:409:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async createCampaignAndSendMessages (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__3c520e5b._.js:748:13)\n    at async createCampaign (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__3c520e5b._.js:791:26)\n    at async POST (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__3c520e5b._.js:843:12)\n    at async AppRouteRouteModule.do (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:34112)\n    at async AppRouteRouteModule.handle (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:41338)\n    at async doRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1518:42)\n    at async DevServer.renderToResponseWithComponentsImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1920:28)\n    at async DevServer.renderPageComponent (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2408:24)\n    at async DevServer.renderToResponseImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2445:32)\n    at async DevServer.pipeImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1008:25)\n    at async NextNodeServer.handleCatchallRenderRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\next-server.js:305:17)\n    at async DevServer.handleRequestImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:900:17)\n    at async C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:371:20\n    at async Span.traceAsyncFn (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\trace\\trace.js:157:20)\n    at async DevServer.handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:368:24)\n    at async invokeRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:237:21)\n    at async handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:428:24)\n    at async requestHandlerImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:452:13)\n    at async Server.requestListener (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\start-server.js:158:13)"},"requestBody":{"name":"Test 03","templateId":"5","contactIds":["a1d960iq4m2zk8358giy0tas","bokqzuy9vsmrcna2gvwu6lrs","dgq4kfkon1iwymse6yem0dig"],"templateVariables":{"{{1}}":"Contact name"}}}
 2025-08-22 01:40:17 [INFO]: Creating new campaign with data: %o 
 2025-08-22 01:40:19 [INFO]: Campaign created successfully with ID: %s 
+2025-08-22 21:19:47 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:19:47 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:19:47 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:19:47 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:35:20 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:35:20 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:35:20 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:35:20 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:35:58 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:35:58 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:35:58 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:35:58 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:36:26 [INFO]: Creating new campaign with data: %o 
+2025-08-22 21:36:27 [INFO]: Campaign created successfully with ID: %s 
+2025-08-22 21:37:47 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:37:47 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:37:47 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:37:47 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:37:56 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:37:56 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:37:56 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-22 21:37:56 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:39:20 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:39:20 [INFO]: Total contacts retrieved: 15 
+2025-08-22 21:39:20 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-22 21:39:20 [INFO]: Total contacts retrieved: 15 
+2025-08-23 07:36:25 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-23 07:36:25 [INFO]: Total contacts retrieved: 15 
+2025-08-23 07:36:25 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-08-23 07:36:25 [INFO]: Total contacts retrieved: 15 
+2025-08-23 07:36:55 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 07:36:55 [INFO]: Total contacts retrieved: 15 
+2025-08-23 07:36:55 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 07:36:55 [INFO]: Total contacts retrieved: 15 
+2025-08-23 08:56:32 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 08:56:32 [INFO]: Total contacts retrieved: 15 
+2025-08-23 08:57:03 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 08:57:03 [INFO]: Total contacts retrieved: 15 
+2025-08-23 08:57:03 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 08:57:03 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:01:45 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:01:45 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:04:41 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:04:41 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:04:59 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:04:59 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:11:45 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:11:45 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:16:09 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:16:09 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:17:02 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:17:02 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:19:25 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:19:25 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:20:11 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:20:11 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:22:18 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:22:26 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:24:42 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:24:49 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:29:18 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:29:30 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:30:25 [INFO]: Creating new campaign with data: %o 
+2025-08-23 09:30:33 [INFO]: Campaign created successfully with ID: %s 
+2025-08-23 09:33:35 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:33:48 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:33:50 [INFO]: Fetching contacts with page: 1, limit: 1000, search:  
+2025-08-23 09:33:51 [INFO]: Total contacts retrieved: 15 
+2025-08-23 09:34:04 [INFO]: Creating new campaign with data: %o 
+2025-08-23 09:34:10 [INFO]: Campaign created successfully with ID: %s 
