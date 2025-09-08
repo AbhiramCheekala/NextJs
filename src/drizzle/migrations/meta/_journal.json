@@ -1,54 +1,19 @@
 {
-  "version": "7",
+  "version": "5",
   "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1752910355046,
-      "tag": "0000_rainy_ego",
+      "when": 1757215724555,
+      "tag": "0000_nice_thing",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1752922440272,
-      "tag": "0001_aspiring_mephistopheles",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1753039471806,
-      "tag": "0002_workable_peter_parker",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1754218863458,
-      "tag": "0003_romantic_tempest",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1754219901429,
-      "tag": "0004_bizarre_eternity",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1755800854250,
-      "tag": "0005_great_kronos",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1755804089505,
-      "tag": "0006_opposite_lionheart",
+      "when": 1757216005515,
+      "tag": "0001_tiny_chameleon",
       "breakpoints": true
     }
   ]

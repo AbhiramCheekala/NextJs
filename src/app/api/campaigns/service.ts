@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import * as CampaignModel from "./model";
 import * as ContactModel from "@/app/api/contacts/model";
 import { getTemplateById } from "@/app/api/templates/model";
-import { sendMessage } from "@/lib/whatsapp"; // Assuming this function exists
+import { whatsapp } from "@/lib/whatsapp"; // Assuming this function exists
 
 export async function createCampaignAndSendMessages(
   name: string,
@@ -53,7 +53,7 @@ export async function createCampaignAndSendMessages(
       });
 
       // Send the message using the actual template object
-      await sendMessage(contact.phone, {
+      await whatsapp.sendMessage(contact.phone, {
         name: template.name,
         language: template.language,
         components,

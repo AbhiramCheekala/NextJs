@@ -235,3 +235,7 @@
 2025-08-23 09:33:51 [INFO]: Total contacts retrieved: 15 
 2025-08-23 09:34:04 [INFO]: Creating new campaign with data: %o 
 2025-08-23 09:34:10 [INFO]: Campaign created successfully with ID: %s 
+2025-09-07 09:20:21 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-09-07 09:20:21 [INFO]: Total contacts retrieved: 15 
+2025-09-07 09:20:21 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-09-07 09:20:21 [INFO]: Total contacts retrieved: 15 

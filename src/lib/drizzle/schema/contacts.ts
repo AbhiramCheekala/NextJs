@@ -17,5 +17,5 @@ export const contactsTable = mysqlTable("contacts", {
 export type contactSelect = Omit<
   InferSelectModel<typeof contactsTable>,
   "createdAt" | "updatedAt"
->;
+> & { avatar?: string };
 export type contactInsert = InferInsertModel<typeof contactsTable>;
