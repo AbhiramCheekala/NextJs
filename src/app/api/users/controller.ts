@@ -2,12 +2,16 @@ import { db } from "@/lib/db";
 import { usersTable } from "@/lib/drizzle/schema/users";
 import { eq } from "drizzle-orm";
 import { User } from "@/lib/drizzle/schema/users";
-import { createUser } from "@/app/api/users/service";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
+import { UserService } from "./service";
 
-export async function getAllUsers(): Promise<User[]> {
-  return await db.select().from(usersTable);
+const userService = new UserService();
+
+export async function getAllUsers(req: NextRequest) {
+  const users = await userService.getAllUsers();
+  return NextResponse.json({ data: users });
 }
 
 export async function getUserById(id: string): Promise<User | undefined> {
@@ -32,8 +36,8 @@ export async function loginUser(body: { email: string; password: string }) {
   }
 
   // Validate password
-  // const isPasswordValid = await bcrypt.compare(body.password, user.password);
-  if (user.password !== body.password) {
+  const isPasswordValid = await bcrypt.compare(body.password, user.password);
+  if (!isPasswordValid) {
     return { status: "error", message: "Invalid email or password" };
   }
 
@@ -76,12 +80,19 @@ export async function createUserController(body: {
   password: string;
   role: string;
 }) {
-  const { name, email, password = "hello", role } = body;
+  const { name, email, password, role } = body;
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
-  await createUser({ name, email, password: hashedPassword, role });
+  const id = crypto.randomUUID(); // Generate a unique ID
+  await userService.createUser({
+    id,
+    name,
+    email,
+    password: hashedPassword,
+    role: "member",
+  });
 
   return { status: "success", message: "User created successfully" };
 }

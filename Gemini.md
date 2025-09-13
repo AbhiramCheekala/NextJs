@@ -48,3 +48,18 @@ This document outlines the recent features implemented in the Next.js applicatio
 - **`handleSelectAllContacts` not found:** Fixed a bug in the new campaign page where the "Select All" checkbox was not working.
 - **Campaign creation crash:** Fixed a bug that caused the server to crash when creating a campaign due to a database error.
 - **Message creation crash:** Fixed a bug that caused the server to crash when creating a message due to a database error.
+
+## 7. Chat Assignment Feature
+
+- **Feature:** Admins can assign chats to specific team members. Team members can only view and reply to chats assigned to them.
+- **Implementation Details:**
+    - **Database:**
+        - Added a `role` column to the `users` table (`admin` or `member`).
+        - Added an `assignedToUserId` foreign key to the `contacts` table to link conversations to team members.
+    - **Backend API:**
+        - New endpoint `POST /api/contacts/[contactId]/assign` for admins to assign chats.
+        - Modified `GET /api/contacts` and `GET /api/chats` to be role-aware. Admins see all chats; team members see only their assigned chats.
+    - **Frontend UI:**
+        - Admins will have a UI element (e.g., a dropdown) in the chat list to assign conversations.
+        - The chat list will visually indicate who each chat is assigned to.
+        - Team members will see a pre-filtered list of their assigned chats upon login.

@@ -22,7 +22,11 @@ class WhatsApp {
 
       await this.api.post("/messages", payload);
     } catch (error) {
-      console.error("Error sending message:", error.response.data);
+      if (axios.isAxiosError(error)) {
+        console.error("Error sending message:", error.response?.data);
+      } else {
+        console.error("Error sending message:", error);
+      }
     }
   };
 }

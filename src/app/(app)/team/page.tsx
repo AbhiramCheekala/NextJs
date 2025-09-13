@@ -47,7 +47,7 @@ function useUsers() {
       setIsLoading(true);
       try {
         const response = await axios.get("http://localhost:9002/api/users");
-        setUsers(response.data || []);
+        setUsers(response.data.data || []);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       } finally {

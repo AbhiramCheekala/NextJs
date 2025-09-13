@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d058621e-fd5a-4945-99df-5cc3569ab331",
-  "prevId": "a062289c-27d7-42e3-afda-d5ac396f0978",
+  "id": "138adda0-988c-40e9-9336-71279a38678c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "campaigns": {
       "name": "campaigns",
@@ -238,6 +238,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "assigned_to_user_id": {
+          "name": "assigned_to_user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -447,6 +454,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "components": {
+          "name": "components",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "status": {
           "name": "status",
           "type": "varchar(50)",
@@ -538,7 +552,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'agent'"
+          "default": "'member'"
         },
         "last_login_at": {
           "name": "last_login_at",

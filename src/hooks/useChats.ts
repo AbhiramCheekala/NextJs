@@ -5,7 +5,7 @@ import { apiRequest } from "@/lib/apiClient";
 export const useChats = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -13,7 +13,9 @@ export const useChats = () => {
         const response = await apiRequest("/api/chats", "GET");
         setChats(response);
       } catch (err) {
-        setError(err);
+        if (err instanceof Error) {
+          setError(err);
+        }
       } finally {
         setLoading(false);
       }

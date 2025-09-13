@@ -1,34 +1,12 @@
-import { db } from "@/lib/db";
-import { usersTable } from "@/lib/drizzle/schema/users";
-import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
+import * as userModel from "./model";
+import { NewUser } from "@/lib/drizzle/schema/users";
 
-export async function updateLastLogin(userId: string) {
-  await db
-    .update(usersTable)
-    .set({ lastLoginAt: new Date() })
-    .where(eq(usersTable.id, userId));
-}
+export class UserService {
+  public async getAllUsers() {
+    return await userModel.getAllUsers();
+  }
 
-export async function createUser({
-  name,
-  email,
-  password,
-  role,
-}: {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-}) {
-  const id = createId();
-  await db.insert(usersTable).values({
-    id: id,
-    name,
-    email,
-    password, // store hashed!
-    role,
-  });
-
-  return { id, name, email, role };
+  public async createUser(user: NewUser) {
+    return await userModel.createUser(user);
+  }
 }

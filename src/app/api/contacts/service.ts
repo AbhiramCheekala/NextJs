@@ -1,41 +1,43 @@
-import { db } from "@/lib/db";
 import * as contactModel from "@/app/api/contacts/model";
-import { eq } from "drizzle-orm";
 import { contactInsert } from "@/lib/drizzle/schema/contacts";
 
-export const createContact = async (input: contactInsert) => {
-  return await contactModel.createContact(input, db);
-};
+export class ContactService {
+  public async createContact(input: contactInsert) {
+    return await contactModel.createContact(input);
+  }
 
-export const getContactById = async (id: string) => {
-  return await contactModel.getContactById(id, db);
-};
+  public async getContactById(id: string) {
+    return await contactModel.getContactById(id);
+  }
 
-export const checkContactExistence = async (
-  phone: string
-): Promise<boolean> => {
-  return await contactModel.checkContactExistence(phone, db);
-};
+  public async checkContactExistence(phone: string): Promise<boolean> {
+    return await contactModel.checkContactExistence(phone);
+  }
 
-export const deleteContactById = async (id: string) => {
-  return await contactModel.deleteContactById(id, db);
-};
+  public async deleteContactById(id: string) {
+    return await contactModel.deleteContactById(id);
+  }
 
-export const updateContactById = async (id: string, input: contactInsert) => {
-  return await contactModel.updateContactById(id, input, db);
-};
+  public async updateContactById(id: string, input: contactInsert) {
+    return await contactModel.updateContactById(id, input);
+  }
 
-export const getAllContacts = async (options: {
-  page: number;
-  limit: number;
-  search: string;
-}) => {
-  return await contactModel.getAllContacts(db, options);
-};
+  public async getAllContacts(
+    options: {
+      page: number;
+      limit: number;
+      search: string;
+    },
+    user: any
+  ) {
+    return await contactModel.getAllContacts(options, user);
+  }
 
-export const createBulkContacts = async (
-  contacts: contactInsert[],
-  tags: string
-) => {
-  return await contactModel.createBulkContacts(contacts, db);
-};
+  public async createBulkContacts(contacts: contactInsert[]) {
+    return await contactModel.createBulkContacts(contacts);
+  }
+
+  public async assignContact(contactId: string, userId: string) {
+    return await contactModel.assignContact(contactId, userId);
+  }
+}
