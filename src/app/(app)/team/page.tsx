@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddTeamMemberDialog } from "@/components/team/add-team-member-dialog";
 import { useToast } from "@/hooks/use-toast";
-import logger from "@/lib/logger";
+import logger from "@/lib/client-logger";
 
 // 🔷 Pagination settings
 const ITEMS_PER_PAGE = 3;
