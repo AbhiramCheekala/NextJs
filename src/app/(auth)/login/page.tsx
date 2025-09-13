@@ -25,7 +25,12 @@ export default function LoginPage() {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      router.push("/dashboard");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push("/chats");
+      }
     }
   }, [router]);
 
@@ -55,10 +60,16 @@ export default function LoginPage() {
 
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
+        // Redirect based on role
+        if (data.user.role === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/chats");
+        }
+      } else {
+        // Fallback redirect if user object is not present
+        router.push("/dashboard");
       }
-
-      // Redirect to dashboard
-      router.push("/dashboard");
     } catch (error) {
       alert("Login failed: " + (error as Error).message);
     } finally {

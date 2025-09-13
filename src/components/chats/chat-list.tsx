@@ -15,9 +15,16 @@ import { User } from "@/lib/drizzle/schema/users";
 interface ChatListProps {
   chats: Chat[];
   onSelectChat: (chat: Chat) => void;
+  userRole?: string;
+  onFilterChange: (userId: string | undefined) => void;
 }
 
-export function ChatList({ chats, onSelectChat }: ChatListProps) {
+export function ChatList({
+  chats,
+  onSelectChat,
+  userRole,
+  onFilterChange,
+}: ChatListProps) {
   const { users } = useUsers();
   const { assignContact } = useContacts();
 
@@ -34,6 +41,23 @@ export function ChatList({ chats, onSelectChat }: ChatListProps) {
     <div className="w-1/4 border-r">
       <div className="p-4">
         <h2 className="text-xl font-bold">Chats</h2>
+        {userRole === "admin" && (
+          <div className="mt-4">
+            <Select onValueChange={(value) => onFilterChange(value === "all" ? undefined : value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by assignee..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {users.map((user: User) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
       <ul>
         {chats.map((chat) => (
@@ -60,23 +84,25 @@ export function ChatList({ chats, onSelectChat }: ChatListProps) {
                   ? getAssigneeName(chat.contact.assignedToUserId)
                   : "Unassigned"}
               </p>
-              <Select
-                onValueChange={(value) =>
-                  handleAssignContact(chat.contact.id, value)
-                }
-                defaultValue={chat.contact.assignedToUserId || undefined}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Assign to..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {users.map((user: User) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {userRole === "admin" && (
+                <Select
+                  onValueChange={(value) =>
+                    handleAssignContact(chat.contact.id, value)
+                  }
+                  defaultValue={chat.contact.assignedToUserId || undefined}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Assign to..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map((user: User) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </li>
         ))}

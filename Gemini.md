@@ -63,3 +63,21 @@ This document outlines the recent features implemented in the Next.js applicatio
         - Admins will have a UI element (e.g., a dropdown) in the chat list to assign conversations.
         - The chat list will visually indicate who each chat is assigned to.
         - Team members will see a pre-filtered list of their assigned chats upon login.
+
+## 8. Role-Based Access Control (RBAC) for Frontend
+
+- **Feature:** Different user roles (admin, member) will have different views and permissions in the application.
+- **Implementation Details:**
+    - **Login:** After logging in, admins are redirected to the `/dashboard` page, while members are redirected to the `/chats` page.
+    - **Navigation:** The sidebar navigation is dynamically rendered based on the user's role. Admins can see all navigation links, while members can only see links to pages they are authorized to view (e.g., "Chats").
+    - **Access Control:** Members are prevented from accessing admin-only pages (e.g., `/dashboard`, `/analytics`). If a member tries to access an unauthorized page, they are redirected to the `/chats` page.
+    - **Chat View:** Members can only see the chats that have been explicitly assigned to them.
+
+## 9. Role-Specific UI in Chats View
+
+- **Feature:** The chats page will display different controls and filters based on the user's role.
+- **Implementation Details:**
+    - **Chat Assignment:** The UI for assigning a chat to a team member will be visible to admins only. It will be hidden for members.
+    - **Chat Filtering:**
+        - **Admins:** An "Assigned To" filter will be available, allowing them to view chats assigned to any team member or all chats.
+        - **Members:** The "Assigned To" filter will be hidden. The chat list will be automatically filtered to show only the chats assigned to the logged-in member.

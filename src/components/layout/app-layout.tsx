@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   SidebarProvider,
   Sidebar,
@@ -17,7 +18,6 @@ import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { UserNav } from "@/components/navigation/user-nav";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import router from "next/router";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -27,6 +27,46 @@ interface AppLayoutProps {
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { state, isMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserRole(parsedUser.role);
+    } else {
+      router.push("/login");
+    }
+  }, [router]);
+
+  const filteredNavItems = navItems.filter(
+    (item) => item.roles?.includes(userRole || "")
+  );
+
+  useEffect(() => {
+    if (userRole) {
+      const currentPath = pathname;
+      const isAuthorized = filteredNavItems.some(
+        (item) => item.href === currentPath
+      );
+
+      if (!isAuthorized) {
+        if (userRole === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/chats");
+        }
+      }
+    }
+  }, [userRole, pathname, router, filteredNavItems]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
 
   return (
     <>
@@ -44,7 +84,10 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
           )}
         </SidebarHeader>
         <SidebarContent className="p-2">
-          <SidebarNav items={navItems} isCollapsed={isCollapsed && !isMobile} />
+          <SidebarNav
+            items={filteredNavItems}
+            isCollapsed={isCollapsed && !isMobile}
+          />
         </SidebarContent>
         <SidebarFooter className="p-4 border-t border-sidebar-border">
           {isCollapsed && !isMobile ? (
@@ -52,11 +95,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               variant="ghost"
               size="icon"
               className="w-full"
-              onClick={() => {
-                localStorage.removeItem("authToken");
-                localStorage.removeItem("user");
-                window.location.href = "/login"; // or use router.push if in a client component
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="h-5 w-5 text-sidebar-foreground" />
             </Button>
@@ -64,11 +103,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               className="w-full justify-start text-sidebar-foreground"
-              onClick={() => {
-                localStorage.removeItem("authToken");
-                localStorage.removeItem("user");
-                router.push("/login");
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="mr-2 h-5 w-5" />
               Logout
@@ -93,13 +128,11 @@ export function AppLayout({
   children,
   defaultCollapsed = false,
 }: AppLayoutProps) {
-  // Initialize state based on defaultCollapsed for consistent SSR and initial client render
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(!defaultCollapsed);
   const [isClientRendered, setIsClientRendered] = React.useState(false);
 
   React.useEffect(() => {
-    // This effect runs only on the client, after the initial render.
-    setIsClientRendered(true); // Mark that client-side hydration is done
+    setIsClientRendered(true);
 
     const cookieValue = document.cookie
       .split("; ")
@@ -107,21 +140,16 @@ export function AppLayout({
       ?.split("=")[1];
 
     if (cookieValue !== undefined) {
-      // Update the state based on the cookie. This will trigger a re-render on the client.
       setIsSidebarOpen(cookieValue === "true");
     }
-    // If no cookie, isSidebarOpen remains based on defaultCollapsed, which is fine.
-  }, [defaultCollapsed]); // defaultCollapsed is part of initial state logic
+  }, []);
 
-  // For the initial render (both server and client before useEffect),
-  // openState will be !defaultCollapsed.
-  // After useEffect runs on the client, openState will be isSidebarOpen (potentially updated by cookie).
   const openState = isClientRendered ? isSidebarOpen : !defaultCollapsed;
 
   return (
     <SidebarProvider
-      open={openState} // Control SidebarProvider's open state
-      onOpenChange={setIsSidebarOpen} // Allow SidebarProvider to change AppLayout's state
+      open={openState}
+      onOpenChange={setIsSidebarOpen}
     >
       <AppLayoutContent>{children}</AppLayoutContent>
     </SidebarProvider>

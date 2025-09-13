@@ -4,16 +4,24 @@ import { MessageController } from "./controller";
 
 const messageController = new MessageController();
 
+type RouteContext = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ): Promise<NextResponse> {
-  return messageController.getMessages(req, params.id);
+  const { id } = await context.params;
+  return messageController.getMessages(req, id);
 }
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ): Promise<NextResponse> {
-  return messageController.sendMessage(req, params.id);
+  const { id } = await context.params;
+  return messageController.sendMessage(req, id);
 }

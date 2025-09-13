@@ -2,11 +2,17 @@ import { NextResponse } from "next/server";
 import { ContactService } from "../../service";
 import { AssignContactRequest } from "@/types/contact";
 
+type RouteContext = {
+  params: Promise<{
+    contactId: string;
+  }>;
+};
+
 export async function POST(
   request: Request,
-  { params }: { params: { contactId: string } }
+  context: RouteContext
 ): Promise<NextResponse> {
-  const { contactId } = params;
+  const { contactId } = await context.params;
   const body: AssignContactRequest = await request.json();
   const { userId } = body;
 
