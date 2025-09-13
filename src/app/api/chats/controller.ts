@@ -1,7 +1,7 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { ChatService } from "./service";
 import jwt from "jsonwebtoken";
+import logger from "@/lib/logger";
 
 export class ChatController {
   private chatService = new ChatService();
@@ -19,7 +19,7 @@ export class ChatController {
       const chats = await this.chatService.getChats(user);
       return NextResponse.json(chats);
     } catch (error) {
-      console.error("Error fetching chats:", error);
+      logger.error("Error fetching chats:", error);
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   };

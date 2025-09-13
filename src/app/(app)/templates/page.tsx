@@ -73,7 +73,7 @@ export default function TemplatesPage() {
       setMeta(meta);
       setCurrentPage(page);
     } catch (err) {
-      console.error("Failed to load templates", err);
+      logger.error("Failed to load templates", err);
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ export default function TemplatesPage() {
       });
       fetchTemplates(1); // Refresh the list and go to the first page
     } catch (err) {
-      console.error("Failed to sync templates", err);
+      logger.error("Failed to sync templates", err);
       toast({
         title: "Sync Failed",
         description: "An error occurred while syncing templates from Meta.",

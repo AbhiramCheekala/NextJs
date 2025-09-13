@@ -21,7 +21,7 @@ export function useTemplates(searchTerm?: string) {
       console.log("Fetched templates:", res.data);
       setTemplates(res.data || []);
     } catch (err) {
-      console.error("Failed to fetch templates:", err);
+      logger.error("Failed to fetch templates:", err);
       setTemplates([]);
     } finally {
       setIsLoading(false);

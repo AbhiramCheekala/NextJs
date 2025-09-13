@@ -21,7 +21,7 @@ export function useCampaigns() {
       const res = await apiRequest("/api/campaigns", "GET");
       setCampaigns(res.data);
     } catch (err) {
-      console.error("Failed to fetch campaigns:", err);
+      logger.error("Failed to fetch campaigns:", err);
     } finally {
       setIsLoading(false);
     }

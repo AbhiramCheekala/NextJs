@@ -26,7 +26,7 @@ export async function GET() {
 
     if (!metaRes.ok) {
       const errorData = await metaRes.json();
-      console.error("Meta API error:", errorData);
+      logger.error("Meta API error:", errorData);
       return new NextResponse(
         JSON.stringify({
           message: "Failed to fetch templates from Meta",
@@ -74,15 +74,16 @@ export async function GET() {
       syncedCount,
     });
   } catch (err) {
-    console.error("Template sync error:", err);
+    logger.error("Template sync error:", err);
     let errorMessage = "Server error during sync";
     if (err instanceof TypeError && err.cause) {
       // @ts-ignore
-      errorMessage = `Fetch failed: ${err.cause.code || err.cause.message || "Unknown cause"}`;
+      errorMessage = `Fetch failed: ${
+        err.cause.code || err.cause.message || "Unknown cause"
+      }`;
     }
-    return new NextResponse(
-      JSON.stringify({ message: errorMessage }),
-      { status: 500 }
-    );
+    return new NextResponse(JSON.stringify({ message: errorMessage }), {
+      status: 500,
+    });
   }
 }

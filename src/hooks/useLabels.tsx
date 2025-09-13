@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import logger from "@/lib/logger";
 
 type UseLabelProps = {
   search?: string;
@@ -30,7 +31,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
       );
       setLabels(filtered);
     } catch (err) {
-      console.error("Failed to fetch contacts:", err);
+      logger.error("Failed to fetch contacts:", err);
     } finally {
       setIsLoading(false);
     }
@@ -41,7 +42,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
       await axios.put(`/api/contacts/${updatedContact.id}`, updatedContact);
       await fetchLabels();
     } catch (err) {
-      console.error("Failed to save contact:", err);
+      logger.error("Failed to save contact:", err);
     }
   };
 
@@ -50,7 +51,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
       await axios.delete(`/api/contacts/${id}`);
       await fetchLabels();
     } catch (err) {
-      console.error("Failed to delete contact:", err);
+      logger.error("Failed to delete contact:", err);
     }
   };
 }

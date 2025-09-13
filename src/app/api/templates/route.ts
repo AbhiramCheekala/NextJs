@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     let status = "SUBMITTED";
     if (metaResponse?.error) {
       status = "FAILED";
-      console.error("Meta API error:", metaResponse.error);
+      logger.error("Meta API error:", metaResponse.error);
     }
 
     // 3. Save locally in your DB
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       saved,
     });
   } catch (err) {
-    console.error("Template creation error:", err);
+    logger.error("Template creation error:", err);
     return new Response("Server error", { status: 500 });
   }
 }
@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching templates:", error);
+    logger.error("Error fetching templates:", error);
     return new Response("Failed to fetch templates", { status: 500 });
   }
 }
