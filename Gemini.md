@@ -48,6 +48,7 @@ This document outlines the recent features implemented in the Next.js applicatio
 - **`handleSelectAllContacts` not found:** Fixed a bug in the new campaign page where the "Select All" checkbox was not working.
 - **Campaign creation crash:** Fixed a bug that caused the server to crash when creating a campaign due to a database error.
 - **Message creation crash:** Fixed a bug that caused the server to crash when creating a message due to a database error.
+- **Incorrect chat visibility for members:** Fixed a bug where team members could see all chats instead of only their assigned chats.
 
 ## 7. Chat Assignment Feature
 

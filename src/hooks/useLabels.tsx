@@ -20,7 +20,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
   const fetchLabels = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:9002/api/contacts");
+      const res = await axios.get("/api/contacts");
       const data = res.data?.data ?? [];
 
       setAllLabels(data);
@@ -38,10 +38,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
 
   const saveLabel = async (updatedContact: Label) => {
     try {
-      await axios.put(
-        `http://localhost:9002/api/contacts/${updatedContact.id}`,
-        updatedContact
-      );
+      await axios.put(`/api/contacts/${updatedContact.id}`, updatedContact);
       await fetchLabels();
     } catch (err) {
       console.error("Failed to save contact:", err);
@@ -50,7 +47,7 @@ export function useLabels({ search = "" }: UseLabelProps = {}) {
 
   const deleteLabel = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:9002/api/contacts/${id}`);
+      await axios.delete(`/api/contacts/${id}`);
       await fetchLabels();
     } catch (err) {
       console.error("Failed to delete contact:", err);

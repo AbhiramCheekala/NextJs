@@ -59,54 +59,60 @@ export function ChatList({
           </div>
         )}
       </div>
-      <ul>
-        {chats.map((chat) => (
-          <li
-            key={chat.id}
-            className="p-4 border-b cursor-pointer hover:bg-gray-100"
-          >
-            <div className="flex items-center" onClick={() => onSelectChat(chat)}>
-              <Avatar>
-                <AvatarImage src={chat.contact.avatar} />
-                <AvatarFallback>{chat.contact.name[0]}</AvatarFallback>
-              </Avatar>
-              <div className="ml-4">
-                <p className="font-bold">{chat.contact.name}</p>
-                <p className="text-sm text-gray-500">
-                  {chat.lastMessage?.content}
-                </p>
+      {chats.length === 0 ? (
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500">No chats assigned to you yet.</p>
+        </div>
+      ) : (
+        <ul>
+          {chats.map((chat) => (
+            <li
+              key={chat.id}
+              className="p-4 border-b cursor-pointer hover:bg-gray-100"
+            >
+              <div className="flex items-center" onClick={() => onSelectChat(chat)}>
+                <Avatar>
+                  <AvatarImage src={chat.contact.avatar} />
+                  <AvatarFallback>{chat.contact.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="ml-4">
+                  <p className="font-bold">{chat.contact.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {chat.lastMessage?.content}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="mt-2 flex items-center">
-              <p className="text-sm text-gray-500 mr-2">
-                Assigned to:{" "}
-                {chat.contact.assignedToUserId
-                  ? getAssigneeName(chat.contact.assignedToUserId)
-                  : "Unassigned"}
-              </p>
-              {userRole === "admin" && (
-                <Select
-                  onValueChange={(value) =>
-                    handleAssignContact(chat.contact.id, value)
-                  }
-                  defaultValue={chat.contact.assignedToUserId || undefined}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Assign to..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users.map((user: User) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div className="mt-2 flex items-center">
+                <p className="text-sm text-gray-500 mr-2">
+                  Assigned to:{" "}
+                  {chat.contact.assignedToUserId
+                    ? getAssigneeName(chat.contact.assignedToUserId)
+                    : "Unassigned"}
+                </p>
+                {userRole === "admin" && (
+                  <Select
+                    onValueChange={(value) =>
+                      handleAssignContact(chat.contact.id, value)
+                    }
+                    defaultValue={chat.contact.assignedToUserId || undefined}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Assign to..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.map((user: User) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

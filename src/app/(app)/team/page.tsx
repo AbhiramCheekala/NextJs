@@ -46,7 +46,7 @@ function useUsers() {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:9002/api/users");
+        const response = await axios.get("/api/users");
         setUsers(response.data.data || []);
       } catch (error) {
         console.error("Failed to fetch users:", error);

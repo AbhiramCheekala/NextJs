@@ -4,7 +4,7 @@ export const apiRequest = async (
   body?: any
 ) => {
   // Retrieve the token from localStorage on the client-side
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
