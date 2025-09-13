@@ -1,4 +1,4 @@
-import { eq, inArray, like, sql } from "drizzle-orm";
+import { and, eq, inArray, like, sql } from "drizzle-orm";
 import {
   contactInsert,
   contactSelect,
@@ -6,6 +6,7 @@ import {
 } from "@/lib/drizzle/schema/contacts";
 import logger from "@/lib/logger";
 import { db } from "@/lib/db";
+import { User } from "@/lib/drizzle/schema/users";
 
 export const createContact = async (
   input: contactInsert
@@ -58,7 +59,7 @@ export const checkContactExistence = async (
 
 export const updateContactById = async (
   id: string,
-  updates: contactInsert
+  updates: Partial<contactInsert>
 ): Promise<contactSelect> => {
   logger.info(`Updating contact with ID: ${id}`);
 
@@ -90,24 +91,38 @@ export const deleteContactById = async (id: string): Promise<void> => {
   logger.info(`Contact deleted successfully: ${id}`);
 };
 
-export const getAllContacts = async (options: {
-  page: number;
-  limit: number;
-  search: string;
-}): Promise<{ contacts: contactSelect[]; total: number }> => {
+export const getAllContacts = async (
+  options: {
+    page: number;
+    limit: number;
+    search: string;
+  },
+  user: User
+): Promise<{ contacts: contactSelect[]; total: number }> => {
   const { page, limit, search } = options;
   const offset = (page - 1) * limit;
 
-  const where = search ? like(contactsTable.name, `%${search}%`) : undefined;
+  let whereClause = search
+    ? like(contactsTable.name, `%${search}%`)
+    : undefined;
+
+  if (user.role === "member") {
+    whereClause = and(whereClause, eq(contactsTable.assignedToUserId, user.id));
+  }
 
   const [contacts, totalResult] = await Promise.all([
-    db.select().from(contactsTable).where(where).limit(limit).offset(offset),
+    db
+      .select()
+      .from(contactsTable)
+      .where(whereClause)
+      .limit(limit)
+      .offset(offset),
     db
       .select({
         count: sql<number>`count(*)`.mapWith(Number),
       })
       .from(contactsTable)
-      .where(where),
+      .where(whereClause),
   ]);
 
   logger.info(`Total contacts retrieved: ${contacts.length}`);
@@ -153,4 +168,11 @@ export const getContactByPhone = async (
     return null;
   }
   return contact;
+};
+
+export const assignContact = async (
+  contactId: string,
+  userId: string
+): Promise<void> => {
+  await updateContactById(contactId, { assignedToUserId: userId });
 };

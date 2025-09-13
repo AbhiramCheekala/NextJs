@@ -547,8 +547,7 @@ const SidebarMenuButton = React.forwardRef<
   const { isMobile, state } = useSidebar();
 
   // Ensure asChild from parent is not passed to the DOM element if Comp is 'button'
-  const { asChild: _asChildFromParent, ...safeParentPassthroughProps } =
-    parentPassthroughProps;
+  const safeParentPassthroughProps = parentPassthroughProps;
 
   const propsToSpreadForComp = ownAsChildConfig
     ? parentPassthroughProps

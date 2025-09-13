@@ -105,7 +105,7 @@ export function ImportContactsDialog({
         onOpenChange(false);
         resetDialog();
       } catch (error) {
-        console.error("Error importing contacts:", error);
+        logger.error("Error importing contacts:", error);
         toast({
           title: "Import Failed",
           description: "An error occurred while importing contacts.",

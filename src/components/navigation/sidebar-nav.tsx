@@ -31,7 +31,7 @@ export function SidebarNav({ items, isCollapsed }: SidebarNavProps) {
             <SidebarMenuItem key={item.href}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link href={item.href} asChild>
+                  <Link href={item.href}>
                     <SidebarMenuButton
                       isActive={isActive}
                       className="justify-center"

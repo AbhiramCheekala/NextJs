@@ -85,10 +85,7 @@ export function AddTeamMemberDialog({
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:9002/api/users",
-        payload
-      );
+      const response = await axios.post("/api/users", payload);
       toast({
         title: "Team Member Added",
         description: `${name} was successfully added.`,

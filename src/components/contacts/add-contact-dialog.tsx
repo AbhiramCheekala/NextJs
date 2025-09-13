@@ -96,7 +96,7 @@ export function AddContactDialog({
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error("Submit failed:", error);
+      logger.error("Submit failed:", error);
     }
   };
 

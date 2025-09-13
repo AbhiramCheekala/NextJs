@@ -54,7 +54,7 @@ export function useDashboard() {
       const res = await apiRequest("/api/dashboard", "GET");
       setDashboardData(res.data);
     } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
+      logger.error("Failed to fetch dashboard data:", err);
       setError(err as Error);
     } finally {
       setIsLoading(false);

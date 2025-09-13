@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/apiClient";
+import { User } from "@/lib/drizzle/schema/users";
 
 type Contact = {
   id: string;
@@ -9,6 +10,11 @@ type Contact = {
   phone: string;
   email: string;
   label: string;
+  assignedToUserId?: string;
+};
+
+type Meta = {
+  totalPages: number;
 };
 
 type UseContactsProps = {
@@ -25,7 +31,7 @@ export function useContacts({
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [meta, setMeta] = useState(null);
+  const [meta, setMeta] = useState<Meta | null>(null);
 
   const fetchContacts = async () => {
     setIsLoading(true);
@@ -38,7 +44,7 @@ export function useContacts({
       setContacts(data);
       setMeta(meta);
     } catch (err) {
-      console.error("Failed to fetch contacts:", err);
+      logger.error("Failed to fetch contacts:", err);
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +55,7 @@ export function useContacts({
       await apiRequest(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
       await fetchContacts();
     } catch (err) {
-      console.error("Failed to save contact:", err);
+      logger.error("Failed to save contact:", err);
     }
   };
 
@@ -58,7 +64,18 @@ export function useContacts({
       await apiRequest(`/contacts/${id}`, "DELETE");
       await fetchContacts();
     } catch (err) {
-      console.error("Failed to delete contact:", err);
+      logger.error("Failed to delete contact:", err);
+    }
+  };
+
+  const assignContact = async (contactId: string, userId: string) => {
+    try {
+      await apiRequest(`/api/contacts/${contactId}/assign`, "POST", {
+        userId,
+      });
+      await fetchContacts();
+    } catch (err) {
+      logger.error("Failed to assign contact:", err);
     }
   };
 
@@ -73,6 +90,30 @@ export function useContacts({
     refetch: fetchContacts,
     saveContact,
     deleteContact,
+    assignContact,
     meta,
   };
+}
+
+export function useUsers() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const res = await apiRequest("/api/users", "GET");
+      setUsers(res.data);
+    } catch (err) {
+      logger.error("Failed to fetch users:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  return { users, isLoading };
 }

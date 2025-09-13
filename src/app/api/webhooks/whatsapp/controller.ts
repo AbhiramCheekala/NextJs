@@ -10,7 +10,7 @@ export class WebhookController {
       await this.webhookService.processWebhookEvent(body);
       return new NextResponse("OK", { status: 200 });
     } catch (error) {
-      console.error("Error processing webhook event:", error);
+      logger.error("Error processing webhook event:", error);
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   };

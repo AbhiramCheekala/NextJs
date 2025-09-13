@@ -26,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddTeamMemberDialog } from "@/components/team/add-team-member-dialog";
 import { useToast } from "@/hooks/use-toast";
+import logger from "@/lib/logger";
 
 // 🔷 Pagination settings
 const ITEMS_PER_PAGE = 3;
@@ -46,10 +47,10 @@ function useUsers() {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:9002/api/users");
-        setUsers(response.data || []);
+        const response = await axios.get("/api/users");
+        setUsers(response.data.data || []);
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        logger.error("Failed to fetch users:", error);
       } finally {
         setIsLoading(false);
       }

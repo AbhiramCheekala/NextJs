@@ -42,7 +42,7 @@ export function useAnalytics() {
       const res = await apiRequest("/api/analytics", "GET");
       setAnalytics(res.data);
     } catch (err) {
-      console.error("Failed to fetch analytics:", err);
+      logger.error("Failed to fetch analytics:", err);
       setError(err as Error);
     } finally {
       setIsLoading(false);

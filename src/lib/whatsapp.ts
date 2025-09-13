@@ -17,12 +17,18 @@ class WhatsApp {
         messaging_product: "whatsapp",
         to,
         type: typeof message === "string" ? "text" : "template",
-        ...(typeof message === "string" ? { text: { body: message } } : { template: message }),
+        ...(typeof message === "string"
+          ? { text: { body: message } }
+          : { template: message }),
       };
 
       await this.api.post("/messages", payload);
     } catch (error) {
-      console.error("Error sending message:", error.response.data);
+      if (axios.isAxiosError(error)) {
+        logger.error("Error sending message:", error.response?.data);
+      } else {
+        logger.error("Error sending message:", error);
+      }
     }
   };
 }

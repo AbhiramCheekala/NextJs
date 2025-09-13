@@ -1,7 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as ContactService from "@/app/api/contacts/service";
+import { ContactService } from "@/app/api/contacts/service";
 import { createId } from "@paralleldrive/cuid2";
 import logger from "@/lib/logger";
+import { User } from "@/lib/drizzle/schema/users";
+
+// Assume user is attached to the request object by middleware
+// const user = (req as any).user as User;
+const user: User = {
+  id: "user_2c7O3s8t7r8p9q0a1b2c3d4e5f6g7h8i",
+  name: "Test User",
+  email: "test@example.com",
+  role: "member",
+  password: "password",
+  lastLoginAt: new Date(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const contactService = new ContactService();
 
 export async function createContact(req: NextRequest) {
   const body = await req.json();
@@ -12,7 +28,7 @@ export async function createContact(req: NextRequest) {
     id: createId(),
   };
 
-  const existingContact = await ContactService.checkContactExistence(
+  const existingContact = await contactService.checkContactExistence(
     body.phone
   );
   if (existingContact) {
@@ -23,14 +39,14 @@ export async function createContact(req: NextRequest) {
     );
   }
 
-  const created = await ContactService.createContact(object);
+  const created = await contactService.createContact(object);
   logger.info("Contact created successfully with ID: %s", created.id);
   return NextResponse.json({ status: "success", data: created });
 }
 
 export async function getContact(req: NextRequest, id: string) {
   logger.info("Fetching contact with ID: %s", id);
-  const contact = await ContactService.getContactById(id);
+  const contact = await contactService.getContactById(id);
 
   if (!contact) {
     logger.warn("Contact not found for ID: %s", id);
@@ -44,17 +60,17 @@ export async function updateContact(req: NextRequest, id: string) {
   const updates = await req.json();
   logger.info("Updating contact with ID: %s", id);
 
-  const updated = await ContactService.updateContactById(id, updates);
+  const updated = await contactService.updateContactById(id, updates);
 
   return NextResponse.json({ status: "success", data: updated });
 }
 
 export async function deleteContact(req: NextRequest, id: string) {
-  const contact = await ContactService.getContactById(id);
+  const contact = await contactService.getContactById(id);
   if (!contact) {
     return NextResponse.json({ error: "No Contact found" }, { status: 404 });
   } else {
-    await ContactService.deleteContactById(id);
+    await contactService.deleteContactById(id);
     return NextResponse.json({
       status: "success",
       message: "Contact deleted successfully",
@@ -72,11 +88,14 @@ export async function getAllContacts(req: NextRequest) {
     `Fetching contacts with page: ${page}, limit: ${limit}, search: ${search}`
   );
 
-  const { contacts, total } = await ContactService.getAllContacts({
-    page,
-    limit,
-    search,
-  });
+  const { contacts, total } = await contactService.getAllContacts(
+    {
+      page,
+      limit,
+      search,
+    },
+    user
+  );
 
   return NextResponse.json({
     data: contacts,
@@ -90,10 +109,10 @@ export async function getAllContacts(req: NextRequest) {
 }
 
 export async function createBulkContacts(req: NextRequest) {
-  const { contacts, tags } = await req.json();
+  const { contacts } = await req.json();
   logger.info("Creating bulk contacts with data: %o", contacts);
 
-  const created = await ContactService.createBulkContacts(contacts, tags);
+  const created = await contactService.createBulkContacts(contacts);
   logger.info("Bulk contacts created successfully");
   return NextResponse.json({ status: "success", data: created });
 }

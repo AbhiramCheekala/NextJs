@@ -11,3 +11,7 @@ export interface Contact {
   avatar?: string; // Optional avatar URL
   dataAiHint?: string; // Optional hint for AI image generation
 }
+
+export interface AssignContactRequest {
+  userId: string;
+}

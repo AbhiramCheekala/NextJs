@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { MessageService } from "./service";
 
@@ -10,7 +9,7 @@ export class MessageController {
       const messages = await this.messageService.getMessages(chatId);
       return NextResponse.json(messages);
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      logger.error("Error fetching messages:", error);
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   };
@@ -18,10 +17,13 @@ export class MessageController {
   public sendMessage = async (req: NextRequest, chatId: string) => {
     try {
       const body = await req.json();
-      const message = await this.messageService.sendMessage(chatId, body.content);
+      const message = await this.messageService.sendMessage(
+        chatId,
+        body.content
+      );
       return NextResponse.json(message);
     } catch (error) {
-      console.error("Error sending message:", error);
+      logger.error("Error sending message:", error);
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   };

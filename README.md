@@ -75,7 +75,7 @@ This is a full-stack web application built with Next.js for managing WhatsApp ma
     npm run dev
     ```
 
-    The application will be available at `http://localhost:9002`.
+    The application will be available at ``.
 
 6.  **Run the Genkit AI flows (in a separate terminal):**
     ```bash
