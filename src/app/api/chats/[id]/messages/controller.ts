@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MessageService } from "./service";
+import logger from "@/lib/logger";
 
 export class MessageController {
   private messageService = new MessageService();
@@ -23,7 +24,11 @@ export class MessageController {
       );
       return NextResponse.json(message);
     } catch (error) {
-      logger.error("Error sending message:", error);
+      if (error instanceof Error) {
+        logger.error("Error sending message:", { message: error.message, stack: error.stack });
+      } else {
+        logger.error("Error sending message:", error);
+      }
       return new NextResponse("Internal Server Error", { status: 500 });
     }
   };

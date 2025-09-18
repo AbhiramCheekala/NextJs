@@ -49,4 +49,26 @@ export class ChatModel {
 
     return chatsWithLastMessage;
   };
+
+  public getChatStatus = async (chatId: string) => {
+    const chat = await db.query.chats.findFirst({
+      where: eq(chats.id, chatId),
+    });
+
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+
+    const now = new Date();
+    const lastUserMessage = chat.lastUserMessageAt ? new Date(chat.lastUserMessageAt) : null;
+    const hoursSinceLastMessage = lastUserMessage
+      ? (now.getTime() - lastUserMessage.getTime()) / (1000 * 60 * 60)
+      : Infinity;
+
+    if (hoursSinceLastMessage > 24) {
+      return { status: "closed" };
+    } else {
+      return { status: "open" };
+    }
+  };
 }

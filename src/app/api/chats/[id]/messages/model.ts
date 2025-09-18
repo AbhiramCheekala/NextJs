@@ -4,6 +4,8 @@ import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { chats } from "@/lib/drizzle/schema/chats";
 import { eq } from "drizzle-orm";
 import { whatsapp } from "@/lib/whatsapp";
+import { Message } from "@/types/chat";
+import { createId } from "@paralleldrive/cuid2";
 
 export class MessageModel {
   public getMessages = async (chatId: string) => {
@@ -14,26 +16,51 @@ export class MessageModel {
 
   public sendMessage = async (chatId: string, content: string) => {
     const chat = await db.query.chats.findFirst({
-        where: eq(chats.id, chatId),
-        with: {
-            contact: true,
-        },
+      where: eq(chats.id, chatId),
+      with: {
+        contact: true,
+      },
     });
 
     if (!chat) {
-        throw new Error("Chat not found");
+      throw new Error("Chat not found");
     }
 
-    await whatsapp.sendMessage(chat.contact.phone, content);
+    const now = new Date();
+    const lastUserMessage = chat.lastUserMessageAt ? new Date(chat.lastUserMessageAt) : null;
+    const hoursSinceLastMessage = lastUserMessage
+      ? (now.getTime() - lastUserMessage.getTime()) / (1000 * 60 * 60)
+      : Infinity;
 
-    const result = await db.insert(chatMessages).values({
+    let messageToSend: string | object = content;
+    let messageContentForDb = content;
+
+    if (hoursSinceLastMessage > 24) {
+      messageToSend = {
+        name: "hello_world",
+        language: { code: "en_US" },
+      };
+      messageContentForDb = "Sent 'hello_world' template to start conversation.";
+    }
+
+    await whatsapp.sendMessage(chat.contact.phone, messageToSend);
+
+    await db.insert(chatMessages).values({
       chatId,
-      content,
+      content: messageContentForDb,
       direction: "outgoing",
     });
 
-    return await db.query.chatMessages.findFirst({
-        where: eq(chatMessages.id, result[0].insertId.toString()),
-    });
+    const optimisticResponse: Message = {
+      id: createId(),
+      chatId: chatId,
+      content: messageContentForDb,
+      direction: "outgoing",
+      timestamp: now.toISOString(),
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    };
+
+    return optimisticResponse;
   };
 }

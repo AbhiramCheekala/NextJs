@@ -82,3 +82,28 @@ This document outlines the recent features implemented in the Next.js applicatio
     - **Chat Filtering:**
         - **Admins:** An "Assigned To" filter will be available, allowing them to view chats assigned to any team member or all chats.
         - **Members:** The "Assigned To" filter will be hidden. The chat list will be automatically filtered to show only the chats assigned to the logged-in member.
+
+## 10. 24-Hour Conversation Window Handling
+
+- **Feature:** Implemented logic to gracefully handle WhatsApp's 24-hour customer service window.
+- **Implementation Details:**
+    - **Database:** Added a `lastUserMessageAt` column to the `chats` table to track the timestamp of the last incoming message.
+    - **Backend:**
+        - The webhook for incoming messages now updates the `lastUserMessageAt` timestamp.
+        - The `sendMessage` API now checks this timestamp. If the window is closed (older than 24 hours), it automatically sends the `hello_world` template message to re-initiate the conversation.
+        - A new endpoint `GET /api/chats/[id]/status` was created to provide the window status (`open` or `closed`) to the frontend.
+    - **Frontend:**
+        - The chat UI now calls the new status endpoint via a `useChatStatus` hook.
+        - If the window is closed, the UI displays a banner, disables the text input, and shows a button to "Send 'hello_world' Template".
+        - If the window is open, the chat functions normally.
+
+## 11. Emoji Support in Chat
+
+- **Feature:** Users can now add emojis to their messages from the chat interface.
+- **Implementation Details:**
+    - **Frontend:**
+        - Integrated the `emoji-picker-react` library into the `ChatView` component.
+        - Added a button to toggle the emoji picker.
+        - Selected emojis are appended to the message input field.
+    - **Backend:**
+        - Verified that the existing API and database schema correctly handle and store messages containing emoji characters.

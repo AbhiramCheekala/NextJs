@@ -38,6 +38,10 @@ export class WebhookModel {
         content: messageContent,
         direction: "incoming",
       });
+
+      await db.update(chats)
+        .set({ lastUserMessageAt: new Date() })
+        .where(eq(chats.id, chat.id));
     }
   };
 }

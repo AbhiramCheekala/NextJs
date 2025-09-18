@@ -10,6 +10,7 @@ export const chats = mysqlTable("chats", {
   contactId: varchar("contact_id", { length: 255 }).notNull(),
   assignedTo: varchar("assigned_to", { length: 36 }),
   status: mysqlEnum("status", ["open", "closed", "pending"]).default("open").notNull(),
+  lastUserMessageAt: timestamp("last_user_message_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").onUpdateNow().defaultNow(),
 });

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { WebhookService } from "./service";
+import logger from "@/lib/logger";
 
 export class WebhookController {
   private webhookService = new WebhookService();

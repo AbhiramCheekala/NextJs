@@ -49,6 +49,7 @@
     "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.3",
+    "emoji-picker-react": "^4.13.3",
     "firebase": "^11.8.1",
     "genkit": "^1.8.0",
     "jsonwebtoken": "^9.0.2",
