@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const authenticate = (handler: Function) => {
   return async (req: NextRequest, ...args: any[]) => {
@@ -11,10 +11,7 @@ export const authenticate = (handler: Function) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET!);
       (req as any).user = decoded;
       return handler(req, ...args);
-    } catch (error) {
-      if (error instanceof TokenExpiredError) {
-        return NextResponse.json({ error: "Token expired" }, { status: 401 });
-      }
+    } catch {
       return NextResponse.json({ error: "Invalid token" }, { status: 403 });
     }
   };

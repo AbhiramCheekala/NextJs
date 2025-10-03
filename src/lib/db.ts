@@ -9,13 +9,11 @@ import * as messages from "./drizzle/schema/messages";
 import * as templates from "./drizzle/schema/templates";
 import * as users from "./drizzle/schema/users";
 
-export const pool = mysql.createPool({
+const pool = mysql.createPool({
   host: process.env.DB_HOST!,
   user: process.env.DB_USER!,
   password: process.env.DB_PASS!,
   database: process.env.DB_NAME!,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 30000,
 });
 
 export const db = drizzle(pool, {

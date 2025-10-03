@@ -55,12 +55,3 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
     .orderBy(desc(campaigns.createdAt));
   return allCampaigns;
 }
-
-export async function getCampaignById(id: string): Promise<Campaign | null> {
-    const [campaign] = await db
-      .select()
-      .from(campaigns)
-      .where(eq(campaigns.id, parseInt(id, 10)));
-  
-    return campaign || null;
-  }

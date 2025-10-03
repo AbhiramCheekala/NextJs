@@ -84,7 +84,3 @@ export async function createCampaignAndSendMessages(
 export async function getAllCampaigns() {
   return await CampaignModel.getAllCampaigns();
 }
-
-export async function getCampaignById(id: string) {
-    return await CampaignModel.getCampaignById(id);
-  }
