@@ -44,7 +44,7 @@ export function useContacts({
       setContacts(data);
       setMeta(meta);
     } catch (err) {
-      logger.error("Failed to fetch contacts:", err);
+      console.error("Failed to fetch contacts:", err);
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ export function useContacts({
       await apiRequest(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
       await fetchContacts();
     } catch (err) {
-      logger.error("Failed to save contact:", err);
+      console.error("Failed to save contact:", err);
     }
   };
 
@@ -64,7 +64,7 @@ export function useContacts({
       await apiRequest(`/contacts/${id}`, "DELETE");
       await fetchContacts();
     } catch (err) {
-      logger.error("Failed to delete contact:", err);
+      console.error("Failed to delete contact:", err);
     }
   };
 
@@ -75,7 +75,7 @@ export function useContacts({
       });
       await fetchContacts();
     } catch (err) {
-      logger.error("Failed to assign contact:", err);
+      console.error("Failed to assign contact:", err);
     }
   };
 
@@ -105,7 +105,7 @@ export function useUsers() {
       const res = await apiRequest("/api/users", "GET");
       setUsers(res.data);
     } catch (err) {
-      logger.error("Failed to fetch users:", err);
+      console.error("Failed to fetch users:", err);
     } finally {
       setIsLoading(false);
     }
