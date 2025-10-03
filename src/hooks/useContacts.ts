@@ -52,7 +52,7 @@ export function useContacts({
 
   const saveContact = async (updatedContact: Contact) => {
     try {
-      await apiRequest(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
+      await apiRequest(`/api/contacts/${updatedContact.id}`, "PUT", updatedContact);
       await fetchContacts();
     } catch (err) {
       console.error("Failed to save contact:", err);
@@ -61,7 +61,7 @@ export function useContacts({
 
   const deleteContact = async (id: string) => {
     try {
-      await apiRequest(`/contacts/${id}`, "DELETE");
+      await apiRequest(`/api/contacts/${id}`, "DELETE");
       await fetchContacts();
     } catch (err) {
       console.error("Failed to delete contact:", err);
