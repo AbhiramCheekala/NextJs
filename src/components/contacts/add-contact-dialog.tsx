@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/popover";
 import { apiRequest } from "@/lib/apiClient";
 import axios from "axios";
+import logger from "@/lib/client-logger";
 
 interface AddContactDialogProps {
   isOpen: boolean;

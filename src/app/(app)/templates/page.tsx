@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState, useEffect } from "react";
+import logger from "@/lib/client-logger";
 import { CreateTemplateDialog } from "@/components/templates/create-template-dialog";
 import { useToast } from "@/hooks/use-toast";
 import type { VariantProps } from "class-variance-authority";

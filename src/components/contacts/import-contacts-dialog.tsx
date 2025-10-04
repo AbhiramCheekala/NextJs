@@ -16,6 +16,7 @@ import { useState } from "react";
 import { read, utils } from "xlsx";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import logger from "@/lib/client-logger";
 
 interface ImportContactsDialogProps {
   isOpen: boolean;

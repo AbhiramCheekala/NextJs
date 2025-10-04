@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient";
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import logger from '@/lib/client-logger';
 
 // Define the types based on the API response
 export interface Kpis {
@@ -31,32 +32,27 @@ export interface AnalyticsData {
 }
 
 export function useAnalytics() {
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
+  const apiClient = useApiClient();
 
-  const fetchAnalytics = async () => {
-    setIsLoading(true);
-    setError(null);
+  const fetcher = async (url: string) => {
     try {
-      const res = await apiRequest("/api/analytics", "GET");
-      setAnalytics(res.data);
+      const res = await apiClient(url, 'GET');
+      return res.data;
     } catch (err) {
       logger.error("Failed to fetch analytics:", err);
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
+  const { data, error, isLoading, mutate } = useSWR<AnalyticsData>(
+    '/api/analytics',
+    fetcher
+  );
 
   return {
-    analytics,
+    analytics: data,
     isLoading,
     error,
-    refetch: fetchAnalytics,
+    refetch: mutate,
   };
 }

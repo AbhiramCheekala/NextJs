@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/apiClient";
 import { Input } from "@/components/ui/input";
@@ -17,12 +16,15 @@ export function ChatView({ chat }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const windowStatus = useChatStatus(chat?.id);
+  const windowStatus = useChatStatus(chat?.id ?? null);
 
   useEffect(() => {
     if (chat) {
       const fetchMessages = async () => {
-        const response = await apiRequest(`/api/chats/${chat.id}/messages`, "GET");
+        const response = await apiRequest(
+          `/api/chats/${chat.id}/messages`,
+          "GET"
+        );
         setMessages(response);
       };
       fetchMessages();
@@ -34,13 +36,17 @@ export function ChatView({ chat }: ChatViewProps) {
   const handleSendMessage = async (content?: string) => {
     if (!chat) return;
 
-    const messageContent = typeof content === 'string' ? content : newMessage;
+    const messageContent = typeof content === "string" ? content : newMessage;
 
-    if (messageContent.trim() === "" && windowStatus === 'open') return;
+    if (messageContent.trim() === "" && windowStatus === "open") return;
 
-    const response = await apiRequest(`/api/chats/${chat.id}/messages`, "POST", {
-      content: messageContent,
-    });
+    const response = await apiRequest(
+      `/api/chats/${chat.id}/messages`,
+      "POST",
+      {
+        content: messageContent,
+      }
+    );
 
     setMessages([...messages, response]);
     setNewMessage("");
@@ -53,26 +59,34 @@ export function ChatView({ chat }: ChatViewProps) {
 
   const renderChatInput = () => {
     switch (windowStatus) {
-      case 'loading':
+      case "loading":
         return <div className="p-4 text-center">Loading chat status...</div>;
-      case 'error':
-        return <div className="p-4 text-center text-red-500">Error fetching chat status.</div>;
-      case 'closed':
+      case "error":
+        return (
+          <div className="p-4 text-center text-red-500">
+            Error fetching chat status.
+          </div>
+        );
+      case "closed":
         return (
           <div className="p-4 border-t bg-gray-50">
             <Alert>
               <Terminal className="h-4 w-4" />
               <AlertTitle>Conversation Window Closed</AlertTitle>
               <AlertDescription>
-                It has been more than 24 hours since the last user message. Send a template to restart the conversation.
+                It has been more than 24 hours since the last user message. Send
+                a template to restart the conversation.
               </AlertDescription>
             </Alert>
-            <Button onClick={() => handleSendMessage('template:hello_world')} className="w-full mt-2">
+            <Button
+              onClick={() => handleSendMessage("template:hello_world")}
+              className="w-full mt-2"
+            >
               Send 'hello_world' Template
             </Button>
           </div>
         );
-      case 'open':
+      case "open":
         return (
           <div className="p-4 border-t relative">
             <div className="flex">
@@ -81,7 +95,10 @@ export function ChatView({ chat }: ChatViewProps) {
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message"
               />
-              <Button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="ml-2">
+              <Button
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className="ml-2"
+              >
                 😊
               </Button>
               <Button onClick={() => handleSendMessage()} className="ml-2">
@@ -99,7 +116,11 @@ export function ChatView({ chat }: ChatViewProps) {
   };
 
   if (!chat) {
-    return <div className="h-full flex items-center justify-center bg-gray-100">Select a chat to start messaging</div>;
+    return (
+      <div className="h-full flex items-center justify-center bg-gray-100">
+        Select a chat to start messaging
+      </div>
+    );
   }
 
   return (

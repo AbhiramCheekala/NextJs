@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient";
-import { User } from "@/lib/drizzle/schema/users";
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import { User } from '@/lib/drizzle/schema/users';
+import logger from '@/lib/client-logger';
 
 type Contact = {
   id: string;
@@ -28,92 +29,84 @@ export function useContacts({
   page = 1,
   limit = 10,
 }: UseContactsProps = {}) {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [allContacts, setAllContacts] = useState<Contact[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [meta, setMeta] = useState<Meta | null>(null);
+  const apiClient = useApiClient();
 
-  const fetchContacts = async () => {
-    setIsLoading(true);
+  const fetcher = async (url: string) => {
     try {
-      const url = `/api/contacts?search=${search}&page=${page}&limit=${limit}`;
-      const res = await apiRequest(url, "GET");
-      const { data, meta } = res;
-
-      setAllContacts(data);
-      setContacts(data);
-      setMeta(meta);
+      const res = await apiClient(url, 'GET');
+      return res;
     } catch (err) {
-      console.error("Failed to fetch contacts:", err);
-    } finally {
-      setIsLoading(false);
+      logger.error("Failed to fetch contacts:", err);
+      throw err;
     }
   };
 
+  const url = `/api/contacts?search=${search}&page=${page}&limit=${limit}`;
+
+  const { data, error, isLoading, mutate } = useSWR<{ data: Contact[], meta: Meta }>(
+    url,
+    fetcher
+  );
+
   const saveContact = async (updatedContact: Contact) => {
     try {
-      await apiRequest(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
-      await fetchContacts();
+      await apiClient(`/contacts/${updatedContact.id}`, "PUT", updatedContact);
+      mutate();
     } catch (err) {
-      console.error("Failed to save contact:", err);
+      logger.error("Failed to save contact:", err);
     }
   };
 
   const deleteContact = async (id: string) => {
     try {
-      await apiRequest(`/contacts/${id}`, "DELETE");
-      await fetchContacts();
+      await apiClient(`/contacts/${id}`, "DELETE");
+      mutate();
     } catch (err) {
-      console.error("Failed to delete contact:", err);
+      logger.error("Failed to delete contact:", err);
     }
   };
 
   const assignContact = async (contactId: string, userId: string) => {
     try {
-      await apiRequest(`/api/contacts/${contactId}/assign`, "POST", {
+      await apiClient(`/api/contacts/${contactId}/assign`, "POST", {
         userId,
       });
-      await fetchContacts();
+      mutate();
     } catch (err) {
-      console.error("Failed to assign contact:", err);
+      logger.error("Failed to assign contact:", err);
     }
   };
 
-  useEffect(() => {
-    fetchContacts();
-  }, [search, page, limit]);
-
   return {
-    contacts,
-    allContacts,
+    contacts: data?.data || [],
+    allContacts: data?.data || [],
     isLoading,
-    refetch: fetchContacts,
+    refetch: mutate,
     saveContact,
     deleteContact,
     assignContact,
-    meta,
+    meta: data?.meta,
+    error
   };
 }
 
 export function useUsers() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const apiClient = useApiClient();
 
-  const fetchUsers = async () => {
-    setIsLoading(true);
+  const fetcher = async (url: string) => {
     try {
-      const res = await apiRequest("/api/users", "GET");
-      setUsers(res.data);
+      const res = await apiClient(url, 'GET');
+      return res.data;
     } catch (err) {
-      console.error("Failed to fetch users:", err);
-    } finally {
-      setIsLoading(false);
+      logger.error("Failed to fetch users:", err);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { data, error, isLoading, mutate } = useSWR<User[]>(
+    '/api/users',
+    fetcher
+  );
 
-  return { users, isLoading };
+  return { users: data || [], isLoading, error, refetch: mutate };
 }

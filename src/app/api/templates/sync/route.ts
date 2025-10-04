@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { templates } from "@/lib/drizzle/schema/templates";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import logger from "@/lib/logger";
 
 export async function GET() {
   try {
@@ -77,9 +78,9 @@ export async function GET() {
     logger.error("Template sync error:", err);
     let errorMessage = "Server error during sync";
     if (err instanceof TypeError && err.cause) {
-      // @ts-ignore
+      const cause = err.cause as { code?: string; message?: string };
       errorMessage = `Fetch failed: ${
-        err.cause.code || err.cause.message || "Unknown cause"
+        cause.code || cause.message || "Unknown cause"
       }`;
     }
     return new NextResponse(JSON.stringify({ message: errorMessage }), {

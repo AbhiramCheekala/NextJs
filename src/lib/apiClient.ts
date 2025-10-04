@@ -1,7 +1,7 @@
 export const apiRequest = async (
   url: string,
   method: string,
-  body?: any
+  body?: unknown
 ) => {
   // Retrieve the token from localStorage on the client-side
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
@@ -19,7 +19,7 @@ export const apiRequest = async (
     headers,
     body: body ? JSON.stringify(body) : undefined,
   });
-  console.log("API Request:", { body, url, method, status: res.status });
+
 
   if (!res.ok) {
     const errorBody = await res.json().catch(() => ({ error: "API request failed with no JSON response" }));

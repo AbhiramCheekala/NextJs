@@ -8,11 +8,7 @@ export class ChatController {
 
   public getChats = async (req: NextRequest) => {
     try {
-      const token = req.headers.get("authorization")?.split(" ")[1];
-      if (!token) {
-        return new NextResponse("Unauthorized", { status: 401 });
-      }
-      const user = jwt.verify(token, process.env.JWT_SECRET!) as {
+      const user = JSON.parse(req.headers.get("user")!) as {
         id: string;
         role: string;
       };

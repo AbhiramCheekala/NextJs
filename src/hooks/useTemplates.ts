@@ -1,6 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient"; // adjust path
+
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import logger from '@/lib/client-logger';
 
 export interface Template {
   id: number;
@@ -10,35 +12,29 @@ export interface Template {
 }
 
 export function useTemplates(searchTerm?: string) {
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const apiClient = useApiClient();
 
-  const fetchTemplates = async (search?: string) => {
-    setIsLoading(true);
+  const fetcher = async (url: string) => {
     try {
-      const url = search ? `/api/templates?search=${search}` : "/api/templates";
-      const res = await apiRequest(url, "GET");
-      console.log("Fetched templates:", res.data);
-      setTemplates(res.data || []);
+      const res = await apiClient(url, 'GET');
+      return res.data;
     } catch (err) {
       logger.error("Failed to fetch templates:", err);
-      setTemplates([]);
-    } finally {
-      setIsLoading(false);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      fetchTemplates(searchTerm);
-    }, 300); // Debounce API calls
+  const url = searchTerm ? `/api/templates?search=${searchTerm}` : "/api/templates";
 
-    return () => clearTimeout(debounce);
-  }, [searchTerm]);
+  const { data, error, isLoading, mutate } = useSWR<Template[]>(
+    url,
+    fetcher
+  );
 
   return {
-    templates,
+    templates: data || [],
     isLoading,
-    refetch: fetchTemplates,
+    error,
+    refetch: mutate,
   };
 }

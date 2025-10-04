@@ -1,39 +1,30 @@
-
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient";
-import { Chat } from "@/types/chat";
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import { Chat } from '@/types/chat';
+import logger from '@/lib/client-logger';
 
 export const useChats = (assignedTo?: string, canFetch = true) => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [loading, setLoading] = useState(canFetch);
-  const [error, setError] = useState<Error | null>(null);
+  const apiClient = useApiClient();
 
-  useEffect(() => {
-    if (!canFetch) {
-      setLoading(false);
-      return;
+  const fetcher = async (url: string) => {
+    try {
+      const res = await apiClient(url, 'GET');
+      return res;
+    } catch (err) {
+      logger.error("Failed to fetch chats:", err);
+      throw err;
     }
+  };
 
-    const fetchChats = async () => {
-      setLoading(true);
-      try {
-        let url = "/api/chats";
-        if (assignedTo) {
-          url += `?assignedTo=${assignedTo}`;
-        }
-        const response = await apiRequest(url, "GET");
-        setChats(response);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+  let url = "/api/chats";
+  if (assignedTo) {
+    url += `?assignedTo=${assignedTo}`;
+  }
 
-    fetchChats();
-  }, [assignedTo, canFetch]);
+  const { data, error, isLoading, mutate } = useSWR<Chat[]>(
+    canFetch ? url : null,
+    fetcher
+  );
 
-  return { chats, loading, error };
+  return { chats: data || [], loading: isLoading, error, refetch: mutate };
 };

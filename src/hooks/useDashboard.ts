@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient";
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import logger from '@/lib/client-logger';
 
 // Define the types based on the API response
 export interface Kpis {
@@ -41,34 +42,27 @@ export interface DashboardData {
 }
 
 export function useDashboard() {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const apiClient = useApiClient();
 
-  const fetchDashboardData = async () => {
-    setIsLoading(true);
-    setError(null);
+  const fetcher = async (url: string) => {
     try {
-      const res = await apiRequest("/api/dashboard", "GET");
-      setDashboardData(res.data);
+      const res = await apiClient(url, 'GET');
+      return res.data;
     } catch (err) {
       logger.error("Failed to fetch dashboard data:", err);
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  const { data, error, isLoading, mutate } = useSWR<DashboardData>(
+    '/api/dashboard',
+    fetcher
+  );
 
   return {
-    dashboardData,
+    dashboardData: data,
     isLoading,
     error,
-    refetch: fetchDashboardData,
+    refetch: mutate,
   };
 }

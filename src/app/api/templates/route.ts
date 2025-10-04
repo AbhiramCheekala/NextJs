@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { templates } from "@/lib/drizzle/schema/templates";
+import logger from "@/lib/logger";
 import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {

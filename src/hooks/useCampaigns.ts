@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { apiRequest } from "@/lib/apiClient";
+import useSWR from 'swr';
+import useApiClient from './useApiClient';
+import logger from '@/lib/client-logger';
 
 type Campaign = {
   id: number;
@@ -12,28 +13,27 @@ type Campaign = {
 };
 
 export function useCampaigns() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const apiClient = useApiClient();
 
-  const fetchCampaigns = async () => {
-    setIsLoading(true);
+  const fetcher = async (url: string) => {
     try {
-      const res = await apiRequest("/api/campaigns", "GET");
-      setCampaigns(res.data);
+      const res = await apiClient(url, 'GET');
+      return res.data;
     } catch (err) {
       logger.error("Failed to fetch campaigns:", err);
-    } finally {
-      setIsLoading(false);
+      throw err;
     }
   };
 
-  useEffect(() => {
-    fetchCampaigns();
-  }, []);
+  const { data, error, isLoading, mutate } = useSWR<Campaign[]>(
+    '/api/campaigns',
+    fetcher
+  );
 
   return {
-    campaigns,
+    campaigns: data || [],
     isLoading,
-    refetch: fetchCampaigns,
+    error,
+    refetch: mutate,
   };
 }

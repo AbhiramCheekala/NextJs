@@ -51,7 +51,7 @@ export default function NewCampaignPage() {
   };
 
   const handleSelectAllContacts = (checked: boolean) => {
-    if (checked) {
+    if (checked && contacts) {
       setSelectedContacts(contacts.map((c) => c.id));
     } else {
       setSelectedContacts([]);
@@ -187,7 +187,7 @@ export default function NewCampaignPage() {
             {isLoadingContacts ? (
               <p>Loading contacts...</p>
             ) : (
-              contacts.map((contact: any) => (
+              contacts?.map((contact: any) => (
                 <div key={contact.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={contact.id}
