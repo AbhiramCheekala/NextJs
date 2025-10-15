@@ -6,13 +6,14 @@ import { Chat, Message } from "@/types/chat";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { useChatStatus } from "@/hooks/useChatStatus";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
+import { Terminal, ArrowLeft } from "lucide-react";
 
 interface ChatViewProps {
   chat: Chat | null;
+  onBack: () => void;
 }
 
-export function ChatView({ chat }: ChatViewProps) {
+export function ChatView({ chat, onBack }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -125,7 +126,10 @@ export function ChatView({ chat }: ChatViewProps) {
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      <div className="p-4 border-b">
+      <div className="p-4 border-b flex items-center">
+        <Button variant="ghost" size="icon" className="md:hidden mr-2" onClick={onBack}>
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
         <h2 className="text-xl font-bold">{chat.contact.name}</h2>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">

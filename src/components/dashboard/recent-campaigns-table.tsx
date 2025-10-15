@@ -35,10 +35,11 @@ export function RecentCampaignsTable({ campaigns }: RecentCampaignsTableProps) {
         <CardDescription>An overview of your 5 most recent campaigns.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -69,6 +70,7 @@ export function RecentCampaignsTable({ campaigns }: RecentCampaignsTableProps) {
             )}
           </TableBody>
         </Table>
+        </div>
       </CardContent>
     </Card>
   );

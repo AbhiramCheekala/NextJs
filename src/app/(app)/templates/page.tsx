@@ -172,10 +172,11 @@ export default function TemplatesPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Status</TableHead>
@@ -228,6 +229,7 @@ export default function TemplatesPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">

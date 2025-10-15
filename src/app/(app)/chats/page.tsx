@@ -12,6 +12,7 @@ export default function ChatsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [assignedTo, setAssignedTo] = useState<string | undefined>();
   const [canFetch, setCanFetch] = useState(false);
+  const [isChatViewVisible, setIsChatViewVisible] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -31,6 +32,12 @@ export default function ChatsPage() {
 
   const handleSelectChat = (chat: Chat) => {
     setSelectedChat(chat);
+    setIsChatViewVisible(true);
+  };
+
+  const handleBackToList = () => {
+    setIsChatViewVisible(false);
+    setSelectedChat(null);
   };
 
   // Update selected chat when chat list changes to avoid stale data
@@ -45,13 +52,23 @@ export default function ChatsPage() {
 
   return (
     <div className="flex h-full">
-      <ChatList
-        chats={chats}
-        onSelectChat={handleSelectChat}
-        userRole={user?.role}
-        onFilterChange={setAssignedTo}
-      />
-      <ChatView chat={selectedChat} />
+      <div
+        className={`w-full md:w-1/4 border-r ${
+          isChatViewVisible ? "hidden md:block" : ""
+        }`}
+      >
+        <ChatList
+          chats={chats}
+          onSelectChat={handleSelectChat}
+          userRole={user?.role}
+          onFilterChange={setAssignedTo}
+        />
+      </div>
+      <div
+        className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
+      >
+        <ChatView chat={selectedChat} onBack={handleBackToList} />
+      </div>
     </div>
   );
 }

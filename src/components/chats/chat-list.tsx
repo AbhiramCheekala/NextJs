@@ -38,7 +38,7 @@ export function ChatList({
   };
 
   return (
-    <div className="w-1/4 border-r">
+    <div className="border-r">
       <div className="p-4">
         <h2 className="text-xl font-bold">Chats</h2>
         {userRole === "admin" && (
