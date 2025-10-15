@@ -138,10 +138,11 @@ export default function TeamPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Last Active</TableHead>
@@ -207,6 +208,7 @@ export default function TeamPage() {
               )}
             </TableBody>
           </Table>
+          </div>
 
           {/* 🔷 Pagination Controls */}
           <div className="flex justify-between items-center mt-4">

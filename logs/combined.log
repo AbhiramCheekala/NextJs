@@ -659,3 +659,7 @@ params: y3jc32a69hnk3vt6hbyfov7n,1 {"query":"select `id`, `chat_id`, `content`, 
 2025-10-04 15:16:16 [INFO]: Total contacts retrieved: 0 
 2025-10-04 15:17:11 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
 2025-10-04 15:17:11 [INFO]: Total contacts retrieved: 0 
+2025-10-15 14:39:35 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-10-15 14:39:35 [INFO]: Total contacts retrieved: 0 
+2025-10-15 14:41:31 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-10-15 14:41:31 [INFO]: Total contacts retrieved: 0 

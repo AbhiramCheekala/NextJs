@@ -191,10 +191,11 @@ export default function ContactsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">Avatar</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">Avatar</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Email</TableHead>
@@ -299,6 +300,7 @@ export default function ContactsPage() {
                   </TableRow>}
             </TableBody>
           </Table>
+          </div>
           <div className="flex items-center justify-end space-x-2 py-4">
             <Button
               variant="outline"
