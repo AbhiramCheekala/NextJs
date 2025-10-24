@@ -1,8 +1,7 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { WebhookController } from "./controller";
 
-const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN!;
+const VERIFY_TOKEN = "hello1231234567890987dfghjkjhgf";
 const webhookController = new WebhookController();
 
 export async function GET(req: NextRequest) {
