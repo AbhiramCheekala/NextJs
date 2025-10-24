@@ -49,7 +49,11 @@ export class MessageModel {
       chatId,
       content: messageContentForDb,
       direction: "outgoing",
+      createdAt: now,
+      timestamp: now,
     });
+
+    await db.update(chats).set({ lastUserMessageAt: now }).where(eq(chats.id, chatId));
 
     const optimisticResponse: Message = {
       id: createId(),

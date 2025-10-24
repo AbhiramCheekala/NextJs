@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chats } from "@/lib/drizzle/schema/chats";
-import { messages } from "@/lib/drizzle/schema/messages";
+import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { eq } from "drizzle-orm";
 
 export class WebhookModel {
@@ -32,14 +32,14 @@ export class WebhookModel {
   }
 
   public async createMessage(
-    contactId: string,
+    chatId: string,
     content: string,
     direction: "incoming" | "outgoing",
     timestamp: Date
   ) {
     return await db
-      .insert(messages)
-      .values({ contactId, content, direction, createdAt: timestamp });
+      .insert(chatMessages)
+      .values({ chatId, content, direction, createdAt: timestamp });
   }
 
   public async updateChatLastUserMessageAt(chatId: string) {

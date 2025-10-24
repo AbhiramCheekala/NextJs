@@ -47,7 +47,7 @@ export class WebhookService {
       }
 
       await this.webhookModel.createMessage(
-        dbContact.id,
+        chat.id,
         messageBody,
         "incoming",
         messageTimestamp
