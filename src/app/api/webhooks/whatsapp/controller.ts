@@ -17,6 +17,7 @@ export class WebhookController {
 
       if (this.isWhatsAppWebhookBody(body)) {
         await this.webhookService.processWebhookEvent(body);
+        console.log(body);
         return new NextResponse("OK", { status: 200 });
       } else {
         logger.warn("Invalid webhook event received:", body);
