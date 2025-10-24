@@ -148,6 +148,11 @@ export function ChatView({ chat, onBack }: ChatViewProps) {
               }`}
             >
               {message.content}
+              {message.direction === "outgoing" && (
+                <span className="text-xs opacity-75 ml-2">
+                  {message.status}
+                </span>
+              )}
             </div>
           </div>
         ))}

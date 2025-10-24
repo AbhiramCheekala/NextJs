@@ -3,6 +3,7 @@ import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chats } from "@/lib/drizzle/schema/chats";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { eq } from "drizzle-orm";
+import { ChatStatus } from "./types";
 
 export class WebhookModel {
   public async findContactByPhone(phone: string) {
@@ -47,5 +48,16 @@ export class WebhookModel {
       .update(chats)
       .set({ lastUserMessageAt: new Date() })
       .where(eq(chats.id, chatId));
+  }
+
+  public async updateChatMessageStatus(
+    wamid: string,
+    status: ChatStatus,
+    timestamp: Date
+  ) {
+    return await db
+      .update(chatMessages)
+      .set({ status: status, updatedAt: timestamp })
+      .where(eq(chatMessages.wamid, wamid));
   }
 }

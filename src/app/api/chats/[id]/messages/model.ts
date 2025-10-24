@@ -43,7 +43,8 @@ export class MessageModel {
       messageContentForDb = "Sent 'hello_world' template to start conversation.";
     }
 
-    await whatsapp.sendMessage(chat.contact.phone, messageToSend);
+    const whatsappResponse = await whatsapp.sendMessage(chat.contact.phone, messageToSend);
+    const wamid = whatsappResponse?.messages?.[0]?.id;
 
     await db.insert(chatMessages).values({
       chatId,
@@ -51,6 +52,7 @@ export class MessageModel {
       direction: "outgoing",
       createdAt: now,
       timestamp: now,
+      wamid,
     });
 
     await db.update(chats).set({ lastUserMessageAt: now }).where(eq(chats.id, chatId));
@@ -63,6 +65,7 @@ export class MessageModel {
       timestamp: now.toISOString(),
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
+      status: "pending",
     };
 
     return optimisticResponse;

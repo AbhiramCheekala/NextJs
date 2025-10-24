@@ -19,6 +19,20 @@ export interface WhatsAppValue {
   metadata: WhatsAppMetadata;
   contacts: WhatsAppContact[];
   messages: WhatsAppMessage[];
+  statuses?: WhatsAppStatus[];
+}
+
+export interface WhatsAppStatus {
+  id: string;
+  status: "sent" | "delivered" | "read" | "failed";
+  timestamp: string;
+  recipient_id: string;
+  pricing?: {
+    billable: boolean;
+    pricing_model: string;
+    category: string;
+    type: string;
+  };
 }
 
 export interface WhatsAppMetadata {
@@ -43,3 +57,5 @@ export interface WhatsAppMessage {
   };
   // Add other message types as needed
 }
+
+export type ChatStatus = "pending" | "sent" | "delivered" | "read" | "failed";
