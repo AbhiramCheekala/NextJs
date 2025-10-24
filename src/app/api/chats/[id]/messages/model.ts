@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { chats } from "@/lib/drizzle/schema/chats";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { whatsapp } from "@/lib/whatsapp";
 import { Message } from "@/types/chat";
 import { createId } from "@paralleldrive/cuid2";
@@ -11,6 +11,7 @@ export class MessageModel {
   public getMessages = async (chatId: string) => {
     return await db.query.chatMessages.findMany({
       where: eq(chatMessages.chatId, chatId),
+      orderBy: [asc(chatMessages.timestamp)],
     });
   };
 
