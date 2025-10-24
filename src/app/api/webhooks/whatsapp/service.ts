@@ -1,22 +1,60 @@
+
 import { WebhookModel } from "./model";
+import { WhatsAppWebhookBody, WhatsAppMessage } from "./types";
+import logger from "@/lib/logger";
 
 export class WebhookService {
-  private webhookModel = new WebhookModel();
+  private webhookModel: WebhookModel;
 
-  public processWebhookEvent = async (body: any) => {
-    // Implement logic to process webhook event
-    // For example, save incoming messages to the database
-    if (body.object) {
-      if (
-        body.entry &&
-        body.entry[0].changes &&
-        body.entry[0].changes[0] &&
-        body.entry[0].changes[0].value.messages &&
-        body.entry[0].changes[0].value.messages[0]
-      ) {
-        const msg = body.entry[0].changes[0].value.messages[0];
-        await this.webhookModel.saveMessage(msg);
+  constructor() {
+    this.webhookModel = new WebhookModel();
+  }
+
+  public async processWebhookEvent(body: WhatsAppWebhookBody) {
+    for (const entry of body.entry) {
+      for (const change of entry.changes) {
+        if (change.field === "messages") {
+          const message = change.value.messages[0];
+          if (message) {
+            const contact = change.value.contacts[0];
+            await this.handleIncomingMessage(message, contact);
+          }
+        }
       }
     }
-  };
+  }
+
+  private async handleIncomingMessage(message: WhatsAppMessage, contact: any) {
+    try {
+      const contactPhone = message.from;
+      const contactName = contact.profile.name;
+      const messageBody = message.text?.body || "";
+      const messageTimestamp = new Date(parseInt(message.timestamp) * 1000);
+
+      let dbContact = await this.webhookModel.findContactByPhone(contactPhone);
+
+      if (!dbContact) {
+        dbContact = await this.webhookModel.createContact(contactPhone, contactName);
+      }
+
+      let chat = await this.webhookModel.findChatByContactId(dbContact.id);
+
+      if (!chat) {
+        chat = await this.webhookModel.createChat(dbContact.id);
+      }
+
+      await this.webhookModel.createMessage(
+        chat.id,
+        messageBody,
+        "inbound",
+        messageTimestamp
+      );
+
+      await this.webhookModel.updateChatLastUserMessageAt(chat.id);
+
+      logger.info(`Processed incoming message from ${contactPhone}`);
+    } catch (error) {
+      logger.error("Error handling incoming message:", error);
+    }
+  }
 }

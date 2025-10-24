@@ -107,3 +107,15 @@ This document outlines the recent features implemented in the Next.js applicatio
         - Selected emojis are appended to the message input field.
     - **Backend:**
         - Verified that the existing API and database schema correctly handle and store messages containing emoji characters.
+
+## 12. WhatsApp Webhook Implementation
+
+- **Feature:** Implemented the webhook to receive incoming WhatsApp messages.
+- **Implementation Details:**
+    - **Webhook URL:** `/api/webhooks/whatsapp`
+    - **Architecture:**
+        - **`route.ts`:** Handles webhook verification (`GET`) and receives incoming messages (`POST`).
+        - **`controller.ts`:** Validates the incoming webhook payload and passes it to the service layer.
+        - **`service.ts`:** Contains the core business logic for processing messages. It finds or creates contacts and chats, saves the incoming message to the database, and updates the `lastUserMessageAt` timestamp on the chat to handle the 24-hour rule.
+        - **`model.ts`:** Handles all database operations, such as creating/finding contacts and chats, and saving messages.
+        - **`types.ts`:** Defines TypeScript types for the WhatsApp webhook payload for type safety.
