@@ -56,19 +56,25 @@ export class WebhookService {
       const messageBody = message.text?.body || "";
       const messageTimestamp = new Date(parseInt(message.timestamp) * 1000);
 
+      logger.info(`Processing incoming message from ${contactPhone}. Name: ${contactName}, Body: ${messageBody}`);
+
       let dbContact = await this.webhookModel.findContactByPhone(contactPhone);
+      logger.info(`Contact found: ${dbContact ? dbContact.id : 'none'}`);
 
       if (!dbContact) {
         dbContact = await this.webhookModel.createContact(
           contactPhone,
           contactName
         );
+        logger.info(`Contact created with ID: ${dbContact.id}`);
       }
 
       let chat = await this.webhookModel.findChatByContactId(dbContact.id);
+      logger.info(`Chat found: ${chat ? chat.id : 'none'} for contact ID: ${dbContact.id}`);
 
       if (!chat) {
         chat = await this.webhookModel.createChat(dbContact.id);
+        logger.info(`Chat created with ID: ${chat.id} for contact ID: ${dbContact.id}`);
       }
 
       await this.webhookModel.createMessage(
@@ -77,8 +83,10 @@ export class WebhookService {
         "incoming",
         messageTimestamp
       );
+      logger.info(`Message created in chat ${chat.id}`);
 
       await this.webhookModel.updateChatLastUserMessageAt(chat.id);
+      logger.info(`Chat ${chat.id} lastUserMessageAt updated.`);
 
       logger.info(`Processed incoming message from ${contactPhone}`);
     } catch (error) {

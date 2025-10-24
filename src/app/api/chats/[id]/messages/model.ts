@@ -15,6 +15,7 @@ export class MessageModel {
   };
 
   public sendMessage = async (chatId: string, content: string) => {
+    logger.info(`Attempting to send message for chat ID: ${chatId}`);
     const chat = await db.query.chats.findFirst({
       where: eq(chats.id, chatId),
       with: {
@@ -23,8 +24,10 @@ export class MessageModel {
     });
 
     if (!chat) {
+      logger.error(`Chat not found for ID: ${chatId}`);
       throw new Error("Chat not found");
     }
+    logger.info(`Chat found for ID: ${chatId}. Contact phone: ${chat.contact.phone}`);
 
     const now = new Date();
     const lastUserMessage = chat.lastUserMessageAt ? new Date(chat.lastUserMessageAt) : null;
@@ -36,6 +39,7 @@ export class MessageModel {
     let messageContentForDb = content;
 
     if (hoursSinceLastMessage > 24) {
+      logger.info("24-hour window closed. Sending 'hello_world' template.");
       messageToSend = {
         name: "hello_world",
         language: { code: "en_US" },
@@ -43,7 +47,9 @@ export class MessageModel {
       messageContentForDb = "Sent 'hello_world' template to start conversation.";
     }
 
+    logger.info(`Sending message to WhatsApp for phone: ${chat.contact.phone}`);
     const whatsappResponse = await whatsapp.sendMessage(chat.contact.phone, messageToSend);
+    logger.info(`WhatsApp API response received: ${JSON.stringify(whatsappResponse)}`);
     const wamid = whatsappResponse?.messages?.[0]?.id;
     logger.info(`Storing message with wamid: ${wamid}`);
 
@@ -55,8 +61,10 @@ export class MessageModel {
       timestamp: now,
       wamid,
     });
+    logger.info(`Message stored in DB for chat ID: ${chatId}`);
 
     await db.update(chats).set({ lastUserMessageAt: now }).where(eq(chats.id, chatId));
+    logger.info(`Chat ${chatId} lastUserMessageAt updated.`);
 
     const optimisticResponse: Message = {
       id: createId(),
