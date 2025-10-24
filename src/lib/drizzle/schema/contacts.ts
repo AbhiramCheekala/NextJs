@@ -9,7 +9,7 @@ export const contactsTable = mysqlTable("contacts", {
     .$default(() => createId()),
   name: varchar("name", { length: 255 }).notNull(),
   phone: varchar("phonenumber", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).unique(),
   label: varchar("label", { length: 255 }),
   assignedToUserId: varchar("assigned_to_user_id", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow(),

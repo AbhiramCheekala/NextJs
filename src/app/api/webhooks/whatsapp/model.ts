@@ -14,14 +14,11 @@ export class WebhookModel {
   }
 
   public async createContact(phone: string, name: string) {
-    const result = await db
-      .insert(contactsTable)
-      .values({ phone, name })
-      .returning();
-    return result[0];
+    await db.insert(contactsTable).values({ phone, name });
+    return this.findContactByPhone(phone);
   }
 
-  public async findChatByContactId(contactId: number) {
+  public async findChatByContactId(contactId: string) {
     const result = await db
       .select()
       .from(chats)
@@ -29,23 +26,23 @@ export class WebhookModel {
     return result[0];
   }
 
-  public async createChat(contactId: number) {
-    const result = await db.insert(chats).values({ contactId }).returning();
-    return result[0];
+  public async createChat(contactId: string) {
+    await db.insert(chats).values({ contactId });
+    return this.findChatByContactId(contactId);
   }
 
   public async createMessage(
-    chatId: number,
+    contactId: string,
     content: string,
-    direction: "inbound" | "outbound",
+    direction: "incoming" | "outgoing",
     timestamp: Date
   ) {
     return await db
       .insert(messages)
-      .values({ chatId, content, direction, createdAt: timestamp });
+      .values({ contactId, content, direction, createdAt: timestamp });
   }
 
-  public async updateChatLastUserMessageAt(chatId: number) {
+  public async updateChatLastUserMessageAt(chatId: string) {
     return await db
       .update(chats)
       .set({ lastUserMessageAt: new Date() })

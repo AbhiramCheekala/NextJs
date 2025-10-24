@@ -1,4 +1,3 @@
-
 import { WebhookModel } from "./model";
 import { WhatsAppWebhookBody, WhatsAppMessage } from "./types";
 import logger from "@/lib/logger";
@@ -11,6 +10,7 @@ export class WebhookService {
   }
 
   public async processWebhookEvent(body: WhatsAppWebhookBody) {
+    logger.info("Incoming WhatsApp Webhook:", body);
     for (const entry of body.entry) {
       for (const change of entry.changes) {
         if (change.field === "messages") {
@@ -34,7 +34,10 @@ export class WebhookService {
       let dbContact = await this.webhookModel.findContactByPhone(contactPhone);
 
       if (!dbContact) {
-        dbContact = await this.webhookModel.createContact(contactPhone, contactName);
+        dbContact = await this.webhookModel.createContact(
+          contactPhone,
+          contactName
+        );
       }
 
       let chat = await this.webhookModel.findChatByContactId(dbContact.id);
@@ -44,9 +47,9 @@ export class WebhookService {
       }
 
       await this.webhookModel.createMessage(
-        chat.id,
+        dbContact.id,
         messageBody,
-        "inbound",
+        "incoming",
         messageTimestamp
       );
 
