@@ -15,6 +15,13 @@
       "when": 1758214150266,
       "tag": "0001_flashy_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1761327506753,
+      "tag": "0002_dark_callisto",
+      "breakpoints": true
     }
   ]
 }

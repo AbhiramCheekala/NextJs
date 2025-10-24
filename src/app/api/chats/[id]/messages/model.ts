@@ -45,6 +45,7 @@ export class MessageModel {
 
     const whatsappResponse = await whatsapp.sendMessage(chat.contact.phone, messageToSend);
     const wamid = whatsappResponse?.messages?.[0]?.id;
+    logger.info(`Storing message with wamid: ${wamid}`);
 
     await db.insert(chatMessages).values({
       chatId,

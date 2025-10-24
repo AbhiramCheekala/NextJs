@@ -4,6 +4,7 @@ import { chats } from "@/lib/drizzle/schema/chats";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { eq } from "drizzle-orm";
 import { ChatStatus } from "./types";
+import logger from "@/lib/logger";
 
 export class WebhookModel {
   public async findContactByPhone(phone: string) {
@@ -55,9 +56,9 @@ export class WebhookModel {
     status: ChatStatus,
     timestamp: Date
   ) {
-    return await db
-      .update(chatMessages)
-      .set({ status: status, updatedAt: timestamp })
-      .where(eq(chatMessages.wamid, wamid));
+    logger.info(
+      `Attempting to update message status for wamid: ${wamid} to status: ${status}`
+    );
+    return await db.update(chatMessages);
   }
 }
