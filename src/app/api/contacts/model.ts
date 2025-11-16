@@ -1,4 +1,4 @@
-import { and, eq, inArray, like, sql } from "drizzle-orm";
+import { and, eq, inArray, like, sql, or } from "drizzle-orm";
 import {
   contactInsert,
   contactSelect,
@@ -102,13 +102,22 @@ export const getAllContacts = async (
   const { page, limit, search } = options;
   const offset = (page - 1) * limit;
 
-  let whereClause = search
-    ? like(contactsTable.name, `%${search}%`)
-    : undefined;
+  const conditions = [];
+
+  if (search) {
+    conditions.push(
+      or(
+        like(contactsTable.name, `%${search}%`),
+        like(contactsTable.phone, `%${search}%`)
+      )
+    );
+  }
 
   if (user.role === "member") {
-    whereClause = and(whereClause, eq(contactsTable.assignedToUserId, user.id));
+    conditions.push(eq(contactsTable.assignedToUserId, user.id));
   }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const [contacts, totalResult] = await Promise.all([
     db

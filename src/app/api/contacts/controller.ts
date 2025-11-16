@@ -4,19 +4,6 @@ import { createId } from "@paralleldrive/cuid2";
 import logger from "@/lib/logger";
 import { User } from "@/lib/drizzle/schema/users";
 
-// Assume user is attached to the request object by middleware
-// const user = (req as any).user as User;
-const user: User = {
-  id: "user_2c7O3s8t7r8p9q0a1b2c3d4e5f6g7h8i",
-  name: "Test User",
-  email: "test@example.com",
-  role: "member",
-  password: "password",
-  lastLoginAt: new Date(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
 const contactService = new ContactService();
 
 export async function createContact(req: NextRequest) {
@@ -79,6 +66,7 @@ export async function deleteContact(req: NextRequest, id: string) {
 }
 
 export async function getAllContacts(req: NextRequest) {
+  const user = JSON.parse(req.headers.get("user")!) as User;
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "10", 10);
