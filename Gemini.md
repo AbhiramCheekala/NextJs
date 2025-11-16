@@ -119,3 +119,34 @@ This document outlines the recent features implemented in the Next.js applicatio
         - **`service.ts`:** Contains the core business logic for processing messages. It finds or creates contacts and chats, saves the incoming message to the database, and updates the `lastUserMessageAt` timestamp on the chat to handle the 24-hour rule.
         - **`model.ts`:** Handles all database operations, such as creating/finding contacts and chats, and saving messages.
         - **`types.ts`:** Defines TypeScript types for the WhatsApp webhook payload for type safety.
+
+## 13. Real-time Chat Experience (Polling)
+
+- **Feature:** Implemented a near real-time chat experience using a polling mechanism.
+- **Implementation Details:**
+    - **Chat View:** The active chat conversation now automatically polls for new messages every 3 seconds.
+    - **Chat List:** The main chat list now automatically refreshes every 5 seconds to display new incoming chats and keep the order up-to-date.
+    - **Backend:** The `GET /api/chats` endpoint was updated to sort conversations by the most recent interaction (`updatedAt` timestamp), ensuring active chats appear at the top.
+
+## 14. Chat UI/UX Enhancements
+
+- **Feature:** Several improvements were made to the chat interface to enhance usability and information density.
+- **Implementation Details:**
+    - **Phone Numbers in Chat List:** The contact's phone number is now displayed in the chat list, making it easier to identify contacts.
+    - **Timestamps:**
+        - The chat list now shows a relative timestamp (e.g., "a minute ago") for the last message in each conversation.
+        - The conversation view now displays a timestamp (e.g., "10:30 AM") for each individual message.
+    - **Send Button Loading State:** The "Send" button now enters a disabled, loading state while a message is being sent, providing clear user feedback and preventing duplicate submissions.
+
+## 15. Network Status Notifier
+
+- **Feature:** The application now notifies users of changes in their internet connectivity.
+- **Implementation Details:**
+    - A `NetworkStatusNotifier` component was created to monitor the browser's online/offline status.
+    - Toast messages are displayed to inform the user when their connection is lost or restored.
+    - This feature is active globally across the application.
+
+## 16. Additional Bug Fixes & Improvements
+
+- **Contacts API:** Fixed a critical bug where the contacts API was not working due to an incorrect middleware configuration. The query logic was also improved to allow searching by both name and phone number.
+- **Polling Reliability:** The polling mechanism was made more robust by using a `setTimeout`-based approach and ensuring the chat list is explicitly refetched after a new message is sent.
