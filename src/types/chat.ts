@@ -2,8 +2,6 @@
 import { contactSelect } from "@/lib/drizzle/schema/contacts";
 import { User } from "@/lib/drizzle/schema/users";
 
-import { ChatStatus } from "../app/api/webhooks/whatsapp/types";
-
 export interface Chat {
   id: string;
   contactId: string;
@@ -21,8 +19,7 @@ export interface Message {
   chatId: string;
   content: string;
   direction: "incoming" | "outgoing";
-  timestamp: string;
+  messageTimestamp: string;
   createdAt: string;
   updatedAt: string;
-  status: ChatStatus;
 }

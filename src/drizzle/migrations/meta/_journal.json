@@ -22,6 +22,13 @@
       "when": 1761327506753,
       "tag": "0002_dark_callisto",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1763289575041,
+      "tag": "0003_low_maddog",
+      "breakpoints": true
     }
   ]
 }

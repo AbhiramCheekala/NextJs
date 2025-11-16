@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { apiRequest } from "@/lib/apiClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,15 @@ export function ChatView({ chat, onBack }: ChatViewProps) {
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const windowStatus = useChatStatus(chat?.id ?? null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (chat) {
@@ -90,21 +99,23 @@ export function ChatView({ chat, onBack }: ChatViewProps) {
       case "open":
         return (
           <div className="p-4 border-t relative">
-            <div className="flex">
+            <div className="flex flex-col sm:flex-row items-center">
               <Input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message"
+                className="flex-1"
               />
-              <Button
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="ml-2"
-              >
-                😊
-              </Button>
-              <Button onClick={() => handleSendMessage()} className="ml-2">
-                Send
-              </Button>
+              <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                <Button
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                    😊
+                </Button>
+                <Button onClick={() => handleSendMessage()} className="ml-2">
+                    Send
+                </Button>
+              </div>
             </div>
             {showEmojiPicker && (
               <div className="absolute bottom-16 z-10">
@@ -148,14 +159,11 @@ export function ChatView({ chat, onBack }: ChatViewProps) {
               }`}
             >
               {message.content}
-              {message.direction === "outgoing" && (
-                <span className="text-xs opacity-75 ml-2">
-                  {message.status}
-                </span>
-              )}
+
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
       {renderChatInput()}
     </div>

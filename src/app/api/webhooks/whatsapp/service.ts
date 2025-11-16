@@ -37,13 +37,6 @@ export class WebhookService {
             const contact = change.value.contacts[0];
             await this.handleIncomingMessage(message, contact);
           }
-        } else if (change.value.statuses && change.value.statuses.length > 0) {
-          const statusUpdate = change.value.statuses[0];
-          const wamid = statusUpdate.id;
-          const status = statusUpdate.status;
-          const timestamp = new Date(parseInt(statusUpdate.timestamp) * 1000);
-          await this.webhookModel.updateChatMessageStatus(wamid, status, timestamp);
-          logger.info(`Updated message status for ${wamid} to ${status}`);
         }
       }
     }

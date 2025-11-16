@@ -11,7 +11,7 @@ export class MessageModel {
   public getMessages = async (chatId: string) => {
     return await db.query.chatMessages.findMany({
       where: eq(chatMessages.chatId, chatId),
-      orderBy: [asc(chatMessages.timestamp)],
+      orderBy: [asc(chatMessages.messageTimestamp)],
     });
   };
 
@@ -68,8 +68,7 @@ export class MessageModel {
       chatId,
       content: messageContentForDb,
       direction: "outgoing",
-      createdAt: now,
-      timestamp: now,
+      messageTimestamp: now,
       wamid,
     });
     logger.info(`Message stored in DB for chat ID: ${chatId}`);
@@ -85,10 +84,9 @@ export class MessageModel {
       chatId: chatId,
       content: messageContentForDb,
       direction: "outgoing",
-      timestamp: now.toISOString(),
+      messageTimestamp: now.toISOString(),
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
-      status: "pending",
     };
 
     return optimisticResponse;

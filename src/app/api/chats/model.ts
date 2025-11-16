@@ -1,53 +1,78 @@
-
 import { db } from "@/lib/db";
 import { chats } from "@/lib/drizzle/schema/chats";
 import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
-import { desc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray, sql, and, or, like } from "drizzle-orm";
 
 export class ChatModel {
-  public getChats = async (user: { id: string; role: string }) => {
-    let allChats;
+  public getChats = async (
+    user: { id: string; role: string },
+    page: number,
+    limit: number,
+    search?: string,
+    assignedTo?: string
+  ) => {
+    const offset = (page - 1) * limit;
+
+    const conditions = [];
 
     if (user.role === "member") {
-      const userContacts = await db
-        .select({ id: contactsTable.id })
-        .from(contactsTable)
-        .where(eq(contactsTable.assignedToUserId, user.id));
-
-      if (userContacts.length === 0) {
-        return [];
-      }
-
-      const contactIds = userContacts.map((contact) => contact.id);
-
-      allChats = await db.query.chats.findMany({
-        where: inArray(chats.contactId, contactIds),
-        with: {
-          contact: true,
-          user: true,
-        },
-      });
-    } else {
-      allChats = await db.query.chats.findMany({
-        with: {
-          contact: true,
-          user: true,
-        },
-      });
+      conditions.push(eq(contactsTable.assignedToUserId, user.id));
+    } else if (assignedTo) {
+      conditions.push(eq(contactsTable.assignedToUserId, assignedTo));
     }
+
+    if (search) {
+      conditions.push(
+        or(
+          like(contactsTable.name, `%${search}%`),
+          like(contactsTable.phone, `%${search}%`)
+        )
+      );
+    }
+
+    const contactsWhereClause =
+      conditions.length > 0 ? and(...conditions) : undefined;
+
+    const filteredContacts = await db
+      .select({ id: contactsTable.id })
+      .from(contactsTable)
+      .where(contactsWhereClause);
+
+    if (filteredContacts.length === 0) {
+      return { chats: [], total: 0 };
+    }
+
+    const contactIds = filteredContacts.map((c) => c.id);
+    const chatsWhereClause = inArray(chats.contactId, contactIds);
+
+    const totalResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(chats)
+      .where(chatsWhereClause);
+    const totalChats = totalResult[0].count;
+
+    const allChats = await db.query.chats.findMany({
+      where: chatsWhereClause,
+      with: {
+        contact: true,
+        user: true,
+      },
+      limit: limit,
+      offset: offset,
+    });
 
     const chatsWithLastMessage = await Promise.all(
       allChats.map(async (chat) => {
         const lastMessage = await db.query.chatMessages.findFirst({
           where: eq(chatMessages.chatId, chat.id),
-          orderBy: [desc(chatMessages.timestamp)],
+          orderBy: [desc(chatMessages.messageTimestamp)],
         });
         return { ...chat, lastMessage };
       })
     );
 
-    return chatsWithLastMessage;
+    return { chats: chatsWithLastMessage, total: totalChats };
   };
 
   public getChatStatus = async (chatId: string) => {
@@ -60,7 +85,9 @@ export class ChatModel {
     }
 
     const now = new Date();
-    const lastUserMessage = chat.lastUserMessageAt ? new Date(chat.lastUserMessageAt) : null;
+    const lastUserMessage = chat.lastUserMessageAt
+      ? new Date(chat.lastUserMessageAt)
+      : null;
     const hoursSinceLastMessage = lastUserMessage
       ? (now.getTime() - lastUserMessage.getTime()) / (1000 * 60 * 60)
       : Infinity;

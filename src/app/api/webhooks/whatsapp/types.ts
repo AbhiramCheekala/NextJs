@@ -58,4 +58,3 @@ export interface WhatsAppMessage {
   // Add other message types as needed
 }
 
-export type ChatStatus = "pending" | "sent" | "delivered" | "read" | "failed";

@@ -11,6 +11,7 @@ import { User } from "@/lib/drizzle/schema/users";
 export default function ChatsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [assignedTo, setAssignedTo] = useState<string | undefined>();
+  const [searchTerm, setSearchTerm] = useState('');
   const [canFetch, setCanFetch] = useState(false);
   const [isChatViewVisible, setIsChatViewVisible] = useState(false);
 
@@ -27,7 +28,7 @@ export default function ChatsPage() {
   }, []);
 
   // Pass `canFetch` to the hook to control execution
-  const { chats, loading, error } = useChats(assignedTo, canFetch);
+  const { chats, loading, error, page, setPage, totalPages } = useChats(assignedTo, searchTerm, canFetch);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   const handleSelectChat = (chat: Chat) => {
@@ -53,7 +54,7 @@ export default function ChatsPage() {
   return (
     <div className="flex h-full">
       <div
-        className={`w-full md:w-1/4 border-r ${
+        className={`w-full md:w-2/5 lg:w-1/3 border-r ${
           isChatViewVisible ? "hidden md:block" : ""
         }`}
       >
@@ -62,6 +63,10 @@ export default function ChatsPage() {
           onSelectChat={handleSelectChat}
           userRole={user?.role}
           onFilterChange={setAssignedTo}
+          onSearchChange={setSearchTerm}
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
         />
       </div>
       <div

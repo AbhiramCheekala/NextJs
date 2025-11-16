@@ -9,11 +9,10 @@ export const chatMessages = mysqlTable("chat_messages", {
   chatId: varchar("chat_id", { length: 255 }).notNull(),
   wamid: varchar("wamid", { length: 255 }).unique(),
   content: text("content").notNull(),
-  status: mysqlEnum("status", ["pending", "sent", "delivered", "read", "failed"]).default("pending").notNull(),
   direction: mysqlEnum("direction", ["incoming", "outgoing"]).notNull(),
-  timestamp: timestamp("timestamp").defaultNow().notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").onUpdateNow().defaultNow(),
+  messageTimestamp: timestamp("message_timestamp").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at"),
 });
 
 export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({

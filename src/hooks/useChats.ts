@@ -2,9 +2,14 @@ import useSWR from 'swr';
 import useApiClient from './useApiClient';
 import { Chat } from '@/types/chat';
 import logger from '@/lib/client-logger';
+import { useState } from 'react';
+import { useDebounce } from './useDebounce';
 
-export const useChats = (assignedTo?: string, canFetch = true) => {
+export const useChats = (assignedTo?: string, search?: string, canFetch = true) => {
+  const [page, setPage] = useState(1);
+  const limit = 10;
   const apiClient = useApiClient();
+  const debouncedSearch = useDebounce(search, 500);
 
   const fetcher = async (url: string) => {
     try {
@@ -16,15 +21,28 @@ export const useChats = (assignedTo?: string, canFetch = true) => {
     }
   };
 
-  let url = "/api/chats";
+  let url = `/api/chats?page=${page}&limit=${limit}`;
   if (assignedTo) {
-    url += `?assignedTo=${assignedTo}`;
+    url += `&assignedTo=${assignedTo}`;
+  }
+  if (debouncedSearch) {
+    url += `&search=${debouncedSearch}`;
   }
 
-  const { data, error, isLoading, mutate } = useSWR<Chat[]>(
+  const { data, error, isLoading, mutate } = useSWR<{chats: Chat[], total: number}>(
     canFetch ? url : null,
     fetcher
   );
 
-  return { chats: data || [], loading: isLoading, error, refetch: mutate };
+  const totalPages = data ? Math.ceil(data.total / limit) : 0;
+
+  return {
+    chats: data?.chats || [],
+    loading: isLoading,
+    error,
+    refetch: mutate,
+    page,
+    setPage,
+    totalPages,
+  };
 };
