@@ -31,7 +31,8 @@ export const useChats = (assignedTo?: string, search?: string, canFetch = true) 
 
   const { data, error, isLoading, mutate } = useSWR<{chats: Chat[], total: number}>(
     canFetch ? url : null,
-    fetcher
+    fetcher,
+    { refreshInterval: 5000 } // Poll every 5 seconds
   );
 
   const totalPages = data ? Math.ceil(data.total / limit) : 0;

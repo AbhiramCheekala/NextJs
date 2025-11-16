@@ -28,7 +28,7 @@ export default function ChatsPage() {
   }, []);
 
   // Pass `canFetch` to the hook to control execution
-  const { chats, loading, error, page, setPage, totalPages } = useChats(assignedTo, searchTerm, canFetch);
+  const { chats, loading, error, page, setPage, totalPages, refetch } = useChats(assignedTo, searchTerm, canFetch);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   const handleSelectChat = (chat: Chat) => {
@@ -72,7 +72,7 @@ export default function ChatsPage() {
       <div
         className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
       >
-        <ChatView chat={selectedChat} onBack={handleBackToList} />
+        <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
       </div>
     </div>
   );

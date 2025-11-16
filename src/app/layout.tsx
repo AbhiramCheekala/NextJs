@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import { NetworkStatusNotifier } from '@/components/ui/network-status-notifier';
 
 export const metadata: Metadata = {
   title: 'WhatsApp Command Center',
@@ -22,6 +23,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <NetworkStatusNotifier />
         {children}
         <Toaster />
       </body>

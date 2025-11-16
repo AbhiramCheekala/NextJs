@@ -58,6 +58,7 @@ export class ChatModel {
         contact: true,
         user: true,
       },
+      orderBy: [desc(chats.updatedAt)],
       limit: limit,
       offset: offset,
     });

@@ -11,6 +11,7 @@ import {
 import { User } from "@/lib/drizzle/schema/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatDistanceToNow } from "date-fns";
 
 interface ChatListProps {
   chats: Chat[];
@@ -91,9 +92,17 @@ export function ChatList({
                     <AvatarImage src={chat.contact.avatar} />
                     <AvatarFallback>{chat.contact.name[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="ml-4">
-                    <p className="font-bold">{chat.contact.name}</p>
-                    <p className="text-sm text-gray-500">
+                  <div className="ml-4 w-full">
+                    <div className="flex justify-between">
+                        <p className="font-bold">{chat.contact.name}</p>
+                        {chat.lastMessage && (
+                            <p className="text-xs text-gray-500">
+                                {formatDistanceToNow(new Date(chat.lastMessage.messageTimestamp), { addSuffix: true })}
+                            </p>
+                        )}
+                    </div>
+                    <p className="text-sm text-gray-500">{chat.contact.phone}</p>
+                    <p className="text-sm text-gray-500 mt-1 truncate">
                       {chat.lastMessage?.content}
                     </p>
                   </div>

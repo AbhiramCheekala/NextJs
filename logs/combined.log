@@ -945,3 +945,118 @@ params: bdtgd3g8ewu6sre6zcgsqs0d,1 {"query":"select `id`, `chat_id`, `wamid`, `c
 2025-11-16 17:28:03 [INFO]: Total contacts retrieved: 10 
 2025-11-16 17:29:40 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
 2025-11-16 17:29:40 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:14:03 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:14:03 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:14:21 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:14:21 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:15:41 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:15:41 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:16:33 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:16:34 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:16:38 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:16:38 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:16:55 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:16:55 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:16:55 [INFO]: 24-hour window closed. Sending 'hello_world' template. 
+2025-11-16 21:16:55 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:16:59 [ERROR]: WhatsApp API Error: {"error":{"message":"Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.","type":"OAuthException","code":190,"error_subcode":460,"fbtrace_id":"AvlLWkuidS1GeDS7ucGtF08"}}
+2025-11-16 21:16:59 [ERROR]: Error sending message: Request failed with status code 401 {"stack":"AxiosError: Request failed with status code 401\n    at settle (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:1929:16)\n    at BrotliDecompress.handleStreamEnd (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:3017:181)\n    at BrotliDecompress.emit (node:events:530:35)\n    at endReadableNT (node:internal/streams/readable:1698:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:4086:49)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async WhatsApp.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:734:30)\n    at async MessageModel.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:814:34)\n    at async MessageService.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:859:16)\n    at async MessageController.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:893:29)\n    at async AppRouteRouteModule.do (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:34112)\n    at async AppRouteRouteModule.handle (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:41338)\n    at async doRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1518:42)\n    at async DevServer.renderToResponseWithComponentsImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1920:28)\n    at async DevServer.renderPageComponent (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2408:24)\n    at async DevServer.renderToResponseImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2445:32)\n    at async DevServer.pipeImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1008:25)\n    at async NextNodeServer.handleCatchallRenderRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\next-server.js:305:17)\n    at async DevServer.handleRequestImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:900:17)\n    at async C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:371:20\n    at async Span.traceAsyncFn (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\trace\\trace.js:157:20)\n    at async DevServer.handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:368:24)\n    at async invokeRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:237:21)\n    at async handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:428:24)\n    at async requestHandlerImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:452:13)\n    at async Server.requestListener (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\start-server.js:158:13)"}
+2025-11-16 21:17:32 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:17:32 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:23:38 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:23:39 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:23:47 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:23:47 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:23:55 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:23:55 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:24:02 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:24:02 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:24:11 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:24:11 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:24:11 [INFO]: 24-hour window closed. Sending 'hello_world' template. 
+2025-11-16 21:24:11 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:24:12 [ERROR]: WhatsApp API Error: {"error":{"message":"Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.","type":"OAuthException","code":190,"error_subcode":460,"fbtrace_id":"AqqwtuqZRrF4UYedWZxST7h"}}
+2025-11-16 21:24:12 [ERROR]: Error sending message: Request failed with status code 401 {"stack":"AxiosError: Request failed with status code 401\n    at settle (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:1929:16)\n    at BrotliDecompress.handleStreamEnd (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:3017:181)\n    at BrotliDecompress.emit (node:events:530:35)\n    at endReadableNT (node:internal/streams/readable:1698:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\node_modules_axios_lib_c4a55de8._.js:4086:49)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async WhatsApp.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:734:30)\n    at async MessageModel.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:814:34)\n    at async MessageService.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:859:16)\n    at async MessageController.sendMessage (C:\\Users\\USER\\Desktop\\NextJs\\.next\\server\\chunks\\[root-of-the-server]__094cab0e._.js:893:29)\n    at async AppRouteRouteModule.do (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:34112)\n    at async AppRouteRouteModule.handle (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:41338)\n    at async doRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1518:42)\n    at async DevServer.renderToResponseWithComponentsImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1920:28)\n    at async DevServer.renderPageComponent (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2408:24)\n    at async DevServer.renderToResponseImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2445:32)\n    at async DevServer.pipeImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1008:25)\n    at async NextNodeServer.handleCatchallRenderRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\next-server.js:305:17)\n    at async DevServer.handleRequestImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:900:17)\n    at async C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:371:20\n    at async Span.traceAsyncFn (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\trace\\trace.js:157:20)\n    at async DevServer.handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:368:24)\n    at async invokeRender (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:237:21)\n    at async handleRequest (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:428:24)\n    at async requestHandlerImpl (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:452:13)\n    at async Server.requestListener (C:\\Users\\USER\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\start-server.js:158:13)"}
+2025-11-16 21:25:46 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:25:46 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:25:54 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:25:54 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:25:54 [INFO]: 24-hour window closed. Sending 'hello_world' template. 
+2025-11-16 21:25:54 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:25:56 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSMkZGM0M5Q0M2RjRERTk5QzEzAA==","message_status":"accepted"}]} 
+2025-11-16 21:25:56 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSMkZGM0M5Q0M2RjRERTk5QzEzAA== 
+2025-11-16 21:25:56 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:25:56 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 21:26:02 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:26:02 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:26:03 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:26:03 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:26:03 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:26:04 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNzRGRTMxRTBDRDdGNDBEM0MxAA=="}]} 
+2025-11-16 21:26:04 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNzRGRTMxRTBDRDdGNDBEM0MxAA== 
+2025-11-16 21:26:05 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:26:05 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 21:26:07 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:26:07 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:26:28 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:26:28 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:27:45 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:27:45 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:27:57 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:27:57 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:45:26 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:45:26 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:54:08 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:54:09 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:54:19 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:54:19 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:54:34 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:54:34 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:54:34 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:54:37 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNjUxM0E1NDY5RkRDMUEzOUEzAA=="}]} 
+2025-11-16 21:54:37 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNjUxM0E1NDY5RkRDMUEzOUEzAA== 
+2025-11-16 21:54:37 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:54:37 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 21:58:56 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:58:56 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:59:06 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 21:59:06 [INFO]: Total contacts retrieved: 10 
+2025-11-16 21:59:09 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:59:09 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 21:59:09 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 21:59:12 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSRDE4MEJEOEY5RTVFRkRDRDMzAA=="}]} 
+2025-11-16 21:59:12 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSRDE4MEJEOEY5RTVFRkRDRDMzAA== 
+2025-11-16 21:59:12 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 21:59:12 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 22:00:06 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:00:06 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:00:15 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:00:16 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:02:09 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:02:10 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:03:21 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:03:21 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:03:38 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:03:38 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:03:45 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 22:03:45 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 22:03:45 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 22:03:47 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSMjI4MzQ0Qzk2QUZENjlCMjdDAA=="}]} 
+2025-11-16 22:03:47 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSMjI4MzQ0Qzk2QUZENjlCMjdDAA== 
+2025-11-16 22:03:47 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 22:03:47 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 22:04:17 [INFO]: Attempting to send message for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 22:04:17 [INFO]: Chat found for ID: ackygs4ugrj7tzcb39ra4hed. Contact phone: 919392790456 
+2025-11-16 22:04:17 [INFO]: Sending message to WhatsApp for phone: 919392790456 
+2025-11-16 22:04:22 [INFO]: WhatsApp API response received: {"messaging_product":"whatsapp","contacts":[{"input":"919392790456","wa_id":"919392790456"}],"messages":[{"id":"wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNzM0MkM4MTQzM0U2NkU5OUVCAA=="}]} 
+2025-11-16 22:04:22 [INFO]: Storing message with wamid: wamid.HBgMOTE5MzkyNzkwNDU2FQIAERgSNzM0MkM4MTQzM0U2NkU5OUVCAA== 
+2025-11-16 22:04:22 [INFO]: Message stored in DB for chat ID: ackygs4ugrj7tzcb39ra4hed 
+2025-11-16 22:04:22 [INFO]: Chat ackygs4ugrj7tzcb39ra4hed lastUserMessageAt updated. 
+2025-11-16 22:07:57 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:07:57 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:08:04 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:08:04 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:08:24 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:08:24 [INFO]: Total contacts retrieved: 10 
+2025-11-16 22:08:44 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-11-16 22:08:44 [INFO]: Total contacts retrieved: 10 
