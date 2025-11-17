@@ -33,5 +33,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/chats/:path*', '/api/contacts/:path*'],
+  matcher: ['/api/((?!login|signup|webhooks/whatsapp).*)'],
 };
