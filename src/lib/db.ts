@@ -8,6 +8,7 @@ import * as label from "./drizzle/schema/label";
 import * as messages from "./drizzle/schema/messages";
 import * as templates from "./drizzle/schema/templates";
 import * as users from "./drizzle/schema/users";
+import * as bulkCampaignContacts from "./drizzle/schema/bulkCampaignContacts";
 
 export const pool = mysql.createPool({
   host: process.env.DB_HOST!,
@@ -28,6 +29,9 @@ export const db = drizzle(pool, {
     ...messages,
     ...templates,
     ...users,
+    ...bulkCampaignContacts,
   },
   mode: "default",
 });
+
+export type DB = typeof db;
