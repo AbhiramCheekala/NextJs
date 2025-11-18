@@ -51,29 +51,53 @@ export default function ChatsPage() {
   if (loading || !canFetch) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
-  return (
-    <div className="flex h-full">
-      <div
-        className={`w-full md:w-2/5 lg:w-1/3 border-r ${
-          isChatViewVisible ? "hidden md:block" : ""
-        }`}
-      >
-        <ChatList
-          chats={chats}
-          onSelectChat={handleSelectChat}
-          userRole={user?.role}
-          onFilterChange={setAssignedTo}
-          onSearchChange={setSearchTerm}
-          page={page}
-          setPage={setPage}
-          totalPages={totalPages}
-        />
-      </div>
-      <div
-        className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
-      >
-        <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
-      </div>
-    </div>
-  );
+          return (
+
+            <div className="flex h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
+
+              <div
+
+                className={`w-full md:w-2/5 lg:w-1/3 border-r ${
+
+                  isChatViewVisible ? "hidden md:block" : ""
+
+                }`}
+
+              >
+
+                <ChatList
+
+                  chats={chats}
+
+                  onSelectChat={handleSelectChat}
+
+                  userRole={user?.role}
+
+                  onFilterChange={setAssignedTo}
+
+                  onSearchChange={setSearchTerm}
+
+                  page={page}
+
+                  setPage={setPage}
+
+                  totalPages={totalPages}
+
+                />
+
+              </div>
+
+              <div
+
+                className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
+
+              >
+
+                <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
+
+              </div>
+
+            </div>
+
+          );
 }

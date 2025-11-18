@@ -147,7 +147,7 @@ export default function TemplatesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
       <CreateTemplateDialog
         isOpen={isCreateTemplateOpen}
         onOpenChange={setIsCreateTemplateOpen}
@@ -168,7 +168,7 @@ export default function TemplatesPage() {
         </div>
       </div>
 
-      <Card>
+      <Card className="flex-1 flex flex-col">
         <CardHeader>
           <CardTitle>Template Management</CardTitle>
           <CardDescription>
@@ -176,64 +176,64 @@ export default function TemplatesPage() {
             message templates.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 overflow-y-auto">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {templates.map((template) => (
-                <TableRow key={template.id}>
-                  <TableCell className="font-mono text-xs">
-                    {template.id}
-                  </TableCell>
-                  <TableCell className="font-medium">{template.name}</TableCell>
-                  <TableCell>{template.category}</TableCell>
-                  <TableCell>
-                    <Badge variant={statusVariant(template.status)}>
-                      {template.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{template.lastUpdated}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      title="Preview"
-                      onClick={() => handlePreview(template.name)}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      title="Poll Status"
-                      disabled={template.status !== "PENDING"}
-                      onClick={() => handlePollStatus(template.name)}
-                    >
-                      <RefreshCcw className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="ml-2"
-                      onClick={() => handleEdit(template.name)}
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Updated</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {templates.map((template) => (
+                  <TableRow key={template.id}>
+                    <TableCell className="font-mono text-xs">
+                      {template.id}
+                    </TableCell>
+                    <TableCell className="font-medium">{template.name}</TableCell>
+                    <TableCell>{template.category}</TableCell>
+                    <TableCell>
+                      <Badge variant={statusVariant(template.status)}>
+                        {template.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{template.lastUpdated}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Preview"
+                        onClick={() => handlePreview(template.name)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Poll Status"
+                        disabled={template.status !== "PENDING"}
+                        onClick={() => handlePollStatus(template.name)}
+                      >
+                        <RefreshCcw className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="ml-2"
+                        onClick={() => handleEdit(template.name)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center">

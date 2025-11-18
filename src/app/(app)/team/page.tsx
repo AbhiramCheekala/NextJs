@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import { apiRequest } from "@/lib/apiClient";
 import { UserPlus, ListFilter, Edit3, Trash2 } from "lucide-react";
-import axios from "axios";
-
 import {
   Card,
   CardContent,
@@ -47,8 +46,8 @@ function useUsers() {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("/api/users");
-        setUsers(response.data.data || []);
+        const response = await apiRequest("/api/users", "GET");
+        setUsers(response.data || []);
       } catch (error) {
         logger.error("Failed to fetch users:", error);
       } finally {
@@ -108,7 +107,7 @@ export default function TeamPage() {
   const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
       <AddTeamMemberDialog
         isOpen={isAddMemberDialogOpen}
         onOpenChange={setIsAddMemberDialogOpen}
@@ -124,7 +123,7 @@ export default function TeamPage() {
         </Button>
       </div>
 
-      <Card>
+      <Card className="flex-1 flex flex-col">
         <CardHeader>
           <CardTitle>Team Members</CardTitle>
           <CardDescription>
@@ -137,7 +136,7 @@ export default function TeamPage() {
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 overflow-y-auto">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -211,24 +210,26 @@ export default function TeamPage() {
           </div>
 
           {/* 🔷 Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <Button
-              variant="outline"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Previous
-            </Button>
-            <span className="text-sm text-muted-foreground">
+          <div className="flex justify-end items-center mt-4">
+            <span className="text-sm text-muted-foreground mr-4">
               Page {currentPage} of {totalPages}
             </span>
-            <Button
-              variant="outline"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
-              Next
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+              >
+                Next
+              </Button>
+            </div>
           </div>
 
           <p className="text-center text-muted-foreground mt-6">

@@ -31,6 +31,13 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Define hidden navigation items that are accessible but not displayed in the sidebar
+  const hiddenNavItems = [
+    { href: '/campaigns/new', roles: ['admin'] },
+    { href: '/campaigns/new-bulk', roles: ['admin'] },
+    { href: '/contacts/[id]', roles: ['admin'] },
+  ];
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -48,9 +55,14 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (userRole) {
       const currentPath = pathname;
-      const isAuthorized = filteredNavItems.some(
-        (item) => item.href === currentPath
-      );
+      const isAuthorized =
+        filteredNavItems.some((item) => item.href === currentPath) ||
+        hiddenNavItems.some(
+          (item) =>
+            item.roles?.includes(userRole) &&
+            (item.href === currentPath ||
+              (item.href.includes('[id]') && currentPath.startsWith(item.href.split('[id]')[0])))
+        );
 
       if (!isAuthorized) {
         if (userRole === "admin") {
@@ -60,7 +72,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
         }
       }
     }
-  }, [userRole, pathname, router, filteredNavItems]);
+  }, [userRole, pathname, router, filteredNavItems, hiddenNavItems]);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -113,7 +125,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:py-4">
-          <SidebarTrigger className="md:hidden" />
+          <SidebarTrigger />
           <div className="ml-auto flex items-center gap-2">
             <UserNav />
           </div>

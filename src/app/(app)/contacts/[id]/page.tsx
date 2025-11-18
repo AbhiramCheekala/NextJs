@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/apiClient";
 import {
   Popover,
   PopoverTrigger,
@@ -48,11 +49,7 @@ export default function EditContactPage() {
   const fetchContact = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/contacts?id=${id}`);
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error || "Failed to load contact.");
-
+      const json = await apiRequest(`/api/contacts?id=${id}`, "GET");
       const contact = json.data;
 
       setName(contact.name || "");
@@ -84,15 +81,7 @@ export default function EditContactPage() {
         label: selectedTags.join("++"),
       };
 
-      const res = await fetch(`/api/contacts?id=${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error || "Update failed");
+      await apiRequest(`/api/contacts?id=${id}`, "PUT", payload);
 
       toast({
         title: "Contact Updated",

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/apiClient";
 import {
   Dialog,
   DialogContent,
@@ -50,18 +51,7 @@ export function CreateTemplateDialog({
     setError(null);
 
     try {
-      const res = await fetch("/api/templates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok || result?.error) {
-        throw new Error(result?.error?.message || "Submission failed.");
-      }
-
+      await apiRequest("/api/templates", "POST", form);
       onSuccess(); // Notify parent to refresh or refetch
       onOpenChange(false); // Close dialog
     } catch (err: any) {

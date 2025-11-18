@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/apiClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,11 +25,7 @@ export default function EditContactPage() {
   const fetchContact = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/contacts?id=${id}`);
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error || "Failed to load contact.");
-
+      const json = await apiRequest(`/api/contacts?id=${id}`, "GET");
       const data = json.data;
       setForm({
         name: data.name || "",
@@ -70,15 +67,7 @@ export default function EditContactPage() {
           .filter(Boolean),
       };
 
-      const res = await fetch(`/api/contacts?id=${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error || "Update failed");
+      await apiRequest(`/api/contacts?id=${id}`, "PUT", updates);
 
       toast({
         title: "Contact Updated",

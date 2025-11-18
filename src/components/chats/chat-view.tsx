@@ -173,7 +173,7 @@ export function ChatView({ chat, onBack, onMessageSent }: ChatViewProps) {
         </Button>
         <h2 className="text-xl font-bold">{chat.contact.name}</h2>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 p-4 overflow-y-auto hide-scrollbar">
         {messages.map((message) => (
           <div
             key={message.id}
