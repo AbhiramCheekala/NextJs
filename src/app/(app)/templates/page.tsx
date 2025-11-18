@@ -24,6 +24,7 @@ import logger from "@/lib/client-logger";
 import { CreateTemplateDialog } from "@/components/templates/create-template-dialog";
 import { useToast } from "@/hooks/use-toast";
 import type { VariantProps } from "class-variance-authority";
+import { apiRequest } from "@/lib/apiClient";
 
 type Template = {
   id: string;
@@ -68,13 +69,18 @@ export default function TemplatesPage() {
   const fetchTemplates = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/templates?page=${page}&limit=6`);
-      const { data, meta } = await res.json();
-      setTemplates(data);
+      const res = await apiRequest(`/api/templates?page=${page}&limit=6`, "GET");
+      const { data, meta } = res;
+      setTemplates(data || []);
       setMeta(meta);
       setCurrentPage(page);
     } catch (err) {
       logger.error("Failed to load templates", err);
+      toast({
+        title: "Error",
+        description: "Could not load templates. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -109,8 +115,7 @@ export default function TemplatesPage() {
   const handleSync = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/templates/sync");
-      const data = await res.json();
+      const data = await apiRequest("/api/templates/sync", "GET");
       toast({
         title: "Sync Complete",
         description: `${data.syncedCount} new templates were synced from Meta.`,

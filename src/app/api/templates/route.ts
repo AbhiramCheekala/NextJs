@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   }
 }
 
-import { count, like } from "drizzle-orm";
+import { count, like, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
       .select()
       .from(templates)
       .where(whereCondition)
-      .orderBy(templates.lastUpdated)
+      .orderBy(desc(templates.lastUpdated))
       .limit(limit)
       .offset(offset);
 
