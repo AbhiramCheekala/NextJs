@@ -150,3 +150,10 @@ This document outlines the recent features implemented in the Next.js applicatio
 
 - **Contacts API:** Fixed a critical bug where the contacts API was not working due to an incorrect middleware configuration. The query logic was also improved to allow searching by both name and phone number.
 - **Polling Reliability:** The polling mechanism was made more robust by using a `setTimeout`-based approach and ensuring the chat list is explicitly refetched after a new message is sent.
+
+## 17. Recent Bug Fixes & Refactoring
+
+- **24-Hour Conversation Window Handling:** Fixed a bug where the 24-hour conversation window was being incorrectly reset after sending an outgoing message. The logic has been corrected to only update the timestamp after an *incoming* message is received.
+- **Bulk Campaign Message Sending:** Fixed a critical bug that caused bulk campaign messages to fail. The issue was with how template message components were constructed; the logic has been corrected to assemble the components as a single unit, ensuring compatibility with the WhatsApp API.
+- **Message Sending Logic:** Refactored the WhatsApp message sending logic by moving it from a separate library file directly into the `cron/send-bulk-messages.ts` script. This resolves an issue where environment variables were not being loaded correctly and consolidates the logic for better maintainability.
+- **Code Quality Improvements:** Addressed multiple `no-explicit-any` linting errors across the codebase by introducing more specific types and interfaces. This improves the overall type safety and robustness of the application.

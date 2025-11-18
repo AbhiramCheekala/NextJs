@@ -6,10 +6,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const response = await createBulkCampaignController(body);
     return NextResponse.json(response, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating bulk campaign:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json(
-      { message: "Failed to create bulk campaign", error: error.message },
+      { message: "Failed to create bulk campaign", error: errorMessage },
       { status: 500 }
     );
   }

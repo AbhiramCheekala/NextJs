@@ -1,6 +1,17 @@
 import { createBulkCampaignService } from "./service";
 
-export async function createBulkCampaignController(body: any) {
+interface Contact {
+  name: string;
+  whatsappnumber: string;
+}
+
+interface RequestBody {
+  name: string;
+  templateId: string;
+  contacts: Contact[];
+}
+
+export async function createBulkCampaignController(body: RequestBody) {
   const { name, templateId, contacts } = body;
 
   if (!name || !templateId || !contacts || !Array.isArray(contacts) || contacts.length === 0) {

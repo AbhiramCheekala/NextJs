@@ -26,6 +26,16 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
+interface TemplateComponent {
+  text: string;
+}
+
+interface Template {
+  id: number;
+  name: string;
+  components: TemplateComponent[];
+}
+
 export default function NewCampaignPage() {
   const [templateSearch, setTemplateSearch] = useState("");
   const debouncedSearch = useDebounce(templateSearch, 400);
@@ -37,7 +47,7 @@ export default function NewCampaignPage() {
 
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedTemplateObject, setSelectedTemplateObject] = useState<
-    any | null
+    Template | null
   >(null);
   const [campaignName, setCampaignName] = useState("");
   const { csvData, csvHeaders, csvError, handleFileUpload } =
@@ -45,7 +55,7 @@ export default function NewCampaignPage() {
 
   const handleTemplateChange = (templateId: string) => {
     setSelectedTemplate(templateId);
-    const template = templates.find((t: any) => t.id.toString() === templateId);
+    const template = templates.find((t: Template) => t.id.toString() === templateId);
     setSelectedTemplateObject(template || null);
   };
 
@@ -53,7 +63,7 @@ export default function NewCampaignPage() {
     if (!selectedTemplateObject || !selectedTemplateObject.components)
       return [];
     const variables = new Set<string>();
-    selectedTemplateObject.components.forEach((component: any) => {
+    selectedTemplateObject.components.forEach((component: TemplateComponent) => {
       if (component.text) {
         const matches = component.text.match(/{{(.*?)}}/g);
         if (matches) {
@@ -98,7 +108,7 @@ export default function NewCampaignPage() {
     }
   };
 
-  const templateOptions = templates.map((template: any) => ({
+  const templateOptions = templates.map((template: Template) => ({
     value: template.id.toString(),
     label: template.name,
   }));
