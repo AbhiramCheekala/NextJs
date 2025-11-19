@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
 import { useInView } from "react-intersection-observer";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatListProps {
@@ -50,7 +50,7 @@ export function ChatList({
     }
   }, [inView, hasMore, loading, loadMore]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (scrollContainerRef.current) {
       const newScrollHeight = scrollContainerRef.current.scrollHeight;
       const scrollHeightDifference = newScrollHeight - prevScrollHeightRef.current;
