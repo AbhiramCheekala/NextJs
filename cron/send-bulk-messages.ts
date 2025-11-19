@@ -6,10 +6,15 @@ dotenv.config({ path: ".env.production" }); // Load environment variables
 import { bulkCampaignContacts } from "../src/lib/drizzle/schema/bulkCampaignContacts";
 import { campaigns } from "../src/lib/drizzle/schema/campaigns";
 import { templates } from "../src/lib/drizzle/schema/templates";
+import { contactsTable } from "../src/lib/drizzle/schema/contacts";
+import { chats } from "../src/lib/drizzle/schema/chats";
+import { chatMessages } from "../src/lib/drizzle/schema/chatMessages";
+import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
 import mysql from "mysql2/promise";
 import { drizzle } from "drizzle-orm/mysql2";
 import axios from "axios";
+
 import logger from "../src/lib/logger";
 
 // Env Variables
@@ -70,6 +75,78 @@ export const pool = mysql.createPool({
 });
 
 const db = drizzle(pool);
+
+async function addCampaignMessageToChat(
+  whatsappNumber: string,
+  content: string,
+  wamid: string
+) {
+  // 1. Find the contact by phone number
+  let [contact] = await db
+    .select()
+    .from(contactsTable)
+    .where(eq(contactsTable.phone, whatsappNumber))
+    .limit(1);
+
+  if (!contact) {
+    console.log(
+      `Contact with phone number ${whatsappNumber} not found. Creating new contact.`
+    );
+    const newContactId = createId();
+    await db.insert(contactsTable).values({
+      id: newContactId,
+      name: whatsappNumber, // Use phone number as name
+      phone: whatsappNumber,
+    });
+    [contact] = await db
+      .select()
+      .from(contactsTable)
+      .where(eq(contactsTable.id, newContactId))
+      .limit(1);
+
+    if (!contact) {
+      console.error(`Failed to create new contact for ${whatsappNumber}`);
+      return;
+    }
+  }
+
+  // 2. Find or create the chat for this contact
+  let [chat] = await db
+    .select()
+    .from(chats)
+    .where(eq(chats.contactId, contact.id))
+    .limit(1);
+
+  if (!chat) {
+    const newChatId = createId();
+    await db.insert(chats).values({
+      id: newChatId,
+      contactId: contact.id,
+      status: "open",
+    });
+    [chat] = await db
+      .select()
+      .from(chats)
+      .where(eq(chats.id, newChatId))
+      .limit(1);
+  }
+
+  if (!chat) {
+    console.error(`Could not find or create chat for contact ${contact.id}`);
+    return;
+  }
+
+  // 3. Insert the message into the chatMessages table
+  await db.insert(chatMessages).values({
+    chatId: chat.id,
+    wamid,
+    content,
+    direction: "outgoing",
+    messageTimestamp: new Date(),
+  });
+
+  console.log(`Campaign message added to chat for contact ${contact.id}`);
+}
 
 const MESSAGE_RATE_LIMIT = 6; // messages per minute
 const INTERVAL_MS = (60 / MESSAGE_RATE_LIMIT) * 1000;
@@ -155,7 +232,40 @@ async function sendBulkMessages() {
         };
 
         // Send message
-        await sendMessage(contact.whatsappNumber, templateMessage);
+        const response = await sendMessage(
+          contact.whatsappNumber,
+          templateMessage
+        );
+
+        // Find the body component and replace variables for storing in chat
+        // Ensure template.components is an array (it may be unknown from DB)
+        const templateComponents = Array.isArray((template as any).components)
+          ? (template as any).components
+          : [];
+        const bodyComponent = templateComponents.find(
+          (c: any) => c && (c.type === "BODY" || c.type === "body")
+        );
+        let messageContent = bodyComponent ? (bodyComponent as any).text : "";
+
+        if (bodyComponent && (bodyComponent as any).text) {
+          const templateVariables = bodyParameters.map((p) => p.text);
+          messageContent = (bodyComponent as any).text.replace(
+            /\{\{(\d+)\}\}/g,
+            (_: any, index: string) => {
+              const varIndex = parseInt(index, 10) - 1;
+              return templateVariables[varIndex] || "";
+            }
+          );
+        }
+
+        // Add the campaign message to the chat
+        if (response.messages?.[0]?.id) {
+          await addCampaignMessageToChat(
+            contact.whatsappNumber,
+            messageContent,
+            response.messages[0].id
+          );
+        }
 
         // Mark as sent
         await db

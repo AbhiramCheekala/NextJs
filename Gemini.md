@@ -10,6 +10,22 @@ This document outlines the recent features implemented in the Next.js applicatio
   - The frontend reads the file, extracts contact information (phone, name, email), and sends it to the backend.
   - Error handling and user feedback (toasts) were added for a smoother user experience.
 
+### 1.1. CSV Upload with Template Variables
+
+- **Feature:** When importing contacts for a bulk campaign, users can include values for template variables in the CSV file.
+- **Implementation:**
+  - The CSV file must contain the columns `name` and `phone`.
+  - To include template variables, add columns to the CSV file with headers that match the variable names in your template. For example, if your template is `Hi {{customer_name}}, your order {{order_number}} is ready.`, your CSV should have columns `customer_name` and `order_number`.
+  - The system will automatically map these columns to the template variables when sending the messages.
+
+- **Example CSV format:**
+
+```csv
+name,phone,customer_name,order_number
+John Doe,1234567890,John,123-ABC
+Jane Smith,0987654321,Jane,456-DEF
+```
+
 ## 2. Bulk Contact Import API
 
 - **Feature:** A new API endpoint was created to handle the efficient import of multiple contacts at once.
