@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -26,14 +27,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import { useAnalytics, CampaignPerformance } from "@/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-
 import { AlertTriangle } from "lucide-react";
+import { CampaignDetailsModal } from "@/components/analytics/campaign-details-modal";
 
 export default function AnalyticsPage() {
-  const { analytics, isLoading, error } = useAnalytics();
+  const [page, setPage] = useState(1);
+  const { analytics, isLoading, error } = useAnalytics(page, 5);
+  const [selectedCampaign, setSelectedCampaign] = useState<CampaignPerformance | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = (campaign: CampaignPerformance) => {
+    setSelectedCampaign(campaign);
+    setIsModalOpen(true);
+  };
 
   if (error) {
     return (
@@ -89,6 +98,7 @@ export default function AnalyticsPage() {
     },
     messageStatusBreakdown = [],
     campaignPerformance = [],
+    pagination,
   } = analytics;
 
   return (
@@ -180,7 +190,7 @@ export default function AnalyticsPage() {
                     {campaign.repliesReceived.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(campaign)}>
                       View Details
                     </Button>
                   </TableCell>
@@ -188,8 +198,34 @@ export default function AnalyticsPage() {
               ))}
             </TableBody>
           </Table>
+          <div className="flex justify-end items-center gap-2 mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {pagination?.page} of {pagination?.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page + 1)}
+              disabled={page === pagination?.totalPages}
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
+      <CampaignDetailsModal
+        campaign={selectedCampaign}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </div>
   );
 }

@@ -25,13 +25,21 @@ export interface CampaignPerformance {
   repliesReceived: number;
 }
 
+export interface Pagination {
+  page: number;
+  limit: number;
+  totalCampaigns: number;
+  totalPages: number;
+}
+
 export interface AnalyticsData {
   kpis: Kpis;
   messageStatusBreakdown: MessageStatus[];
   campaignPerformance: CampaignPerformance[];
+  pagination: Pagination;
 }
 
-export function useAnalytics() {
+export function useAnalytics(page = 1, limit = 10) {
   const apiClient = useApiClient();
 
   const fetcher = async (url: string) => {
@@ -45,7 +53,7 @@ export function useAnalytics() {
   };
 
   const { data, error, isLoading, mutate } = useSWR<AnalyticsData>(
-    '/api/analytics',
+    `/api/analytics?page=${page}&limit=${limit}`,
     fetcher
   );
 

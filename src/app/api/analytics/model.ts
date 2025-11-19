@@ -1,12 +1,17 @@
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { messages } from "@/lib/drizzle/schema/messages";
-import { sql, desc, eq } from "drizzle-orm";
+import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
+import { sql, desc, eq, count } from "drizzle-orm";
+import { DB } from "@/lib/db";
 
-export async function getAnalytics(db: any) {
+export async function getAnalytics(db: DB, { page, limit }: { page: number; limit: number }) {
+  const offset = (page - 1) * limit;
+
   // KPIs
-  const totalCampaigns = await db
-    .select({ count: sql<number>`count(*)`.mapWith(Number) })
+  const totalCampaignsResult = await db
+    .select({ count: count() })
     .from(campaigns);
+  const totalCampaigns = totalCampaignsResult[0].count;
 
   const totalMessagesSent = await db
     .select({ count: sql<number>`count(*)`.mapWith(Number) })
@@ -15,8 +20,8 @@ export async function getAnalytics(db: any) {
 
   const totalRepliesReceived = await db
     .select({ count: sql<number>`count(*)`.mapWith(Number) })
-    .from(messages)
-    .where(eq(messages.direction, "incoming"));
+    .from(chatMessages)
+    .where(eq(chatMessages.direction, "incoming"));
 
   const replyRate =
     totalMessagesSent[0].count > 0
@@ -40,22 +45,30 @@ export async function getAnalytics(db: any) {
       name: campaigns.name,
       createdAt: campaigns.createdAt,
       messagesSent: sql<number>`count(case when ${messages.direction} = 'outgoing' then 1 end)`.mapWith(Number),
-      repliesReceived: sql<number>`count(case when ${messages.direction} = 'incoming' then 1 end)`.mapWith(Number),
+      repliesReceived: sql<number>`count(case when ${chatMessages.direction} = 'incoming' then 1 end)`.mapWith(Number),
     })
     .from(campaigns)
     .leftJoin(messages, eq(campaigns.id, messages.campaignId))
+    .leftJoin(chatMessages, eq(campaigns.id, sql`CAST(${chatMessages.chatId} AS UNSIGNED)`))
     .groupBy(campaigns.id)
     .orderBy(desc(campaigns.createdAt))
-    .limit(10);
+    .limit(limit)
+    .offset(offset);
 
   return {
     kpis: {
-      totalCampaigns: totalCampaigns[0].count,
+      totalCampaigns: totalCampaigns,
       totalMessagesSent: totalMessagesSent[0].count,
       totalRepliesReceived: totalRepliesReceived[0].count,
       replyRate: replyRate.toFixed(2),
     },
     messageStatusBreakdown,
     campaignPerformance,
+    pagination: {
+      page,
+      limit,
+      totalCampaigns,
+      totalPages: Math.ceil(totalCampaigns / limit),
+    }
   };
 }
