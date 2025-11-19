@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { KeyRound } from "lucide-react";
+import { KeyRound, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { apiRequest } from "@/lib/apiClient"; // Import apiRequest
@@ -28,7 +28,9 @@ type User = {
 
 export default function UpdatePasswordPage() {
   const [newPassword, setNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [user, setUser] = useState<User | null>(null); // State to hold user info
   const { toast } = useToast();
   const router = useRouter();
@@ -84,7 +86,7 @@ export default function UpdatePasswordPage() {
     }
 
     try {
-      await apiRequest(`/api/users/${userId}/password`, "PUT", { password: newPassword });
+      await apiRequest(`/api/users/${userId}/password`, "PUT", { userId: userId, newPassword: newPassword, confirmPassword: confirmNewPassword });
       toast({
         title: "Password Updated",
         description: `Password for ${user?.name || "user"} has been successfully updated.`,
@@ -124,27 +126,57 @@ export default function UpdatePasswordPage() {
               <Label htmlFor="newPassword" className="md:text-right">
                 New Password
               </Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="col-span-3"
-                placeholder="Enter new password"
-              />
+              <div className="col-span-3 relative">
+                <Input
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="pr-10"
+                  placeholder="Enter new password"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowNewPassword((prev) => !prev)}
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
               <Label htmlFor="confirmNewPassword" className="md:text-right">
                 Confirm New Password
               </Label>
-              <Input
-                id="confirmNewPassword"
-                type="password"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                className="col-span-3"
-                placeholder="Confirm new password"
-              />
+              <div className="col-span-3 relative">
+                <Input
+                  id="confirmNewPassword"
+                  type={showConfirmNewPassword ? "text" : "password"}
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  className="pr-10"
+                  placeholder="Confirm new password"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+                >
+                  {showConfirmNewPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">

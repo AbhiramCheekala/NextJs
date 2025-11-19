@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { apiRequest } from "@/lib/apiClient"; // Import apiRequest
-
+import { apiRequest } from "@/lib/apiClient";
 import {
   Card,
-  CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
+  CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +21,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-
 import { useToast } from "@/hooks/use-toast";
 
 const roles = ["Admin", "Member"];
@@ -43,6 +41,9 @@ export default function AddTeamMemberPage() {
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { toast } = useToast();
   const router = useRouter();
 
@@ -50,171 +51,100 @@ export default function AddTeamMemberPage() {
     const newPassword = generatePassword();
     setPassword(newPassword);
     setConfirmPassword(newPassword);
-    toast({
-      title: "Password Generated",
-      description: "A secure password has been generated and pre-filled.",
-    });
+    toast({ title: "Password Generated", description: "A secure password has been generated." });
   };
 
   const handleSubmit = async () => {
-    if (!name || !email || !role || !password || !confirmPassword) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill out all fields.",
-        variant: "destructive",
-      });
+    if (!name || !email || !password || !confirmPassword || !role) {
+      toast({ title: "Missing Information", description: "Please fill out all fields.", variant: "destructive" });
       return;
     }
-
     if (password !== confirmPassword) {
-      toast({
-        title: "Passwords Mismatch",
-        description: "The password and confirm password fields do not match.",
-        variant: "destructive",
-      });
+      toast({ title: "Passwords Mismatch", description: "Passwords do not match.", variant: "destructive" });
       return;
     }
-
     if (password.length < 8) {
-      toast({
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive",
-      });
+      toast({ title: "Password Too Short", description: "Minimum 8 characters.", variant: "destructive" });
       return;
     }
-
-    const payload = {
-      name,
-      email,
-      password,
-      role,
-      confirmPassword, // Include confirmPassword for backend validation
-    };
 
     try {
-      await apiRequest("/api/users", "POST", payload);
-      toast({
-        title: "Team Member Added",
-        description: `${name} has been successfully added to the team.`,
-      });
-      router.push("/team"); // Navigate back to the team list
-    } catch (error: unknown) {
-      toast({
-        title: "Error Adding Member",
-        description: (error instanceof Error ? error.message : "Something went wrong."),
-        variant: "destructive",
-      });
+      await apiRequest("/api/users", "POST", { name, email, password, confirmPassword, role });
+      toast({ title: "Team Member Added", description: `${name} has been added.` });
+      router.push("/team");
+      router.refresh();
+    } catch (error) {
+      toast({ title: "Error", description: error instanceof Error ? error.message : "Something went wrong.", variant: "destructive" });
     }
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <UserPlus className="mr-2 h-5 w-5" /> Add New Team Member
-          </CardTitle>
-          <CardDescription>
-            Enter the details for the new team member.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-              <Label htmlFor="memberName" className="md:text-right">
-                Name
-              </Label>
-              <Input
-                id="memberName"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="col-span-3"
-                placeholder="John Doe"
-              />
+    <div className="flex justify-center w-full py-10 px-4">
+      <div className="w-full max-w-2xl">
+        <Card className="shadow-md border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+              <UserPlus className="h-5 w-5" /> Add New Team Member
+            </CardTitle>
+            <CardDescription>Fill in the team member details below.</CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            <div className="space-y-1">
+              <Label htmlFor="memberName">Name</Label>
+              <Input id="memberName" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-              <Label htmlFor="memberEmail" className="md:text-right">
-                Email
-              </Label>
-              <Input
-                id="memberEmail"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="col-span-3"
-                placeholder="name@example.com"
-              />
+
+            <div className="space-y-1">
+              <Label htmlFor="memberEmail">Email</Label>
+              <Input id="memberEmail" type="email" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-              <Label htmlFor="memberRole" className="md:text-right">
-                Role
-              </Label>
+
+            <div className="space-y-1">
+              <Label htmlFor="memberPassword">Password</Label>
+              <div className="relative">
+                <Input id="memberPassword" type={showPassword ? "text" : "password"} value={password} placeholder="Enter password" onChange={(e) => setPassword(e.target.value)} className="pr-12" />
+                <Button type="button" variant="ghost" size="sm" className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <div className="relative">
+                <Input id="confirmPassword" type={showConfirmPassword ? "text" : "password"} value={confirmPassword} placeholder="Confirm password" onChange={(e) => setConfirmPassword(e.target.value)} className="pr-12" />
+                <Button type="button" variant="ghost" size="sm" className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Button variant="secondary" size="sm" onClick={handleGeneratePassword}>Auto-generate Password</Button>
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="memberRole">Role</Label>
               <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="col-span-3" id="memberRole">
+                <SelectTrigger id="memberRole">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((r) => (
-                    <SelectItem key={r} value={r.toLowerCase()}>
-                      {r}
-                    </SelectItem>
+                    <SelectItem key={r} value={r.toLowerCase()}>{r}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-              <Label htmlFor="memberPassword" className="md:text-right">
-                Password
-              </Label>
-              <Input
-                id="memberPassword"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="col-span-3"
-                placeholder="Enter password"
-              />
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
+              <Button onClick={handleSubmit}>Add Member</Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-              <Label htmlFor="confirmPassword" className="md:text-right">
-                Confirm Password
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="col-span-3"
-                placeholder="Confirm password"
-              />
-            </div>
-            <div className="col-start-1 md:col-start-2 col-span-full md:col-span-3 flex justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleGeneratePassword}
-                className="mr-2"
-              >
-                Auto-generate Password
-              </Button>
-            </div>
-          </div>
-          <div className="flex justify-end gap-2 mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" onClick={handleSubmit}>
-              Add Member
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
