@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { MessagesSquare } from 'lucide-react';
 import { IncomingReply } from '@/hooks/useDashboard';
 import { formatDistanceToNow } from 'date-fns';
+import Link from 'next/link';
 
 interface IncomingRepliesFeedProps {
   replies: IncomingReply[];
@@ -28,20 +29,22 @@ export function IncomingRepliesFeed({ replies }: IncomingRepliesFeedProps) {
               </div>
             ) : (
               replies.map((reply) => (
-                <div key={reply.id} className="flex items-start space-x-3 p-3 border rounded-md">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{reply.contactId.substring(0, 2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Contact {reply.contactId.substring(0, 6)}...</span>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(reply.timestamp), { addSuffix: true })}
-                      </span>
+                <Link key={reply.id} href={`/chats?contact=${reply.contactId}`} passHref>
+                  <div className="flex items-start space-x-3 p-3 border rounded-md cursor-pointer hover:bg-muted/50 transition-colors">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>{reply.contactName ? reply.contactName.substring(0, 2).toUpperCase() : '??'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">{reply.contactName || `Contact ${reply.contactId.substring(0, 6)}...`}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(reply.timestamp), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground mt-0.5">{reply.content}</p>
                     </div>
-                    <p className="text-sm text-foreground mt-0.5">{reply.content}</p>
                   </div>
-                </div>
+                </Link>
               ))
             )}
           </div>

@@ -32,6 +32,7 @@ export interface IncomingReply {
   content: string;
   timestamp: string;
   contactId: string;
+  contactName: string;
 }
 
 export interface DashboardData {

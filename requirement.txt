@@ -1,0 +1,78 @@
+You are helping me fix a messaging UI. Here is the issue:
+
+Current Behavior:
+- The ChatView loads all messages every 3 seconds (polling).
+- It always auto-scrolls to bottom whenever messages update.
+- When I scroll up to read older messages, the view suddenly jumps back down,
+  making it impossible to read previous messages.
+
+I want to replace this with proper WhatsApp-style infinite scroll:
+
+New Requirements:
+1. Remove automatic scrolling when I scroll up.  
+   Only auto-scroll to bottom when:
+   - A new outgoing message is sent
+   - A new incoming message arrives
+
+2. Implement infinite upward scrolling:
+   - When the user scrolls to the TOP of the message list,
+     fetch OLDER messages from the server.
+   - Append older messages ABOVE the existing ones.
+   - Maintain scroll position (don't jump the user to bottom).
+
+3. Use paginated API for messages:
+   - Something like:
+     GET /api/chats/{chatId}/messages?before={timestamp}&limit=20
+   - The backend should return messages sorted newest-last.
+
+4. Load messages in pages:
+   - First page loads the most recent 20 messages.
+   - When scrolling up: load the next 20 older ones.
+   - No polling of entire history.
+
+5. Update React ChatView:
+   - Replace the polling useEffect.
+   - Add intersection observer or scroll listener.
+   - Do NOT auto-scroll unless a new message is added at the bottom.
+   - Add a "load more" sentinel div at the top of the list.
+
+6. Output should include:
+   - Updated ChatView component code (React)
+   - A custom hook usePaginatedMessages(chatId)
+   - Updated API endpoint for pagination
+   - Proper scroll-restoration logic to keep position stable
+
+7. Important:
+   My types are:
+
+   Chat {
+     id: string;
+     contactId: string;
+     assignedTo: string | null;
+     status: "open" | "closed" | "pending";
+     createdAt: string;
+     updatedAt: string;
+     contact: contactSelect;
+     user: User | null;
+     lastMessage: Message | null;
+   }
+
+   Message {
+     id: string;
+     chatId: string;
+     content: string;
+     direction: "incoming" | "outgoing";
+     messageTimestamp: string;
+     createdAt: string;
+     updatedAt: string;
+   }
+
+8. Produce the full working code solution with:
+   - API route
+   - Hook
+   - Updated component
+   - Types
+   - Explanations
+
+Your goal is to implement WhatsApp-style infinite upward scrolling, 
+remove auto-scroll-down when not needed, and remove the 3-second polling system.

@@ -1,19 +1,21 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useChats } from "@/hooks/useChats";
 import { ChatList } from "@/components/chats/chat-list";
 import { ChatView } from "@/components/chats/chat-view";
 import { Chat } from "@/types/chat";
 import { User } from "@/lib/drizzle/schema/users";
 
-export default function ChatsPage() {
+function Chats() {
   const [user, setUser] = useState<User | null>(null);
   const [assignedTo, setAssignedTo] = useState<string | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const [canFetch, setCanFetch] = useState(false);
   const [isChatViewVisible, setIsChatViewVisible] = useState(false);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -47,57 +49,52 @@ export default function ChatsPage() {
       setSelectedChat(null);
     }
   }, [chats, selectedChat]);
+  
+  // Effect to handle selecting a chat from query param
+  useEffect(() => {
+    const contactId = searchParams.get("contact");
+    if (contactId && chats.length > 0) {
+      const chatToSelect = chats.find((chat) => chat.contactId === contactId);
+      if (chatToSelect) {
+        handleSelectChat(chatToSelect);
+      }
+    }
+  }, [searchParams, chats]);
 
   if (loading || !canFetch) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
-          return (
+  return (
+    <div className="flex h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
+      <div
+        className={`w-full md:w-2/5 lg:w-1/3 border-r ${
+          isChatViewVisible ? "hidden md:block" : ""
+        }`}
+      >
+        <ChatList
+          chats={chats}
+          onSelectChat={handleSelectChat}
+          userRole={user?.role}
+          onFilterChange={setAssignedTo}
+          onSearchChange={setSearchTerm}
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+        />
+      </div>
+      <div
+        className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
+      >
+        <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
+      </div>
+    </div>
+  );
+}
 
-            <div className="flex h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
-
-              <div
-
-                className={`w-full md:w-2/5 lg:w-1/3 border-r ${
-
-                  isChatViewVisible ? "hidden md:block" : ""
-
-                }`}
-
-              >
-
-                <ChatList
-
-                  chats={chats}
-
-                  onSelectChat={handleSelectChat}
-
-                  userRole={user?.role}
-
-                  onFilterChange={setAssignedTo}
-
-                  onSearchChange={setSearchTerm}
-
-                  page={page}
-
-                  setPage={setPage}
-
-                  totalPages={totalPages}
-
-                />
-
-              </div>
-
-              <div
-
-                className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
-
-              >
-
-                <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
-
-              </div>
-
-            </div>
-
-          );
+export default function ChatsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Chats />
+    </Suspense>
+  );
 }
