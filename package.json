@@ -41,7 +41,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@types/xlsx": "^0.0.35",
     "axios": "^1.10.0",
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

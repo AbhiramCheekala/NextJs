@@ -52,7 +52,7 @@ export const navItems: NavItem[] = [
     title: 'Team',
     href: '/team',
     icon: Users2,
-    roles: ['admin'],
+    roles: ['admin', 'member'],
   },
   {
     title: 'Chats',

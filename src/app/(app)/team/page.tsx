@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/apiClient";
-import { UserPlus, ListFilter, Edit3, Trash2 } from "lucide-react";
+import { UserPlus, ListFilter, UserPen, Edit3, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -14,6 +14,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -23,9 +34,9 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AddTeamMemberDialog } from "@/components/team/add-team-member-dialog";
 import { useToast } from "@/hooks/use-toast";
 import logger from "@/lib/client-logger";
+import { useRouter } from "next/navigation";
 
 // 🔷 Pagination settings
 const ITEMS_PER_PAGE = 3;
@@ -42,49 +53,42 @@ function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchUsers = async () => {
+    setIsLoading(true);
+                try {
+                  const response = await apiRequest("/api/users", "GET");
+                  setUsers(response.data || []);
+                } catch (error) {
+                  logger.error("Failed to fetch users:", error);
+                } finally {      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      setIsLoading(true);
-      try {
-        const response = await apiRequest("/api/users", "GET");
-        setUsers(response.data || []);
-      } catch (error) {
-        logger.error("Failed to fetch users:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchUsers();
   }, []);
 
-  return { users, isLoading };
+  return { users, isLoading, refetchUsers: fetchUsers };
 }
 
 const roleVariant = (role: string) => {
   switch (role.toLowerCase()) {
     case "admin":
       return "destructive";
-    case "manager":
-      return "default";
-    case "agent":
+    case "member":
       return "secondary";
     default:
-      return "outline";
+      return "outline"; // Fallback for any other roles, though none are expected now
   }
 };
 
 export default function TeamPage() {
-  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
-  const { users, isLoading } = useUsers();
-
-  const handleAddMemberSuccess = (memberName: string) => {
-    toast({
-      title: "Team Member Added",
-      description: `${memberName} has been successfully added to the team.`,
-    });
-  };
+  const { users, isLoading, refetchUsers } = useUsers();
+  const router = useRouter();
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleEditUser = (userName: string) => {
     toast({
@@ -93,12 +97,30 @@ export default function TeamPage() {
     });
   };
 
-  const handleDeleteUser = (userName: string) => {
-    toast({
-      title: "Delete User (Not Implemented)",
-      description: `Deleting ${userName} will be available soon.`,
-      variant: "destructive",
-    });
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+
+    try {
+      await apiRequest(`/api/users/${userToDelete.id}`, "DELETE");
+      toast({
+        title: "User Deleted",
+        description: `${userToDelete.name} has been successfully removed.`,
+      });
+      refetchUsers(); // Refresh the user list
+      setUserToDelete(null);
+      setShowDeleteDialog(false);
+    } catch (error: unknown) {
+      toast({
+        title: "Error Deleting User",
+        description: (error instanceof Error ? error.message : "Something went wrong."),
+        variant: "destructive",
+      });
+    }
   };
 
   // 🔷 Pagination logic
@@ -108,17 +130,11 @@ export default function TeamPage() {
 
   return (
     <div className="flex flex-col gap-6 h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
-      <AddTeamMemberDialog
-        isOpen={isAddMemberDialogOpen}
-        onOpenChange={setIsAddMemberDialogOpen}
-        onSuccess={handleAddMemberSuccess}
-      />
-
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-headline font-semibold">
           Team Management
         </h1>
-        <Button onClick={() => setIsAddMemberDialogOpen(true)}>
+        <Button onClick={() => router.push("/team/add")}>
           <UserPlus className="mr-2 h-4 w-4" /> Add Team Member
         </Button>
       </div>
@@ -167,7 +183,7 @@ export default function TeamPage() {
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={roleVariant(user.role || "") as any}>
+                      <Badge variant={roleVariant(user.role || "")}>
                         {user.role ?? "—"}
                       </Badge>
                     </TableCell>
@@ -180,11 +196,23 @@ export default function TeamPage() {
                         : "—"}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
+                  <Button
                         variant="ghost"
                         size="icon"
                         title="Edit User"
-                        onClick={() => handleEditUser(user.name)}
+                        onClick={() =>
+                          router.push(`/team/${user.id}/edit`)
+                        }
+                      >
+                        <UserPen className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Update Password"
+                        onClick={() =>
+                          router.push(`/team/${user.id}/update-password`)
+                        }
                       >
                         <Edit3 className="h-4 w-4" />
                       </Button>
@@ -193,7 +221,7 @@ export default function TeamPage() {
                         size="icon"
                         title="Delete User"
                         className="text-destructive hover:text-destructive"
-                        onClick={() => handleDeleteUser(user.name)}
+                        onClick={() => handleDeleteUser(user)} // Pass the full user object
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -255,6 +283,26 @@ export default function TeamPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete{" "}
+              <strong>{userToDelete?.name}</strong> and remove their data
+              from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteUser} className="bg-destructive hover:bg-destructive-foreground">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
