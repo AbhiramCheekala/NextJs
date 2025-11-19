@@ -12,9 +12,6 @@ import { User } from "@/lib/drizzle/schema/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
-import { useInView } from "react-intersection-observer";
-import { useEffect, useLayoutEffect, useRef } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatListProps {
   chats: Chat[];
@@ -22,9 +19,9 @@ interface ChatListProps {
   userRole?: string;
   onFilterChange: (userId: string | undefined) => void;
   onSearchChange: (searchTerm: string) => void;
-  loadMore: () => void;
-  hasMore: boolean;
-  loading: boolean;
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
 }
 
 export function ChatList({
@@ -33,32 +30,12 @@ export function ChatList({
   userRole,
   onFilterChange,
   onSearchChange,
-  loadMore,
-  hasMore,
-  loading,
+  page,
+  setPage,
+  totalPages,
 }: ChatListProps) {
   const { users } = useUsers();
   const { assignContact } = useContacts();
-  const { ref, inView } = useInView();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const prevScrollHeightRef = useRef<number>(0);
-
-  useEffect(() => {
-    if (inView && hasMore && !loading) {
-      prevScrollHeightRef.current = scrollContainerRef.current?.scrollHeight || 0;
-      loadMore();
-    }
-  }, [inView, hasMore, loading, loadMore]);
-
-  useLayoutEffect(() => {
-    if (scrollContainerRef.current) {
-      const newScrollHeight = scrollContainerRef.current.scrollHeight;
-      const scrollHeightDifference = newScrollHeight - prevScrollHeightRef.current;
-      if (scrollHeightDifference > 0) {
-        scrollContainerRef.current.scrollTop += scrollHeightDifference;
-      }
-    }
-  }, [chats]);
 
   const handleAssignContact = (contactId: string, userId: string) => {
     assignContact(contactId, userId);
@@ -97,19 +74,8 @@ export function ChatList({
           </div>
         )}
       </div>
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto hide-scrollbar">
-        {hasMore && (
-          <div ref={ref} className="flex justify-center py-4">
-            {loading && (
-              <div className="space-y-2">
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-              </div>
-            )}
-          </div>
-        )}
-        {chats.length === 0 && !loading ? (
+      <div className="flex-1 overflow-y-auto hide-scrollbar">
+        {chats.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">No chats found.</p>
           </div>
@@ -174,6 +140,25 @@ export function ChatList({
           </ul>
         )}
       </div>
+      {totalPages > 1 && (
+        <div className="p-4 border-t flex items-center justify-between">
+          <Button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+          >
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
