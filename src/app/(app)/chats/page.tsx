@@ -27,8 +27,7 @@ export default function ChatsPage() {
     }
   }, []);
 
-  // Pass `canFetch` to the hook to control execution
-  const { chats, loading, error, page, setPage, totalPages, refetch } = useChats(assignedTo, searchTerm, canFetch);
+  const { chats, loading, error, loadMore, hasMore, refetch } = useChats(assignedTo, searchTerm, canFetch);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   const handleSelectChat = (chat: Chat) => {
@@ -48,7 +47,6 @@ export default function ChatsPage() {
     }
   }, [chats, selectedChat]);
 
-  if (loading || !canFetch) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
           return (
@@ -77,11 +75,11 @@ export default function ChatsPage() {
 
                   onSearchChange={setSearchTerm}
 
-                  page={page}
+                  loadMore={loadMore}
 
-                  setPage={setPage}
+                  hasMore={hasMore}
 
-                  totalPages={totalPages}
+                  loading={loading}
 
                 />
 
