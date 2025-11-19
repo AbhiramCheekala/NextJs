@@ -2,14 +2,15 @@ import { db } from "@/lib/db";
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { messages } from "@/lib/drizzle/schema/messages";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { desc } from "drizzle-orm";
+import { desc, sql, eq, count } from "drizzle-orm";
+import { DB } from "@/lib/db";
 export type Campaign = InferSelectModel<typeof campaigns>;
 export type NewCampaign = InferInsertModel<typeof campaigns>;
 
 export type Message = InferSelectModel<typeof messages>;
 export type NewMessage = InferInsertModel<typeof messages>;
 
-import { eq } from "drizzle-orm";
+// import { eq } from "drizzle-orm"; // Already imported if needed
 
 export async function createCampaign(campaign: NewCampaign): Promise<Campaign> {
   const result = await db.insert(campaigns).values(campaign);
@@ -48,10 +49,26 @@ export async function createMessage(message: NewMessage): Promise<Message> {
   return newMessage;
 }
 
-export async function getAllCampaigns(): Promise<Campaign[]> {
+export async function getAllCampaigns(db: DB, { page, limit }: { page: number; limit: number }) {
+  const offset = (page - 1) * limit;
+
+  const totalCampaignsResult = await db.select({ count: count() }).from(campaigns);
+  const totalCampaigns = totalCampaignsResult[0].count;
+
   const allCampaigns = await db
     .select()
     .from(campaigns)
-    .orderBy(desc(campaigns.createdAt));
-  return allCampaigns;
+    .orderBy(desc(campaigns.createdAt))
+    .limit(limit)
+    .offset(offset);
+
+  return {
+    campaigns: allCampaigns,
+    pagination: {
+      page,
+      limit,
+      totalCampaigns,
+      totalPages: Math.ceil(totalCampaigns / limit),
+    }
+  };
 }

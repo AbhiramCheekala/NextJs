@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wand2, ListFilter } from "lucide-react";
@@ -13,13 +14,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Badge, BadgeVariantProps } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useCampaigns } from "@/hooks/useCampaigns";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const statusVariant = (status: string) => {
+const statusVariant = (status: string): BadgeVariantProps["variant"] => {
   switch (status) {
     case "sent": return "default";
     case "sending": return "secondary";
@@ -32,15 +34,61 @@ const statusVariant = (status: string) => {
 export default function CampaignsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { campaigns, isLoading } = useCampaigns();
+  const [page, setPage] = useState(1);
+  const { campaigns, isLoading, pagination } = useCampaigns(page, 10);
 
-  const handleViewAnalytics = (campaignName: string) => {
-    toast({ title: "View Analytics", description: `Navigating to analytics for ${campaignName}. (Not implemented)` });
+  const handleViewAnalytics = (campaignId: number) => {
+    router.push(`/analytics?campaignId=${campaignId}`);
   };
 
   const handleEditCampaign = (campaignName: string) => {
     toast({ title: "Edit Campaign", description: `Opening editor for ${campaignName}. (Not implemented)` });
   };
+
+  if (isLoading || !campaigns) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-10 w-1/3" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <div className="flex items-center gap-2 pt-4">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 w-24" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-5 w-3/4" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-1/4" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-1/2" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-5 w-20" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -74,29 +122,45 @@ export default function CampaignsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">Loading...</TableCell>
-                </TableRow>
-              ) : (
-                campaigns.map((campaign) => (
+              {(campaigns || []).map((campaign) => (
                   <TableRow key={campaign.id}>
                     <TableCell className="font-medium">{campaign.name}</TableCell>
                     <TableCell>
-                      <Badge variant={statusVariant(campaign.status) as any}>
+                      <Badge variant={statusVariant(campaign.status)}>
                         {campaign.status}
                       </Badge>
                     </TableCell>
                     <TableCell>{format(new Date(campaign.createdAt), "PPP")}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm" className="mr-2" onClick={() => handleViewAnalytics(campaign.name)}>View Analytics</Button>
+                      <Button variant="outline" size="sm" className="mr-2" onClick={() => handleViewAnalytics(campaign.id)}>View Analytics</Button>
                       <Button variant="ghost" size="sm" onClick={() => handleEditCampaign(campaign.name)}>Edit</Button>
                     </TableCell>
                   </TableRow>
                 ))
-              )}
+              }
             </TableBody>
           </Table>
+          </div>
+          <div className="flex justify-end items-center gap-2 mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {pagination?.page} of {pagination?.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page + 1)}
+              disabled={page === pagination?.totalPages}
+            >
+              Next
+            </Button>
           </div>
         </CardContent>
       </Card>

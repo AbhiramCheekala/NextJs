@@ -43,7 +43,10 @@ export async function createCampaign(req: NextRequest) {
 
 export async function getAllCampaigns(req: NextRequest) {
   try {
-    const campaigns = await CampaignService.getAllCampaigns();
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
+    const campaigns = await CampaignService.getAllCampaigns({ page, limit });
     return NextResponse.json({ status: "success", data: campaigns });
   } catch (error) {
     logger.error("Error fetching campaigns: %o", error);

@@ -81,6 +81,6 @@ export async function createCampaignAndSendMessages(
   return campaign;
 }
 
-export async function getAllCampaigns() {
-  return await CampaignModel.getAllCampaigns();
+export async function getAllCampaigns({ page, limit }: { page: number; limit: number }) {
+  return await CampaignModel.getAllCampaigns(db, { page, limit });
 }

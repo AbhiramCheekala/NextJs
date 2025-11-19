@@ -12,7 +12,17 @@ type Campaign = {
   createdAt: string;
 };
 
-export function useCampaigns() {
+interface CampaignsResponse {
+  campaigns: Campaign[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalCampaigns: number;
+    totalPages: number;
+  };
+}
+
+export function useCampaigns(page = 1, limit = 10) {
   const apiClient = useApiClient();
 
   const fetcher = async (url: string) => {
@@ -25,13 +35,14 @@ export function useCampaigns() {
     }
   };
 
-  const { data, error, isLoading, mutate } = useSWR<Campaign[]>(
-    '/api/campaigns',
+  const { data, error, isLoading, mutate } = useSWR<CampaignsResponse>(
+    `/api/campaigns?page=${page}&limit=${limit}`,
     fetcher
   );
 
   return {
-    campaigns: data || [],
+    campaigns: data?.campaigns || [],
+    pagination: data?.pagination,
     isLoading,
     error,
     refetch: mutate,
