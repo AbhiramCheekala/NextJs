@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
@@ -12,7 +11,7 @@ import { User } from "@/lib/drizzle/schema/users";
 function Chats() {
   const [user, setUser] = useState<User | null>(null);
   const [assignedTo, setAssignedTo] = useState<string | undefined>();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [canFetch, setCanFetch] = useState(false);
   const [isChatViewVisible, setIsChatViewVisible] = useState(false);
   const searchParams = useSearchParams();
@@ -25,12 +24,13 @@ function Chats() {
       if (parsedUser.role === "member") {
         setAssignedTo(parsedUser.id);
       }
-      setCanFetch(true); // Enable fetching once user role is determined
+      setCanFetch(true);
     }
   }, []);
 
-  // Pass `canFetch` to the hook to control execution
-  const { chats, loading, error, page, setPage, totalPages, refetch } = useChats(assignedTo, searchTerm, canFetch);
+  const { chats, loading, error, page, setPage, totalPages, refetch } =
+    useChats(assignedTo, searchTerm, canFetch);
+
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   const handleSelectChat = (chat: Chat) => {
@@ -43,18 +43,18 @@ function Chats() {
     setSelectedChat(null);
   };
 
-  // Update selected chat when chat list changes to avoid stale data
   useEffect(() => {
     if (chats.length > 0 && !chats.find((c) => c.id === selectedChat?.id)) {
       setSelectedChat(null);
     }
   }, [chats, selectedChat]);
-  
-  // Effect to handle selecting a chat from query param
+
   useEffect(() => {
     const contactId = searchParams.get("contact");
     if (contactId && chats.length > 0) {
-      const chatToSelect = chats.find((chat) => chat.contactId === contactId);
+      const chatToSelect = chats.find(
+        (chat) => chat.contactId === contactId
+      );
       if (chatToSelect) {
         handleSelectChat(chatToSelect);
       }
@@ -65,11 +65,11 @@ function Chats() {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem-2rem)] sm:h-[calc(100vh-3.5rem)]">
+    <div className="flex h-screen overflow-hidden">
+      {/* LEFT COLUMN — Chat List */}
       <div
-        className={`w-full md:w-2/5 lg:w-1/3 border-r ${
-          isChatViewVisible ? "hidden md:block" : ""
-        }`}
+        className={`w-[380px] border-r shrink-0 ${isChatViewVisible ? "hidden md:block" : ""
+          }`}
       >
         <ChatList
           chats={chats}
@@ -82,10 +82,17 @@ function Chats() {
           totalPages={totalPages}
         />
       </div>
+
+      {/* RIGHT COLUMN — Chat View */}
       <div
-        className={`flex-1 ${isChatViewVisible ? "block" : "hidden md:block"}`}
+        className={`flex-1 min-w-0 ${isChatViewVisible ? "block" : "hidden md:block"
+          }`}
       >
-        <ChatView chat={selectedChat} onBack={handleBackToList} onMessageSent={refetch} />
+        <ChatView
+          chat={selectedChat}
+          onBack={handleBackToList}
+          onMessageSent={refetch}
+        />
       </div>
     </div>
   );
