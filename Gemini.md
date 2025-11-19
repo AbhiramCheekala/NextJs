@@ -173,3 +173,31 @@ Jane Smith,0987654321,Jane,456-DEF
 - **Bulk Campaign Message Sending:** Fixed a critical bug that caused bulk campaign messages to fail. The issue was with how template message components were constructed; the logic has been corrected to assemble the components as a single unit, ensuring compatibility with the WhatsApp API.
 - **Message Sending Logic:** Refactored the WhatsApp message sending logic by moving it from a separate library file directly into the `cron/send-bulk-messages.ts` script. This resolves an issue where environment variables were not being loaded correctly and consolidates the logic for better maintainability.
 - **Code Quality Improvements:** Addressed multiple `no-explicit-any` linting errors across the codebase by introducing more specific types and interfaces. This improves the overall type safety and robustness of the application.
+
+## 18. Infinite Scroll and Real-time Chat
+
+- **Feature:** Replaced the inefficient, polling-based chat with a modern, performant, and user-friendly infinite scroll implementation. This provides a near real-time experience, improves performance, and fixes major UI/UX issues.
+
+- **Problem:**
+  - The previous implementation polled the entire chat history every 3 seconds, which was highly inefficient and scaled poorly.
+  - It unconditionally auto-scrolled to the bottom on every poll, making it impossible for users to scroll up and read previous messages without being forcefully scrolled back down.
+
+- **Implementation Details:**
+  - **1. Paginated Messages API:**
+    - The backend endpoint `GET /api/chats/[id]/messages` was enhanced to support cursor-based pagination.
+    - It now accepts a `limit` and a `before` (timestamp) parameter to fetch older messages in pages.
+    - It also accepts an `after` (timestamp) parameter for efficiently polling only for *new* messages since the last fetch.
+
+  - **2. `usePaginatedMessages` Hook:**
+    - A new custom hook (`src/hooks/usePaginatedMessages.ts`) was created to encapsulate all the client-side logic for a chat.
+    - It manages the message state, fetching initial messages, loading older messages on demand (`fetchMore`), and running a lightweight poll (every 3s) for new messages.
+
+  - **3. `ChatView` Component Refactor:**
+    - The `ChatView` component was completely refactored to use the new hook.
+    - **Infinite Scroll:** An `IntersectionObserver` is used to detect when the user scrolls to the top of the message list. This automatically calls `fetchMore` to load the previous page of messages.
+    - **Scroll Position Preservation:** A robust scroll-handling mechanism was implemented using `useLayoutEffect` and an `onScroll` listener. When older messages are prepended to the top of the chat, the user's scroll position is maintained, preventing the view from jumping.
+    - **Smart Auto-Scroll:** The chat now only auto-scrolls to the bottom to reveal a new message if the user is already at the bottom of the list. If they have scrolled up, the new message is loaded but the view remains in place.
+
+- **Benefits:**
+  - **Performance:** Network requests are now much smaller and more efficient, significantly reducing server load and improving client-side performance.
+  - **User Experience:** The frustrating auto-scroll issue is resolved. Users can now freely scroll through chat history. The experience of loading older messages is now seamless and intuitive, just like in modern messaging applications.

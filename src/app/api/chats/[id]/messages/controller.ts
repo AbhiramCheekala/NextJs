@@ -7,7 +7,17 @@ export class MessageController {
 
   public getMessages = async (req: NextRequest, chatId: string) => {
     try {
-      const messages = await this.messageService.getMessages(chatId);
+      const { searchParams } = req.nextUrl;
+      const limit = parseInt(searchParams.get("limit") || "50", 10);
+      const before = searchParams.get("before") || undefined;
+      const after = searchParams.get("after") || undefined;
+
+      const messages = await this.messageService.getMessages(
+        chatId,
+        limit,
+        before,
+        after
+      );
       return NextResponse.json(messages);
     } catch (error) {
       logger.error("Error fetching messages:", error);
