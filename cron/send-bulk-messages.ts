@@ -77,6 +77,7 @@ export const pool = mysql.createPool({
 const db = drizzle(pool);
 
 async function addCampaignMessageToChat(
+  name: string,
   whatsappNumber: string,
   content: string,
   wamid: string
@@ -95,7 +96,7 @@ async function addCampaignMessageToChat(
     const newContactId = createId();
     await db.insert(contactsTable).values({
       id: newContactId,
-      name: whatsappNumber, // Use phone number as name
+      name: name, // Use phone number as name
       phone: whatsappNumber,
     });
     [contact] = await db
@@ -261,6 +262,7 @@ async function sendBulkMessages() {
         // Add the campaign message to the chat
         if (response.messages?.[0]?.id) {
           await addCampaignMessageToChat(
+            contact.name,
             contact.whatsappNumber,
             messageContent,
             response.messages[0].id
