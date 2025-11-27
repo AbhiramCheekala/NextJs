@@ -1,8 +1,8 @@
 "use client";
 
-import useSWR from 'swr';
-import useApiClient from '@/hooks/useApiClient';
-import logger from '@/lib/client-logger';
+import useSWR from "swr";
+import useApiClient from "@/hooks/useApiClient";
+import logger from "@/lib/client-logger";
 
 export interface CampaignAnalyticsData {
   sent: number;
@@ -20,10 +20,13 @@ export function useCampaignAnalytics(campaignId: number | null) {
   const fetcher = async (url: string) => {
     if (!campaignId) return null;
     try {
-      const res = await apiClient(url, 'GET');
+      const res = await apiClient(url, "GET");
       return res.data;
     } catch (err) {
-      logger.error(`Failed to fetch analytics for campaign ${campaignId}:`, err);
+      logger.error(
+        `Failed to fetch analytics for campaign ${campaignId}:`,
+        err
+      );
       throw err;
     }
   };

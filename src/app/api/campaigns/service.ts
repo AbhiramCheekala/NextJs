@@ -2,7 +2,8 @@ import { db } from "@/lib/db";
 import * as CampaignModel from "./model";
 import * as ContactModel from "@/app/api/contacts/model";
 import { getTemplateById } from "@/app/api/templates/model";
-import { whatsapp } from "@/lib/whatsapp"; // Assuming this function exists
+import { whatsapp } from "@/lib/whatsapp";
+import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts"; // Added
 
 export async function createCampaignAndSendMessages(
   name: string,
@@ -28,7 +29,7 @@ export async function createCampaignAndSendMessages(
   // 3. Get the contacts
   const contacts = await ContactModel.getContactsByIds(contactIds);
 
-  // 4. Send messages and create message records
+  // 4. Send messages and create message records in bulkCampaignContacts
   for (const contact of contacts) {
     try {
       const components = template.components
@@ -46,7 +47,8 @@ export async function createCampaignAndSendMessages(
 
           // Replace general template variables
           for (const key in templateVariables) {
-            populatedText = populatedText.replace(key, templateVariables[key]);
+            const placeholder = new RegExp(`{{${key}}}`, 'g');
+            populatedText = populatedText.replace(placeholder, templateVariables[key]);
           }
           component.text = populatedText;
         }
@@ -59,21 +61,24 @@ export async function createCampaignAndSendMessages(
         components,
       });
 
-      await CampaignModel.createMessage({
-        contactId: contact.id,
+      // Create record in bulkCampaignContacts for sent message
+      await db.insert(bulkCampaignContacts).values({
         campaignId: campaign.id,
-        content: JSON.stringify(template.components),
-        direction: "outgoing",
+        name: contact.name,
+        whatsappNumber: contact.phone,
+        variables: templateVariables, // Store the variables used for this contact
         status: "sent",
+        sentAt: new Date(),
       });
     } catch (error) {
-      await CampaignModel.createMessage({
-        contactId: contact.id,
+      // Create record in bulkCampaignContacts for failed message
+      await db.insert(bulkCampaignContacts).values({
         campaignId: campaign.id,
-        content: JSON.stringify(template.components),
-        direction: "outgoing",
+        name: contact.name,
+        whatsappNumber: contact.phone,
+        variables: templateVariables, // Store the variables even if failed
         status: "failed",
-        error: (error as Error).message,
+        sentAt: null, // Message failed, so not sent at a specific time
       });
     }
   }

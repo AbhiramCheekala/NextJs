@@ -1,16 +1,10 @@
 import { db } from "@/lib/db";
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
-import { messages } from "@/lib/drizzle/schema/messages";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { desc, sql, eq, count } from "drizzle-orm";
 import { DB } from "@/lib/db";
 export type Campaign = InferSelectModel<typeof campaigns>;
 export type NewCampaign = InferInsertModel<typeof campaigns>;
-
-export type Message = InferSelectModel<typeof messages>;
-export type NewMessage = InferInsertModel<typeof messages>;
-
-// import { eq } from "drizzle-orm"; // Already imported if needed
 
 export async function createCampaign(campaign: NewCampaign): Promise<Campaign> {
   const result = await db.insert(campaigns).values(campaign);
@@ -27,26 +21,6 @@ export async function createCampaign(campaign: NewCampaign): Promise<Campaign> {
   }
 
   return newCampaign;
-}
-
-import { createId } from "@paralleldrive/cuid2";
-
-export async function createMessage(message: NewMessage): Promise<Message> {
-  const newMessageId = message.id || createId();
-  await db.insert(messages).values({ ...message, id: newMessageId });
-
-  const [newMessage] = await db
-    .select()
-    .from(messages)
-    .where(eq(messages.id, newMessageId));
-
-  if (!newMessage) {
-    throw new Error(
-      `Failed to find newly created message with id ${newMessageId}`
-    );
-  }
-
-  return newMessage;
 }
 
 export async function getAllCampaigns(db: DB, { page, limit }: { page: number; limit: number }) {

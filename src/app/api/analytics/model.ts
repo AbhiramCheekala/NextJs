@@ -1,56 +1,82 @@
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
-import { messages } from "@/lib/drizzle/schema/messages";
+import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { sql, desc, eq, count } from "drizzle-orm";
 import { DB } from "@/lib/db";
 
-export async function getAnalytics(db: DB, { page, limit }: { page: number; limit: number }) {
+export async function getAnalytics(
+  db: DB,
+  { page, limit }: { page: number; limit: number }
+) {
   const offset = (page - 1) * limit;
 
   // KPIs
-  const totalCampaignsResult = await db
-    .select({ count: count() })
-    .from(campaigns);
+  const [
+    totalCampaignsResult,
+    totalBulkMessagesSentResult,
+    totalChatMessagesSentResult,
+    totalRepliesReceivedResult,
+  ] = await Promise.all([
+    db.select({ count: count() }).from(campaigns),
+    db
+      .select({ count: count() })
+      .from(bulkCampaignContacts)
+      .where(eq(bulkCampaignContacts.status, "sent")),
+    db
+      .select({ count: count() })
+      .from(chatMessages)
+      .where(eq(chatMessages.direction, "outgoing")),
+    db
+      .select({ count: count() })
+      .from(chatMessages)
+      .where(eq(chatMessages.direction, "incoming")),
+  ]);
+
   const totalCampaigns = totalCampaignsResult[0].count;
-
-  const totalMessagesSent = await db
-    .select({ count: sql<number>`count(*)`.mapWith(Number) })
-    .from(messages)
-    .where(eq(messages.direction, "outgoing"));
-
-  const totalRepliesReceived = await db
-    .select({ count: sql<number>`count(*)`.mapWith(Number) })
-    .from(chatMessages)
-    .where(eq(chatMessages.direction, "incoming"));
+  const totalMessagesSent =
+    totalBulkMessagesSentResult[0].count + totalChatMessagesSentResult[0].count;
+  const totalRepliesReceived = totalRepliesReceivedResult[0].count;
 
   const replyRate =
-    totalMessagesSent[0].count > 0
-      ? (totalRepliesReceived[0].count / totalMessagesSent[0].count) * 100
+    totalMessagesSent > 0
+      ? (totalRepliesReceived / totalMessagesSent) * 100
       : 0;
 
   // Message Status Breakdown
   const messageStatusBreakdown = await db
     .select({
-      status: messages.status,
+      status: bulkCampaignContacts.status,
       count: sql<number>`count(*)`.mapWith(Number),
     })
-    .from(messages)
-    .where(eq(messages.direction, "outgoing"))
-    .groupBy(messages.status);
+    .from(bulkCampaignContacts)
+    .groupBy(bulkCampaignContacts.status);
 
   // Campaign Performance
+  const campaignSentSubquery = db
+    .select({
+      campaignId: bulkCampaignContacts.campaignId,
+      sentCount: count().as("sent_count"),
+    })
+    .from(bulkCampaignContacts)
+    .where(eq(bulkCampaignContacts.status, "sent"))
+    .groupBy(bulkCampaignContacts.campaignId)
+    .as("campaign_sent_subquery");
+
   const campaignPerformance = await db
     .select({
       id: campaigns.id,
       name: campaigns.name,
       createdAt: campaigns.createdAt,
-      messagesSent: sql<number>`count(case when ${messages.direction} = 'outgoing' then 1 end)`.mapWith(Number),
-      repliesReceived: sql<number>`count(case when ${chatMessages.direction} = 'incoming' then 1 end)`.mapWith(Number),
+      messagesSent: sql<number>`coalesce(${campaignSentSubquery.sentCount}, 0)`.mapWith(
+        Number
+      ),
+      repliesReceived: sql<number>`0`.mapWith(Number),
     })
     .from(campaigns)
-    .leftJoin(messages, eq(campaigns.id, messages.campaignId))
-    .leftJoin(chatMessages, eq(campaigns.id, sql`CAST(${chatMessages.chatId} AS UNSIGNED)`))
-    .groupBy(campaigns.id)
+    .leftJoin(
+      campaignSentSubquery,
+      eq(campaigns.id, campaignSentSubquery.campaignId)
+    )
     .orderBy(desc(campaigns.createdAt))
     .limit(limit)
     .offset(offset);
@@ -58,8 +84,8 @@ export async function getAnalytics(db: DB, { page, limit }: { page: number; limi
   return {
     kpis: {
       totalCampaigns: totalCampaigns,
-      totalMessagesSent: totalMessagesSent[0].count,
-      totalRepliesReceived: totalRepliesReceived[0].count,
+      totalMessagesSent: totalMessagesSent,
+      totalRepliesReceived: totalRepliesReceived,
       replyRate: replyRate.toFixed(2),
     },
     messageStatusBreakdown,
@@ -69,6 +95,6 @@ export async function getAnalytics(db: DB, { page, limit }: { page: number; limi
       limit,
       totalCampaigns,
       totalPages: Math.ceil(totalCampaigns / limit),
-    }
+    },
   };
 }

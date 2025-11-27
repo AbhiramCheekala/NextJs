@@ -26,6 +26,7 @@ export function CampaignDetailsModal({
 }: CampaignDetailsModalProps) {
   const { analytics, isLoading, error } = useCampaignAnalytics(campaign?.id ?? null);
 
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
@@ -45,11 +46,11 @@ export function CampaignDetailsModal({
           <div className="text-red-500 p-6">Failed to load campaign details.</div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 p-6">
-            <KpiCard title="Sent" value={analytics.sent.toLocaleString()} icon={Send} />
-            <KpiCard title="Delivered" value={analytics.delivered.toLocaleString()} icon={CheckCircle2} />
-            <KpiCard title="Read" value={analytics.read.toLocaleString()} icon={Eye} />
-            <KpiCard title="Failed" value={analytics.failed.toLocaleString()} icon={XCircle} />
-            <KpiCard title="Replies" value={analytics.repliesReceived.toLocaleString()} icon={MessageSquareReply} />
+            <KpiCard title="Sent" value={analytics.sent} icon={Send} />
+            <KpiCard title="Delivered" value={analytics.delivered} icon={CheckCircle2} />
+            <KpiCard title="Read" value={analytics.read} icon={Eye} />
+            <KpiCard title="Failed" value={analytics.failed} icon={XCircle} />
+            <KpiCard title="Replies" value={analytics.repliesReceived} icon={MessageSquareReply} />
             <KpiCard title="Delivery Rate" value={`${analytics.deliveryRate}%`} icon={Percent} />
             <KpiCard title="Reply Rate" value={`${analytics.replyRate}%`} icon={Percent} />
           </div>

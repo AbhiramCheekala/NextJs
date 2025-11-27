@@ -38,6 +38,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     { href: '/contacts/[id]', roles: ['admin'] },
     { href: '/team/add', roles: ['admin'] },
     { href: '/team/[id]', roles: ['admin'] },
+    { href: '/campaigns/[id]', roles: ['admin'] },
   ];
 
   useEffect(() => {

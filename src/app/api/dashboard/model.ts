@@ -1,5 +1,5 @@
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
-import { messages } from "@/lib/drizzle/schema/messages";
+import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts"; // Added
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
 import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chats } from "@/lib/drizzle/schema/chats"; // Import chats table
@@ -9,22 +9,18 @@ import { DB } from "@/lib/db";
 export async function getDashboardData(db: DB) {
   // KPIs
   const kpiQueries = [
-    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(messages).where(eq(messages.status, "sent")),
-    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(messages).where(eq(messages.status, "delivered")),
-    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(messages).where(eq(messages.status, "read")),
-    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(chatMessages).where(eq(chatMessages.direction, "incoming")),
-    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(messages).where(eq(messages.status, "failed")),
+    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(bulkCampaignContacts).where(eq(bulkCampaignContacts.status, "sent")), // Refactored from messages.status
+    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(bulkCampaignContacts).where(eq(bulkCampaignContacts.status, "failed")), // Refactored from messages.status
+    db.select({ count: sql<number>`count(*)`.mapWith(Number) }).from(chatMessages).where(eq(chatMessages.direction, "incoming")), // Remains same for replies
   ];
 
   const [
     sent,
-    delivered,
-    read,
-    replied,
     failed,
+    replied,
   ] = await Promise.all(kpiQueries);
 
-  // Recent Campaigns
+  // Recent Campaigns (no change)
   const recentCampaigns = await db
     .select({
       id: campaigns.id,
@@ -39,17 +35,17 @@ export async function getDashboardData(db: DB) {
   // Error Feed
   const errorFeed = await db
     .select({
-      id: messages.id,
-      content: messages.content,
-      error: messages.error,
-      timestamp: messages.timestamp,
+      id: bulkCampaignContacts.id,
+      content: bulkCampaignContacts.whatsappNumber, // Using whatsappNumber as content for error feed
+      error: bulkCampaignContacts.status, // Using status as error indicator
+      timestamp: bulkCampaignContacts.sentAt, // Using sentAt as timestamp
     })
-    .from(messages)
-    .where(eq(messages.status, "failed"))
-    .orderBy(desc(messages.timestamp))
+    .from(bulkCampaignContacts)
+    .where(eq(bulkCampaignContacts.status, "failed"))
+    .orderBy(desc(bulkCampaignContacts.sentAt)) // Order by sentAt
     .limit(5);
 
-  // Incoming Replies
+  // Incoming Replies (no change)
   const incomingReplies = await db
     .select({
       id: chatMessages.id,
@@ -68,10 +64,10 @@ export async function getDashboardData(db: DB) {
   return {
     kpis: {
       messagesSent: sent[0]?.count || 0,
-      messagesDelivered: delivered[0]?.count || 0,
-      messagesRead: read[0]?.count || 0,
-      messagesReplied: replied[0]?.count || 0,
+      messagesDelivered: 0,
+      messagesRead: 0,
       messagesFailed: failed[0]?.count || 0,
+      messagesReplied: replied[0]?.count || 0,
     },
     recentCampaigns: recentCampaigns || [],
     errorFeed: errorFeed || [],
