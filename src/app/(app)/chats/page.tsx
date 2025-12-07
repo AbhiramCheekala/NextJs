@@ -14,6 +14,7 @@ function Chats() {
   const [searchTerm, setSearchTerm] = useState("");
   const [canFetch, setCanFetch] = useState<boolean>(false);
   const [isChatViewVisible, setIsChatViewVisible] = useState(false);
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   const searchParams = useSearchParams();
@@ -110,6 +111,8 @@ function Chats() {
           onFilterChange={setAssignedTo}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
+          showUnreadOnly={showUnreadOnly} // <-- NEW
+          onToggleUnread={() => setShowUnreadOnly((prev) => !prev)}
           page={page}
           setPage={setPage}
           totalPages={totalPages}

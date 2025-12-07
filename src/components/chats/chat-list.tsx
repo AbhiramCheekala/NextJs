@@ -21,6 +21,8 @@ interface ChatListProps {
   onFilterChange: (userId: string | undefined) => void;
   searchTerm: string;
   onSearchChange: (searchTerm: string) => void;
+  showUnreadOnly: boolean;
+  onToggleUnread: () => void;
   page: number;
   setPage: (page: number) => void;
   totalPages: number;
@@ -33,6 +35,8 @@ export function ChatList({
   onFilterChange,
   searchTerm,
   onSearchChange,
+  showUnreadOnly,
+  onToggleUnread,
   page,
   setPage,
   totalPages,
@@ -47,16 +51,27 @@ export function ChatList({
 
   return (
     <div className="border-r flex flex-col h-full">
-      <div className="p-4">
+      <div className="p-2">
         <h2 className="text-xl font-bold">Chats</h2>
 
         {/* Search */}
-        <div className="mt-4">
-          <Input
-            placeholder="Search by name or phone..."
+        <div className="flex items-center gap-2 p-2">
+          <input
+            type="text"
             value={searchTerm ?? ""}
             onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Search contacts and names..."
+            className="border bg-gray-100 rounded text-sm px-3 py-2 w-full"
           />
+
+          <button
+            className={`px-3 py-2 text-sm rounded border ${
+              showUnreadOnly ? "bg-blue-950 text-white" : " bg-gray-100"
+            }`}
+            onClick={onToggleUnread}
+          >
+            Unread
+          </button>
         </div>
 
         {/* Filter (admin only) */}

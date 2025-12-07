@@ -56,7 +56,7 @@ export const useChats = (
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
 
   // 🔥 Only treat very first load as "loading"
-  const loading = !data && !error && !!swrKey;
+  const loading = !data && !error;
 
   return {
     chats: data?.chats || [],
