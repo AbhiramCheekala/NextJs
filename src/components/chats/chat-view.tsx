@@ -16,7 +16,7 @@ import {
   AlertDescription,
   AlertTitle
 } from "@/components/ui/alert";
-import { Terminal, ArrowLeft, Loader2 } from "lucide-react";
+import { Terminal, ArrowLeft, Loader2, Check, CheckCheck, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 
 interface ChatViewProps {
@@ -209,10 +209,26 @@ export function ChatView({
               >
                 {message.content}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 mt-1 flex items-center">
                 {format(
                   new Date(message.messageTimestamp),
                   "p"
+                )}
+                {message.direction === "outgoing" && (
+                  <>
+                    {message.status === "sent" && (
+                      <Check className="h-3 w-3 ml-1 text-gray-500" />
+                    )}
+                    {message.status === "delivered" && (
+                      <CheckCheck className="h-3 w-3 ml-1 text-gray-500" />
+                    )}
+                    {message.status === "read" && (
+                      <CheckCheck className="h-3 w-3 ml-1 text-blue-500" />
+                    )}
+                    {message.status === "failed" && (
+                      <XCircle className="h-3 w-3 ml-1 text-red-500" />
+                    )}
+                  </>
                 )}
               </p>
             </div>

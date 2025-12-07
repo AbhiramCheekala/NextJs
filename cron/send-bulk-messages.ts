@@ -74,6 +74,7 @@ async function addCampaignMessageToChat(
     wamid,
     content,
     direction: "outgoing",
+    status: "sent",
     messageTimestamp: new Date(),
   });
 }

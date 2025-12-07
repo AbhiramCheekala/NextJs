@@ -19,6 +19,7 @@ export interface Message {
   chatId: string;
   content: string;
   direction: "incoming" | "outgoing";
+  status: "pending" | "sent" | "delivered" | "read" | "failed";
   messageTimestamp: string;
   createdAt: string;
   updatedAt: string;
