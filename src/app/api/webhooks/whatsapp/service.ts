@@ -43,6 +43,7 @@ export class WebhookService {
 
             // --- STATUS UPDATES (sent, delivered, read) ---
             if (change.value.statuses?.length) {
+              logger.info(`[WEBHOOK_SERVICE] Status update detected. Count: ${change.value.statuses.length}`);
               for (const status of change.value.statuses) {
                 await this.handleMessageStatus(status);
               }
@@ -107,6 +108,8 @@ export class WebhookService {
   private async handleMessageStatus(status: WhatsAppStatus) {
     try {
       const { id: wamid, status: newStatus, timestamp } = status;
+
+      logger.info(`[WEBHOOK_SERVICE] Processing status update for wamid: ${wamid}. New status: ${newStatus}`);
 
       logger.info(`Updating status for message ${wamid} → ${newStatus}`);
 

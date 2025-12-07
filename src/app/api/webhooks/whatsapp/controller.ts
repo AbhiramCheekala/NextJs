@@ -13,6 +13,11 @@ export class WebhookController {
   public async handleWebhookEvent(req: NextRequest) {
     try {
       const body = await req.json();
+      // DEEP LOGGING TO DEBUG STATUSES
+      logger.info("--- RAW WHATSAPP WEBHOOK PAYLOAD ---");
+      logger.info(JSON.stringify(body, null, 2));
+      logger.info("------------------------------------");
+
       logger.info("Received WhatsApp webhook event:", body);
 
       if (this.isWhatsAppWebhookBody(body)) {

@@ -62,12 +62,16 @@ export class WebhookModel {
     newStatus: "sent" | "delivered" | "read" | "failed",
     timestamp: Date
   ) {
-    return await db
+    logger.info(`[DB_MODEL] Updating wamid: ${wamid} to status: ${newStatus}`);
+    const result = await db
       .update(chatMessages)
       .set({
         status: newStatus,
         updatedAt: timestamp,
       })
       .where(eq(chatMessages.wamid, wamid));
+    
+    logger.info(`[DB_MODEL] Update result for wamid ${wamid}: ${JSON.stringify(result)}`);
+    return result;
   }
 }
