@@ -197,14 +197,14 @@ export function ChatView({
             <div
               key={message.id}
               className={`flex flex-col mb-2 ${message.direction === "outgoing"
-                  ? "items-end"
-                  : "items-start"
+                ? "items-end"
+                : "items-start"
                 }`}
             >
               <div
                 className={`p-2 rounded-lg max-w-md ${message.direction === "outgoing"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
                   }`}
               >
                 {message.content}
@@ -283,9 +283,13 @@ export function ChatView({
                 placeholder="Type a message"
                 className="flex-1"
                 disabled={isSending}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && handleSendMessage()
-                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+
               />
 
               <div className="flex mt-2 sm:mt-0 sm:ml-2">
