@@ -109,15 +109,21 @@ export function ChatView({
   };
 
   const handleSendMessage = async (content?: string) => {
-    if (!chat || isSending) return;
+    console.log("[ChatView] handleSendMessage triggered.");
+    if (!chat || isSending) {
+      console.log("[ChatView] handleSendMessage aborted (no chat or already sending).");
+      return;
+    }
 
     const messageContent =
       typeof content === "string"
         ? content
         : newMessage;
 
-    if (messageContent.trim() === "" && windowStatus === "open")
+    if (messageContent.trim() === "" && windowStatus === "open") {
+      console.log("[ChatView] handleSendMessage aborted (empty message).");
       return;
+    }
 
     setIsSending(true);
     scrollRef.current.shouldStickToBottom = true;
@@ -129,12 +135,17 @@ export function ChatView({
         { content: messageContent }
       );
 
+      console.log("[ChatView] Message sent successfully. API response:", response);
       addMessage(response);
+      
+      console.log("[ChatView] Clearing newMessage state.");
       setNewMessage("");
+      
       onMessageSent();
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("[ChatView] Error sending message:", error);
     } finally {
+      console.log("[ChatView] Resetting isSending state.");
       setIsSending(false);
     }
   };
@@ -284,8 +295,9 @@ export function ChatView({
                 className="flex-1"
                 disabled={isSending}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
+                    e.stopPropagation();
                     handleSendMessage();
                   }
                 }}

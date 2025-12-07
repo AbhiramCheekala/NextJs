@@ -31,22 +31,8 @@ class WhatsApp {
       };
 
       const response = await this.api.post("/messages", payload);
-      const wamid = response.data.messages?.[0]?.id;
 
       console.log("WhatsApp API response:", response.data);
-
-      // store outgoing message
-      if (chatId && wamid) {
-        await db.insert(chatMessages).values({
-          chatId,
-          content:
-            typeof message === "string" ? message : JSON.stringify(message),
-          direction: "outgoing",
-          wamid,
-          status: "sent",
-          messageTimestamp: new Date(),
-        });
-      }
 
       return response.data;
     } catch (error) {

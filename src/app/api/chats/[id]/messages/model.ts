@@ -95,6 +95,7 @@ export class MessageModel {
       content: messageContentForDb,
       direction: "outgoing",
       wamid,
+      status: "sent",
       messageTimestamp: now,
     });
 
