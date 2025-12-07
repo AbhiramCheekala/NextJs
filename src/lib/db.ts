@@ -5,7 +5,6 @@ import * as chatMessages from "./drizzle/schema/chatMessages";
 import * as chats from "./drizzle/schema/chats";
 import * as contacts from "./drizzle/schema/contacts";
 import * as label from "./drizzle/schema/label";
-import * as messages from "./drizzle/schema/messages";
 import * as templates from "./drizzle/schema/templates";
 import * as users from "./drizzle/schema/users";
 import * as bulkCampaignContacts from "./drizzle/schema/bulkCampaignContacts";
@@ -26,7 +25,6 @@ export const db = drizzle(pool, {
     ...chats,
     ...contacts,
     ...label,
-    ...messages,
     ...templates,
     ...users,
     ...bulkCampaignContacts,

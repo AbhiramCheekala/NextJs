@@ -49,4 +49,25 @@ export class WebhookModel {
       .set({ lastUserMessageAt: new Date() })
       .where(eq(chats.id, chatId));
   }
+
+  public async updateMessageWamid(chatId: string, wamid: string) {
+    return await db
+      .update(chatMessages)
+      .set({ wamid })
+      .where(eq(chatMessages.chatId, chatId));
+  }
+
+  public async updateMessageStatus(
+    wamid: string,
+    newStatus: "sent" | "delivered" | "read" | "failed",
+    timestamp: Date
+  ) {
+    return await db
+      .update(chatMessages)
+      .set({
+        status: newStatus,
+        updatedAt: timestamp,
+      })
+      .where(eq(chatMessages.wamid, wamid));
+  }
 }

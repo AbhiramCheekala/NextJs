@@ -36,6 +36,13 @@
       "when": 1763451687817,
       "tag": "0004_add_bulk_campaign_contacts_table",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1765100337173,
+      "tag": "0005_serious_black_panther",
+      "breakpoints": true
     }
   ]
 }

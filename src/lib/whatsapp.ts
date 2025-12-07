@@ -1,5 +1,7 @@
 import axios from "axios";
 import logger from "./logger";
+import { db } from "./db";
+import { chatMessages } from "./drizzle/schema/chatMessages";
 
 const ACCESS_TOKEN = process.env.WHATSAPP_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
@@ -13,7 +15,11 @@ class WhatsApp {
     },
   });
 
-  public sendMessage = async (to: string, message: object | string) => {
+  public sendMessage = async (
+    to: string,
+    message: object | string,
+    chatId?: string
+  ) => {
     try {
       const payload = {
         messaging_product: "whatsapp",
@@ -25,9 +31,23 @@ class WhatsApp {
       };
 
       const response = await this.api.post("/messages", payload);
+      const wamid = response.data.messages?.[0]?.id;
 
-      // 👇 Log or return the API response
       console.log("WhatsApp API response:", response.data);
+
+      // store outgoing message
+      if (chatId && wamid) {
+        await db.insert(chatMessages).values({
+          chatId,
+          content:
+            typeof message === "string" ? message : JSON.stringify(message),
+          direction: "outgoing",
+          wamid,
+          status: "sent",
+          messageTimestamp: new Date(),
+        });
+      }
+
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -1,15 +1,31 @@
-
-import { mysqlTable, varchar, text, timestamp, mysqlEnum } from "drizzle-orm/mysql-core";
+import {
+  mysqlTable,
+  varchar,
+  text,
+  timestamp,
+  mysqlEnum,
+} from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 import { chats } from "./chats";
 
 export const chatMessages = mysqlTable("chat_messages", {
-  id: varchar("id", { length: 255 }).primaryKey().$default(() => createId()),
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$default(() => createId()),
   chatId: varchar("chat_id", { length: 255 }).notNull(),
   wamid: varchar("wamid", { length: 255 }).unique(),
   content: text("content").notNull(),
   direction: mysqlEnum("direction", ["incoming", "outgoing"]).notNull(),
+  status: mysqlEnum("status", [
+    "pending",
+    "sent",
+    "delivered",
+    "read",
+    "failed",
+  ])
+    .default("pending")
+    .notNull(),
   messageTimestamp: timestamp("message_timestamp").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at"),
