@@ -2,7 +2,7 @@ import useSWR from "swr";
 import useApiClient from "./useApiClient";
 import { Chat } from "@/types/chat";
 import logger from "@/lib/client-logger";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "./useDebounce";
 
 export const useChats = (
@@ -14,6 +14,10 @@ export const useChats = (
   const limit = 10;
   const apiClient = useApiClient();
   const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   const fetcher = async (url: string) => {
     try {
@@ -30,7 +34,7 @@ export const useChats = (
     url += `&assignedTo=${assignedTo}`;
   }
   if (debouncedSearch) {
-    url += `&search=${debouncedSearch}`;
+    url += `&search=${debouncedSearch || ""}`;
   }
 
   const { data, error, isLoading, mutate } = useSWR<{

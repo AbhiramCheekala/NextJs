@@ -52,9 +52,7 @@ function Chats() {
   useEffect(() => {
     const contactId = searchParams.get("contact");
     if (contactId && chats.length > 0) {
-      const chatToSelect = chats.find(
-        (chat) => chat.contactId === contactId
-      );
+      const chatToSelect = chats.find((chat) => chat.contactId === contactId);
       if (chatToSelect) {
         handleSelectChat(chatToSelect);
       }
@@ -68,14 +66,16 @@ function Chats() {
     <div className="flex h-screen overflow-hidden">
       {/* LEFT COLUMN — Chat List */}
       <div
-        className={`w-[380px] border-r shrink-0 ${isChatViewVisible ? "hidden md:block" : ""
-          }`}
+        className={`w-[380px] border-r shrink-0 ${
+          isChatViewVisible ? "hidden md:block" : ""
+        }`}
       >
         <ChatList
           chats={chats}
           onSelectChat={handleSelectChat}
           userRole={user?.role}
           onFilterChange={setAssignedTo}
+          searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           page={page}
           setPage={setPage}
@@ -85,8 +85,9 @@ function Chats() {
 
       {/* RIGHT COLUMN — Chat View */}
       <div
-        className={`flex-1 min-w-0 ${isChatViewVisible ? "block" : "hidden md:block"
-          }`}
+        className={`flex-1 min-w-0 ${
+          isChatViewVisible ? "block" : "hidden md:block"
+        }`}
       >
         <ChatView
           chat={selectedChat}
