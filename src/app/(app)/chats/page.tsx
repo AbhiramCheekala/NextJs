@@ -12,28 +12,40 @@ function Chats() {
   const [user, setUser] = useState<User | null>(null);
   const [assignedTo, setAssignedTo] = useState<string | undefined>();
   const [searchTerm, setSearchTerm] = useState("");
-  const [canFetch, setCanFetch] = useState(false);
+  const [canFetch, setCanFetch] = useState<boolean>(false);
   const [isChatViewVisible, setIsChatViewVisible] = useState(false);
-  const searchParams = useSearchParams();
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
+  const searchParams = useSearchParams();
+  const contactId = searchParams.get("contact") || undefined;
+
+  // Load user from localStorage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser =
+      typeof window !== "undefined" ? localStorage.getItem("user") : null;
+
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      if (parsedUser.role === "member") {
-        setAssignedTo(parsedUser.id);
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+
+        if (parsedUser.role === "member") {
+          setAssignedTo(parsedUser.id);
+        }
+      } catch (e) {
+        console.error("Failed to parse stored user", e);
       }
-      setCanFetch(true);
     }
+
+    setCanFetch(true);
   }, []);
 
   const { chats, loading, error, page, setPage, totalPages, refetch } =
     useChats(assignedTo, searchTerm, canFetch);
 
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-
   const handleSelectChat = (chat: Chat) => {
+    // Avoid setting same chat again and again
+    if (selectedChat?.id === chat.id) return;
     setSelectedChat(chat);
     setIsChatViewVisible(true);
   };
@@ -43,28 +55,49 @@ function Chats() {
     setSelectedChat(null);
   };
 
+  // Auto-deselect the chat if it is no longer present in the list
   useEffect(() => {
-    if (chats.length > 0 && !chats.find((c) => c.id === selectedChat?.id)) {
+    if (!selectedChat) return;
+    const stillExists = chats.some((c) => c.id === selectedChat.id);
+    if (!stillExists) {
       setSelectedChat(null);
+      setIsChatViewVisible(false);
     }
   }, [chats, selectedChat]);
 
+  // Select chat from ?contact= query param (only when we have chats)
   useEffect(() => {
-    const contactId = searchParams.get("contact");
-    if (contactId && chats.length > 0) {
-      const chatToSelect = chats.find((chat) => chat.contactId === contactId);
-      if (chatToSelect) {
+    if (!contactId || chats.length === 0) return;
+
+    const chatToSelect = chats.find(
+      (chat) => chat.contactId === contactId || chat.contact?.id === contactId
+    );
+
+    if (chatToSelect) {
+      // Only update if different from current
+      if (selectedChat?.id !== chatToSelect.id) {
         handleSelectChat(chatToSelect);
       }
     }
-  }, [searchParams, chats]);
+  }, [contactId, chats, selectedChat]);
 
-  if (loading || !canFetch) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
+  // Initial loading (before we know user / canFetch)
+  if (!canFetch) {
+    return <div>Loading...</div>;
+  }
+
+  // Only show loading for the *first* fetch
+  if (loading) {
+    return <div>Loading chats...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {(error as Error).message}</div>;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* LEFT COLUMN — Chat List */}
+      {/* LEFT — Chat List */}
       <div
         className={`w-[380px] border-r shrink-0 ${
           isChatViewVisible ? "hidden md:block" : ""
@@ -83,7 +116,7 @@ function Chats() {
         />
       </div>
 
-      {/* RIGHT COLUMN — Chat View */}
+      {/* RIGHT — Chat View */}
       <div
         className={`flex-1 min-w-0 ${
           isChatViewVisible ? "block" : "hidden md:block"

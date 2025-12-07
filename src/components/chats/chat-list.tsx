@@ -12,6 +12,7 @@ import { User } from "@/lib/drizzle/schema/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
+import { useMemo } from "react";
 
 interface ChatListProps {
   chats: Chat[];
@@ -39,19 +40,17 @@ export function ChatList({
   const { users } = useUsers();
   const { assignContact } = useContacts();
 
-  const handleAssignContact = (contactId: string, userId: string) => {
-    assignContact(contactId, userId);
-  };
-
-  const getAssigneeName = (userId: string) => {
-    const user = users.find((u) => u.id === userId);
-    return user ? user.name : "Unassigned";
-  };
+  // 🔥 Optimize user lookup
+  const userMap = useMemo(() => {
+    return Object.fromEntries(users.map((u: User) => [u.id, u]));
+  }, [users]);
 
   return (
     <div className="border-r flex flex-col h-full">
       <div className="p-4">
         <h2 className="text-xl font-bold">Chats</h2>
+
+        {/* Search */}
         <div className="mt-4">
           <Input
             placeholder="Search by name or phone..."
@@ -59,6 +58,8 @@ export function ChatList({
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
+
+        {/* Filter (admin only) */}
         {userRole === "admin" && (
           <div className="mt-4">
             <Select
@@ -81,6 +82,8 @@ export function ChatList({
           </div>
         )}
       </div>
+
+      {/* Chat List */}
       <div className="flex-1 overflow-y-auto hide-scrollbar">
         {chats.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -88,76 +91,84 @@ export function ChatList({
           </div>
         ) : (
           <ul>
-            {chats.map(
-              (chat) =>
-                chat.contact && (
-                  <li
-                    key={chat.id}
-                    className="p-4 border-b cursor-pointer hover:bg-gray-100"
+            {chats.map((chat) =>
+              chat.contact ? (
+                <li
+                  key={chat.id}
+                  className="p-4 border-b cursor-pointer hover:bg-gray-100"
+                >
+                  <div
+                    className="flex items-center"
+                    onClick={() => onSelectChat(chat)}
                   >
-                    <div
-                      className="flex items-center"
-                      onClick={() => onSelectChat(chat)}
-                    >
-                      <Avatar>
-                        <AvatarImage src={chat.contact.avatar} />
-                        <AvatarFallback>{chat.contact.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="ml-4 w-full">
-                        <div className="flex justify-between">
-                          <p className="font-bold">{chat.contact.name}</p>
-                          {chat.lastMessage && (
-                            <p className="text-xs text-gray-500">
-                              {formatDistanceToNow(
-                                new Date(chat.lastMessage.messageTimestamp),
-                                { addSuffix: true }
-                              )}
-                            </p>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-500">
-                          {chat.contact.phone}
-                        </p>
-                        <p className="text-sm text-gray-500 mt-1 truncate">
-                          {chat.lastMessage?.content}
-                        </p>
+                    <Avatar>
+                      <AvatarImage src={chat.contact.avatar} />
+                      <AvatarFallback>
+                        {chat.contact.name?.[0] ?? "U"}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="ml-4 w-full">
+                      <div className="flex justify-between">
+                        <p className="font-bold">{chat.contact.name}</p>
+
+                        {chat.lastMessage?.messageTimestamp && (
+                          <p className="text-xs text-gray-500">
+                            {formatDistanceToNow(
+                              new Date(chat.lastMessage.messageTimestamp),
+                              { addSuffix: true }
+                            )}
+                          </p>
+                        )}
                       </div>
-                    </div>
-                    <div className="mt-2 flex items-center">
-                      <p className="text-sm text-gray-500 mr-2">
-                        Assigned to:{" "}
-                        {chat.contact.assignedToUserId
-                          ? getAssigneeName(chat.contact.assignedToUserId)
-                          : "Unassigned"}
+
+                      <p className="text-sm text-gray-500">
+                        {chat.contact.phone}
                       </p>
-                      {userRole === "admin" && (
-                        <Select
-                          onValueChange={(value) =>
-                            handleAssignContact(chat.contact.id, value)
-                          }
-                          defaultValue={
-                            chat.contact.assignedToUserId || undefined
-                          }
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Assign to..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {users.map((user: User) => (
-                              <SelectItem key={user.id} value={user.id}>
-                                {user.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
+
+                      <p className="text-sm text-gray-500 mt-1 truncate">
+                        {chat.lastMessage?.content}
+                      </p>
                     </div>
-                  </li>
-                )
+                  </div>
+
+                  {/* Assignment */}
+                  <div className="mt-2 flex items-center">
+                    <p className="text-sm text-gray-500 mr-2">
+                      Assigned to:{" "}
+                      {chat.contact.assignedToUserId
+                        ? userMap[chat.contact.assignedToUserId]?.name
+                        : "Unassigned"}
+                    </p>
+
+                    {userRole === "admin" && (
+                      <Select
+                        value={chat.contact.assignedToUserId || ""}
+                        onValueChange={(value) =>
+                          assignContact(chat.contact.id, value)
+                        }
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Assign to..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users.map((user: User) => (
+                            <SelectItem key={user.id} value={user.id}>
+                              {user.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                </li>
+              ) : null
             )}
           </ul>
         )}
       </div>
+
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="p-4 border-t flex items-center justify-between">
           <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
