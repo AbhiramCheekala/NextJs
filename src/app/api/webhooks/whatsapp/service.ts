@@ -24,29 +24,22 @@ export class WebhookService {
 
       for (const change of entry.changes) {
         if (change.field === "messages") {
-          if (
-            !change.value ||
-            !change.value.messages ||
-            change.value.messages.length === 0
-          ) {
-            logger.warn("Webhook change for messages has no messages.");
-            continue;
-          }
-          const message = change.value.messages[0];
-          if (message) {
-            if (!change.value.contacts || change.value.contacts.length === 0) {
-              logger.warn("Webhook change for messages has no contacts.");
-              continue;
-            }
-            const contact = change.value.contacts[0];
-            await this.handleIncomingMessage(message, contact);
+          const value = change.value;
 
-            // --- STATUS UPDATES (sent, delivered, read) ---
-            if (change.value.statuses?.length) {
-              logger.info(`[WEBHOOK_SERVICE] Status update detected. Count: ${change.value.statuses.length}`);
-              for (const status of change.value.statuses) {
-                await this.handleMessageStatus(status);
-              }
+          // 1. Handle incoming messages if they exist
+          if (value.messages?.length) {
+            const message = value.messages[0];
+            const contact = value.contacts?.[0]; // Use optional chaining for safety
+            if (message && contact) {
+              await this.handleIncomingMessage(message, contact);
+            }
+          }
+
+          // 2. Handle status updates if they exist
+          if (value.statuses?.length) {
+            logger.info(`[WEBHOOK_SERVICE] Status update detected. Count: ${value.statuses.length}`);
+            for (const status of value.statuses) {
+              await this.handleMessageStatus(status);
             }
           }
         }
