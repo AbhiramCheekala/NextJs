@@ -5,7 +5,10 @@ import { useDebounce } from "./useDebounce";
 
 const PAGE_SIZE = 50;
 
-export const usePaginatedMessages = (chatId: string | null) => {
+export const usePaginatedMessages = (
+  chatId: string | null,
+  onMessagesRead?: () => void
+) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -41,8 +44,20 @@ export const usePaginatedMessages = (chatId: string | null) => {
 
       try {
         const url = `/api/chats/${chatId}/messages?limit=${PAGE_SIZE}`;
-        const initialMessages = await apiRequest(url, "GET");
+        const initialMessages: Message[] = await apiRequest(url, "GET");
+
         if (chatIdRef.current === chatId) {
+          // Mark as read if there are unread messages
+          const hasUnread = initialMessages.some(
+            (m) => m.direction === "incoming" && m.status !== "read"
+          );
+          if (hasUnread) {
+            await apiRequest(`/api/chats/${chatId}/read`, "POST");
+            if (onMessagesRead) {
+              onMessagesRead();
+            }
+          }
+
           setMessages(initialMessages);
           setHasMore(initialMessages.length === PAGE_SIZE);
         }
@@ -55,7 +70,7 @@ export const usePaginatedMessages = (chatId: string | null) => {
     };
 
     fetchInitialMessages();
-  }, [chatId]);
+  }, [chatId, onMessagesRead]);
 
   // Polling for new messages
   useEffect(() => {

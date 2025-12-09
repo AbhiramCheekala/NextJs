@@ -17,8 +17,9 @@ export class ChatController {
       const limit = parseInt(searchParams.get("limit") || "10");
       const search = searchParams.get("search") || undefined;
       const assignedTo = searchParams.get("assignedTo") || undefined;
+      const showUnreadOnly = searchParams.get("showUnreadOnly") === "true";
 
-      const chats = await this.chatService.getChats(user, page, limit, search, assignedTo);
+      const chats = await this.chatService.getChats(user, page, limit, search, assignedTo, showUnreadOnly);
       return NextResponse.json(chats);
     } catch (error) {
       logger.error("Error fetching chats:", error);

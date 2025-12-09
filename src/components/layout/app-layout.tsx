@@ -19,12 +19,15 @@ import { UserNav } from "@/components/navigation/user-nav";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+
 interface AppLayoutProps {
   children: React.ReactNode;
   defaultCollapsed?: boolean;
 }
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
+  useUnreadMessages();
   const { state, isMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const [userRole, setUserRole] = useState<string | null>(null);

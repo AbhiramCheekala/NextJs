@@ -23,12 +23,14 @@ interface ChatViewProps {
   chat: Chat | null;
   onBack: () => void;
   onMessageSent: () => void;
+  onMessagesRead: () => void;
 }
 
 export function ChatView({
   chat,
   onBack,
-  onMessageSent
+  onMessageSent,
+  onMessagesRead,
 }: ChatViewProps) {
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -41,25 +43,21 @@ export function ChatView({
     isFetchingMore,
     hasMore,
     fetchMore,
-    addMessage
-  } = usePaginatedMessages(chat?.id ?? null);
+    addMessage,
+  } = usePaginatedMessages(chat?.id ?? null, onMessagesRead);
 
   const listRef = useRef<HTMLDivElement>(null);
   const observerTargetRef = useRef<HTMLDivElement>(null);
 
   const scrollRef = useRef({
     scrollHeight: 0,
-    shouldStickToBottom: true
+    shouldStickToBottom: true,
   });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          hasMore &&
-          !isFetchingMore
-        ) {
+        if (entries[0].isIntersecting && hasMore && !isFetchingMore) {
           const list = listRef.current;
           if (list) {
             scrollRef.current.scrollHeight = list.scrollHeight;

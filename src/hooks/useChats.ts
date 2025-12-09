@@ -8,7 +8,8 @@ import { useDebounce } from "./useDebounce";
 export const useChats = (
   assignedTo?: string,
   search?: string,
-  canFetch = true
+  canFetch = true,
+  showUnreadOnly = false
 ) => {
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -18,7 +19,7 @@ export const useChats = (
   // Reset page when search changes
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, showUnreadOnly]);
 
   const fetcher = async (url: string) => {
     try {
@@ -34,8 +35,9 @@ export const useChats = (
     let path = `/api/chats?page=${page}&limit=${limit}`;
     if (assignedTo) path += `&assignedTo=${assignedTo}`;
     if (debouncedSearch) path += `&search=${debouncedSearch}`;
+    if (showUnreadOnly) path += `&showUnreadOnly=true`;
     return path;
-  }, [page, assignedTo, debouncedSearch]);
+  }, [page, assignedTo, debouncedSearch, showUnreadOnly]);
 
   // Only enable SWR when we are allowed to fetch
   const swrKey = canFetch ? baseUrl : null;
@@ -46,6 +48,7 @@ export const useChats = (
   const { data, error, isValidating, mutate } = useSWR<{
     chats: Chat[];
     total: number;
+    totalUnread: number;
   }>(swrKey, fetcher, {
     refreshInterval: shouldPoll ? 5000 : 0,
     // We already have polling, no need to also revalidate on focus
@@ -60,6 +63,7 @@ export const useChats = (
 
   return {
     chats: data?.chats || [],
+    totalUnread: data?.totalUnread ?? 0,
     loading,
     error,
     refetch: mutate,

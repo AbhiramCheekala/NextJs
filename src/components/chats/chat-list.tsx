@@ -11,6 +11,7 @@ import {
 import { User } from "@/lib/drizzle/schema/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo } from "react";
 
@@ -26,6 +27,7 @@ interface ChatListProps {
   page: number;
   setPage: (page: number) => void;
   totalPages: number;
+  totalUnread: number;
 }
 
 export function ChatList({
@@ -40,6 +42,7 @@ export function ChatList({
   page,
   setPage,
   totalPages,
+  totalUnread,
 }: ChatListProps) {
   const { users } = useUsers();
   const { assignContact } = useContacts();
@@ -65,12 +68,17 @@ export function ChatList({
           />
 
           <button
-            className={`px-3 py-2 text-sm rounded border ${
+            className={`px-3 py-2 text-sm rounded border flex items-center gap-2 ${
               showUnreadOnly ? "bg-blue-950 text-white" : " bg-gray-100"
             }`}
             onClick={onToggleUnread}
           >
             Unread
+            {totalUnread > 0 && (
+              <Badge variant={showUnreadOnly ? "secondary" : "default"}>
+                {totalUnread}
+              </Badge>
+            )}
           </button>
         </div>
 
@@ -141,9 +149,14 @@ export function ChatList({
                         {chat.contact.phone}
                       </p>
 
-                      <p className="text-sm text-gray-500 mt-1 truncate">
-                        {chat.lastMessage?.content}
-                      </p>
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm text-gray-500 mt-1 truncate">
+                          {chat.lastMessage?.content}
+                        </p>
+                        {chat.unreadCount && chat.unreadCount > 0 && (
+                          <Badge>{chat.unreadCount}</Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
 

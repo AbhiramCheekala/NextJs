@@ -12,6 +12,7 @@ export interface Chat {
   contact: contactSelect;
   user: User | null;
   lastMessage: Message | null;
+  unreadCount?: number;
 }
 
 export interface Message {

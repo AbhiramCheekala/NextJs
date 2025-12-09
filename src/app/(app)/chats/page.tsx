@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useChats } from "@/hooks/useChats";
 import { ChatList } from "@/components/chats/chat-list";
 import { ChatView } from "@/components/chats/chat-view";
@@ -17,6 +17,7 @@ function Chats() {
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
+  const router = useRouter();
   const searchParams = useSearchParams();
   const contactId = searchParams.get("contact") || undefined;
 
@@ -24,7 +25,6 @@ function Chats() {
   useEffect(() => {
     const storedUser =
       typeof window !== "undefined" ? localStorage.getItem("user") : null;
-
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -41,19 +41,28 @@ function Chats() {
     setCanFetch(true);
   }, []);
 
-  const { chats, loading, error, page, setPage, totalPages, refetch } =
-    useChats(assignedTo, searchTerm, canFetch);
+  const {
+    chats,
+    loading,
+    error,
+    page,
+    setPage,
+    totalPages,
+    refetch,
+    totalUnread,
+  } = useChats(assignedTo, searchTerm, canFetch, showUnreadOnly);
 
   const handleSelectChat = (chat: Chat) => {
-    // Avoid setting same chat again and again
-    if (selectedChat?.id === chat.id) return;
+    if (selectedChat?.contactId === chat.contactId) return;
     setSelectedChat(chat);
     setIsChatViewVisible(true);
+    router.push(`/chats?contact=${chat.contactId}`, { scroll: false });
   };
 
   const handleBackToList = () => {
     setIsChatViewVisible(false);
     setSelectedChat(null);
+    router.push(`/chats`, { scroll: false });
   };
 
   // Auto-deselect the chat if it is no longer present in the list
@@ -66,21 +75,27 @@ function Chats() {
     }
   }, [chats, selectedChat]);
 
-  // Select chat from ?contact= query param (only when we have chats)
+  // Select chat from ?contact= query param
   useEffect(() => {
-    if (!contactId || chats.length === 0) return;
-
-    const chatToSelect = chats.find(
-      (chat) => chat.contactId === contactId || chat.contact?.id === contactId
-    );
-
-    if (chatToSelect) {
-      // Only update if different from current
-      if (selectedChat?.id !== chatToSelect.id) {
-        handleSelectChat(chatToSelect);
+    if (contactId && chats.length > 0) {
+      const chatToSelect = chats.find(
+        (chat) => chat.contactId === contactId || chat.contact?.id === contactId
+      );
+      if (chatToSelect) {
+        if (selectedChat?.id !== chatToSelect.id) {
+          setSelectedChat(chatToSelect);
+          setIsChatViewVisible(true);
+        }
+      } else {
+        // If contactId from URL is not in our chat list
+        handleBackToList();
       }
+    } else if (!contactId) {
+      // If there is no contactId in the URL
+      setIsChatViewVisible(false);
+      setSelectedChat(null);
     }
-  }, [contactId, chats, selectedChat]);
+  }, [contactId, chats]);
 
   // Initial loading (before we know user / canFetch)
   if (!canFetch) {
@@ -116,6 +131,7 @@ function Chats() {
           page={page}
           setPage={setPage}
           totalPages={totalPages}
+          totalUnread={totalUnread}
         />
       </div>
 
@@ -129,6 +145,7 @@ function Chats() {
           chat={selectedChat}
           onBack={handleBackToList}
           onMessageSent={refetch}
+          onMessagesRead={refetch}
         />
       </div>
     </div>

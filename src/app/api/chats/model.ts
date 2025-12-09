@@ -10,47 +10,97 @@ export class ChatModel {
     page: number,
     limit: number,
     search?: string,
-    assignedTo?: string
+    assignedTo?: string,
+    showUnreadOnly?: boolean
   ) => {
     const offset = (page - 1) * limit;
 
-    const conditions = [];
-
+    // Base conditions for contacts visible to the current user/filter
+    const baseContactConditions = [];
     if (user.role === "member") {
-      conditions.push(eq(contactsTable.assignedToUserId, user.id));
+      baseContactConditions.push(eq(contactsTable.assignedToUserId, user.id));
     } else if (assignedTo) {
-      conditions.push(eq(contactsTable.assignedToUserId, assignedTo));
-    }
-
-    if (search) {
-      conditions.push(
-        or(
-          like(contactsTable.name, `%${search}%`),
-          like(contactsTable.phone, `%${search}%`)
-        )
+      baseContactConditions.push(
+        eq(contactsTable.assignedToUserId, assignedTo)
       );
     }
 
-    const contactsWhereClause =
-      conditions.length > 0 ? and(...conditions) : undefined;
-
-    const filteredContacts = await db
+    const visibleContactsQuery = db
       .select({ id: contactsTable.id })
       .from(contactsTable)
-      .where(contactsWhereClause);
+      .where(
+        baseContactConditions.length > 0
+          ? and(...baseContactConditions)
+          : undefined
+      );
 
-    if (filteredContacts.length === 0) {
-      return { chats: [], total: 0 };
+    const visibleContactIds = (await visibleContactsQuery).map((c) => c.id);
+
+    if (visibleContactIds.length === 0) {
+      return { chats: [], total: 0, totalUnread: 0 };
     }
 
-    const contactIds = filteredContacts.map((c) => c.id);
-    const chatsWhereClause = inArray(chats.contactId, contactIds);
+    // --- 1. Get total unread count for the visible contacts ---
+    const unreadChatsForCountQuery = db
+      .selectDistinct({ chatId: chats.id })
+      .from(chats)
+      .innerJoin(chatMessages, eq(chats.id, chatMessages.chatId))
+      .where(
+        and(
+          inArray(chats.contactId, visibleContactIds),
+          eq(chatMessages.direction, "incoming"),
+          eq(chatMessages.status, "pending")
+        )
+      );
+
+    const totalUnread = (await unreadChatsForCountQuery).length;
+
+    // --- 2. Build the main query with all filters ---
+    const finalContactConditions = [...baseContactConditions];
+    if (search) {
+      finalContactConditions.push(
+        or(
+          like(contactsTable.name, `%${search}%`),
+          like(contactsTable.phone, `%${search}%`)
+        ) as any
+      );
+    }
+
+    const finalContactsQuery = db
+      .select({ id: contactsTable.id })
+      .from(contactsTable)
+      .where(
+        finalContactConditions.length > 0
+          ? and(...finalContactConditions)
+          : undefined
+      );
+
+    const finalContactIds = (await finalContactsQuery).map((c) => c.id);
+
+    if (finalContactIds.length === 0) {
+      return { chats: [], total: 0, totalUnread };
+    }
+
+    const chatsWhereConditions = [inArray(chats.contactId, finalContactIds)];
+
+    if (showUnreadOnly) {
+      const unreadChatIds = (await unreadChatsForCountQuery).map(
+        (c) => c.chatId
+      );
+      if (unreadChatIds.length === 0) {
+        return { chats: [], total: 0, totalUnread };
+      }
+      chatsWhereConditions.push(inArray(chats.id, unreadChatIds));
+    }
+
+    const chatsWhereClause = and(...chatsWhereConditions);
 
     const totalResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(chats)
       .where(chatsWhereClause);
-    const totalChats = totalResult[0].count;
+
+    const totalChats = Number(totalResult[0].count);
 
     const allChats = await db.query.chats.findMany({
       where: chatsWhereClause,
@@ -69,11 +119,25 @@ export class ChatModel {
           where: eq(chatMessages.chatId, chat.id),
           orderBy: [desc(chatMessages.messageTimestamp)],
         });
-        return { ...chat, lastMessage };
+
+        const unreadCountResult = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(chatMessages)
+          .where(
+            and(
+              eq(chatMessages.chatId, chat.id),
+              eq(chatMessages.direction, "incoming"),
+              eq(chatMessages.status, "pending")
+            )
+          );
+
+        const unreadCount = Number(unreadCountResult[0]?.count || 0);
+
+        return { ...chat, lastMessage, unreadCount };
       })
     );
 
-    return { chats: chatsWithLastMessage, total: totalChats };
+    return { chats: chatsWithLastMessage, total: totalChats, totalUnread };
   };
 
   public getChatStatus = async (chatId: string) => {
