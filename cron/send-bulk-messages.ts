@@ -5,8 +5,6 @@ dotenv.config({ path: ".env.production" });
 
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
-import mysql from "mysql2/promise";
-import { drizzle } from "drizzle-orm/mysql2";
 
 import { whatsapp } from "../src/lib/whatsapp";
 import { db } from "@/lib/db";
@@ -17,14 +15,15 @@ import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts"
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { templates } from "@/lib/drizzle/schema/templates";
 
-// ------------------------------
-// Add message to chat
-// ------------------------------
+// ---------------------------------------------------
+// Save message into chat
+// ---------------------------------------------------
 async function addCampaignMessageToChat(
   name: string,
   whatsappNumber: string,
   content: string,
-  wamid: string
+  wamid: string,
+  isTemplateMessage: boolean
 ) {
   let [contact] = await db
     .select()
@@ -76,23 +75,66 @@ async function addCampaignMessageToChat(
     direction: "outgoing",
     status: "sent",
     messageTimestamp: new Date(),
+    isTemplateMessage,
   });
 }
 
-// ------------------------------
+// ---------------------------------------------------
+// Helper: Builds WhatsApp API components from variables
+// ---------------------------------------------------
+function buildTemplateComponents(variables: Record<string, string>) {
+  const paramList = Object.keys(variables)
+    .sort((a, b) => Number(a) - Number(b))
+    .map((key) => ({
+      type: "text",
+      text: variables[key],
+    }));
+
+  return paramList.length > 0 ? [{ type: "body", parameters: paramList }] : [];
+}
+
+// ---------------------------------------------------
+// Helper: Builds message preview for chat history
+// Replaces {{1}}, {{2}}, {{3}}... in HEADER + BODY
+// ---------------------------------------------------
+function buildReadableMessage(
+  templateComponents: any[],
+  variables: Record<string, string>
+) {
+  let finalMessage = "";
+
+  for (const comp of templateComponents) {
+    if (!comp.text) continue;
+
+    let text = comp.text;
+
+    text = text.replace(
+      /\{\{\s*(\d+)\s*\}\}/g,
+      (_: any, num: string | number) => {
+        return variables[num] ?? `{{${num}}}`;
+      }
+    );
+
+    finalMessage += text + "\n\n";
+  }
+
+  return finalMessage.trim();
+}
+
+// ---------------------------------------------------
 // Rate limit
-// ------------------------------
+// ---------------------------------------------------
 const MESSAGE_RATE_LIMIT = 6;
 const INTERVAL_MS = (60 / MESSAGE_RATE_LIMIT) * 1000;
 
-// ------------------------------
+// ---------------------------------------------------
 // BULK SENDER
-// ------------------------------
+// ---------------------------------------------------
 async function sendBulkMessages() {
   console.log("Bulk message sender running...");
 
   try {
-    const pendingContacts = await db
+    const pending = await db
       .select()
       .from(bulkCampaignContacts)
       .leftJoin(campaigns, eq(bulkCampaignContacts.campaignId, campaigns.id))
@@ -100,12 +142,12 @@ async function sendBulkMessages() {
       .where(eq(bulkCampaignContacts.status, "pending"))
       .limit(MESSAGE_RATE_LIMIT);
 
-    if (pendingContacts.length === 0) {
+    if (pending.length === 0) {
       console.log("No pending bulk messages.");
       return;
     }
 
-    for (const row of pendingContacts) {
+    for (const row of pending) {
       const contact = row.bulk_campaign_contacts;
       const campaign = row.campaigns;
       const template = row.templates;
@@ -113,9 +155,8 @@ async function sendBulkMessages() {
       if (!contact || !campaign || !template) continue;
 
       try {
-        // Parse template variables
-        let variables: { [key: string]: string } = {};
-
+        // Parse variables from DB
+        let variables: Record<string, string> = {};
         if (contact.variables) {
           try {
             variables =
@@ -127,18 +168,24 @@ async function sendBulkMessages() {
           }
         }
 
-        const bodyParameters = Object.keys(variables).map((key) => ({
-          type: "text",
-          text: variables[key],
-        }));
+        // Parse template JSON (header/body/footer)
+        let templateParts = [];
+        try {
+          templateParts =
+            typeof template.components === "string"
+              ? JSON.parse(template.components)
+              : template.components;
+        } catch {
+          console.error("Invalid template.components JSON");
+        }
+
+        // Build WhatsApp API payload
+        const components = buildTemplateComponents(variables);
 
         const templateMessage = {
           name: template.name,
           language: { code: template.language },
-          components:
-            bodyParameters.length > 0
-              ? [{ type: "body", parameters: bodyParameters }]
-              : [],
+          components,
         };
 
         // Send message
@@ -149,30 +196,8 @@ async function sendBulkMessages() {
 
         const wamid = response?.messages?.[0]?.id || null;
 
-        // Build readable content
-        let messageContent = "";
-
-        try {
-          if (template.components) {
-            const componentsArray =
-              typeof template.components === "string"
-                ? JSON.parse(template.components)
-                : template.components;
-
-            const body = componentsArray?.find((c: any) => c.type === "body");
-
-            if (body?.text) {
-              messageContent = messageContent.replace(
-                /\{\{(\d+)\}\}/g,
-                (_: string, idx: string) => {
-                  return bodyParameters[parseInt(idx) - 1]?.text || "";
-                }
-              );
-            }
-          }
-        } catch {
-          messageContent = "";
-        }
+        // Build readable message for chat history
+        const messageContent = buildReadableMessage(templateParts, variables);
 
         // Save chat message
         if (wamid) {
@@ -180,11 +205,12 @@ async function sendBulkMessages() {
             contact.name,
             contact.whatsappNumber,
             messageContent,
-            wamid
+            wamid,
+            true
           );
         }
 
-        // Update contact status
+        // Mark contact as sent
         await db
           .update(bulkCampaignContacts)
           .set({ status: "sent", sentAt: new Date() })
@@ -198,7 +224,7 @@ async function sendBulkMessages() {
           .where(eq(bulkCampaignContacts.id, contact.id));
       }
 
-      // Apply rate limit
+      // rate limit
       await new Promise((res) => setTimeout(res, INTERVAL_MS));
     }
   } catch (error) {
@@ -208,5 +234,6 @@ async function sendBulkMessages() {
   }
 }
 
+// ---------------------------------------------------
 sendBulkMessages();
 setInterval(sendBulkMessages, 60 * 1000);

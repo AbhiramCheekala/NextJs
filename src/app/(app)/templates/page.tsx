@@ -25,6 +25,8 @@ import { CreateTemplateDialog } from "@/components/templates/create-template-dia
 import { useToast } from "@/hooks/use-toast";
 import type { VariantProps } from "class-variance-authority";
 import { apiRequest } from "@/lib/apiClient";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type Template = {
   id: string;
@@ -65,15 +67,21 @@ export default function TemplatesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isCreateTemplateOpen, setIsCreateTemplateOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const fetchTemplates = async (page = 1) => {
+  const fetchTemplates = async (page = 1, search = "") => {
     setLoading(true);
     try {
-      const res = await apiRequest(`/api/templates?page=${page}&limit=6`, "GET");
+      let url = `/api/templates?page=${page}&limit=6`;
+      if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+      }
+      const res = await apiRequest(url, "GET");
       const { data, meta } = res;
       setTemplates(data || []);
       setMeta(meta);
-      setCurrentPage(page);
+      setCurrentPage(page); // Keep track of the page we are on
     } catch (err) {
       logger.error("Failed to load templates", err);
       toast({
@@ -86,63 +94,27 @@ export default function TemplatesPage() {
     }
   };
 
+  // Effect for search term changes
   useEffect(() => {
-    fetchTemplates(currentPage);
-  }, [currentPage]);
+    // When search term changes, always fetch page 1
+    fetchTemplates(1, debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   const handleCreateTemplateSuccess = () => {
     toast({
       title: "Template Draft Saved",
       description: "Your new template draft has been saved (dummy action).",
     });
-    fetchTemplates(1); // refresh the list and go to the first page
+    fetchTemplates(1, debouncedSearchTerm); // refresh the list
   };
-
-  const handlePreview = (templateName: string) => {
-    toast({
-      title: "Preview Template",
-      description: `Showing preview for ${templateName}. (Not implemented)`,
-    });
-  };
-
-  const handlePollStatus = (templateName: string) => {
-    toast({
-      title: "Poll Status",
-      description: `Polling status for ${templateName}. (Not implemented)`,
-    });
-  };
-
-  const handleSync = async () => {
-    setLoading(true);
-    try {
-      const data = await apiRequest("/api/templates/sync", "GET");
-      toast({
-        title: "Sync Complete",
-        description: `${data.syncedCount} new templates were synced from Meta.`,
-      });
-      fetchTemplates(1); // Refresh the list and go to the first page
-    } catch (err) {
-      logger.error("Failed to sync templates", err);
-      toast({
-        title: "Sync Failed",
-        description: "An error occurred while syncing templates from Meta.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (templateName: string) => {
-    toast({
-      title: "Edit Template",
-      description: `Opening editor for ${templateName}. (Not implemented)`,
-    });
-  };
-
+//...
+//...
+//...
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && meta && newPage <= meta.totalPages) {
-      setCurrentPage(newPage);
+      // When paginating, we don't want to trigger the search effect,
+      // so we call fetchTemplates directly.
+      fetchTemplates(newPage, debouncedSearchTerm);
     }
   };
 
@@ -175,6 +147,14 @@ export default function TemplatesPage() {
             Build, submit to Meta, poll status, and preview your WhatsApp
             message templates.
           </CardDescription>
+          <div className="pt-4">
+            <Input
+              placeholder="Search templates by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
         </CardHeader>
         <CardContent className="flex-1 overflow-y-auto">
           <div className="overflow-x-auto">

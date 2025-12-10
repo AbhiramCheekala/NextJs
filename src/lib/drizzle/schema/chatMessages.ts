@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   mysqlEnum,
+  boolean,
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
@@ -26,6 +27,7 @@ export const chatMessages = mysqlTable("chat_messages", {
   ])
     .default("pending")
     .notNull(),
+  isTemplateMessage: boolean("is_template_message").default(false).notNull(),
   messageTimestamp: timestamp("message_timestamp").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at"),

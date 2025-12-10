@@ -1,1 +1,55 @@
-{"version":"7","dialect":"mysql","entries":[]}
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1714472859899,
+      "tag": "0000_glamorous_cable",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1714587393391,
+      "tag": "0001_flashy_rattler",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1714587592391,
+      "tag": "0002_dark_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1714589343393,
+      "tag": "0003_low_maddog",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1714676343634,
+      "tag": "0004_add_bulk_campaign_contacts_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1714676343634,
+      "tag": "0005_serious_black_panther",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1718123348128,
+      "tag": "0006_add_template_message_flag",
+      "breakpoints": true
+    }
+  ]
+}

@@ -64,6 +64,7 @@ export class MessageModel {
 
     let messageToSend: string | object = content;
     let messageContentForDb = content;
+    let isTemplateMessage = false;
 
     // WhatsApp 24-hour window rule
     if (hoursSinceLastMessage > 24) {
@@ -74,6 +75,7 @@ export class MessageModel {
       };
       messageContentForDb =
         "Sent 'hello_world' template to start conversation.";
+      isTemplateMessage = true;
     }
 
     // Send to WhatsApp
@@ -97,6 +99,7 @@ export class MessageModel {
       wamid,
       status: "sent",
       messageTimestamp: now,
+      isTemplateMessage,
     });
 
     logger.info(`Stored outgoing message for chat: ${chatId}`);
