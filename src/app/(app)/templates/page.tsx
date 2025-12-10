@@ -107,9 +107,68 @@ export default function TemplatesPage() {
     });
     fetchTemplates(1, debouncedSearchTerm); // refresh the list
   };
-//...
-//...
-//...
+
+  const handleSync = async () => {
+    setLoading(true);
+    try {
+      await apiRequest("/api/templates/sync", "POST");
+      toast({
+        title: "Sync Started",
+        description:
+          "Successfully initiated sync with Meta. Templates will be updated shortly.",
+      });
+      // It might take a moment for the sync to complete.
+      // We can optionally add a delay or a more sophisticated polling mechanism.
+      setTimeout(() => fetchTemplates(1, debouncedSearchTerm), 2000);
+    } catch (error) {
+      logger.error("Failed to sync templates with Meta", error);
+      toast({
+        title: "Sync Failed",
+        description: "Could not sync templates with Meta. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePollStatus = async (templateName: string) => {
+    try {
+      const res = await apiRequest(
+        `/api/templates/poll?name=${encodeURIComponent(templateName)}`,
+        "POST"
+      );
+      toast({
+        title: "Status Polled",
+        description: `Template "${templateName}" status is now ${res.data.status}.`,
+      });
+      fetchTemplates(currentPage, debouncedSearchTerm); // refresh current page
+    } catch (error) {
+      logger.error(`Failed to poll status for ${templateName}`, error);
+      toast({
+        title: "Polling Failed",
+        description: `Could not poll status for "${templateName}".`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePreview = (templateName: string) => {
+    // This would ideally open a dialog with the template preview
+    toast({
+      title: `TODO: Preview ${templateName}`,
+      description: "This functionality has not been implemented yet.",
+    });
+  };
+
+  const handleEdit = (templateName: string) => {
+    // This would ideally navigate to an edit page or open a dialog
+    toast({
+      title: `TODO: Edit ${templateName}`,
+      description: "This functionality has not been implemented yet.",
+    });
+  };
+
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && meta && newPage <= meta.totalPages) {
       // When paginating, we don't want to trigger the search effect,
