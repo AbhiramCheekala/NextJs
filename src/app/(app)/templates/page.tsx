@@ -111,7 +111,7 @@ export default function TemplatesPage() {
   const handleSync = async () => {
     setLoading(true);
     try {
-      await apiRequest("/api/templates/sync", "POST");
+      await apiRequest("/api/templates/sync", "GET");
       toast({
         title: "Sync Started",
         description:

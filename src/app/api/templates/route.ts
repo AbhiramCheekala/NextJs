@@ -54,41 +54,61 @@ export async function POST(req: Request) {
   }
 }
 
-import { count, like, desc } from "drizzle-orm";
+import { count, desc, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "10", 10);
-    const search = searchParams.get("search");
+    const page = Number(searchParams.get("page") || 1);
+    const limit = Number(searchParams.get("limit") || 10);
+    const search = searchParams.get("search")?.trim();
     const offset = (page - 1) * limit;
 
+    // -----------------------------
+    // WHERE condition (case-insensitive LIKE)
+    // -----------------------------
     const whereCondition = search
-      ? like(templates.name, `%${search}%`)
+      ? sql`LOWER(${templates.name}) LIKE ${"%" + search.toLowerCase() + "%"}`
       : undefined;
 
-    const [totalTemplates] = await db
-      .select({ value: count() })
-      .from(templates)
-      .where(whereCondition);
+    // -----------------------------
+    // Total count
+    // -----------------------------
+    const [totalResult] = whereCondition
+      ? await db
+          .select({ value: count() })
+          .from(templates)
+          .where(whereCondition)
+      : await db.select({ value: count() }).from(templates);
 
-    const allTemplates = await db
-      .select()
-      .from(templates)
-      .where(whereCondition)
-      .orderBy(desc(templates.lastUpdated))
-      .limit(limit)
-      .offset(offset);
+    const total = Number(totalResult.value);
+
+    // -----------------------------
+    // Fetch paginated data
+    // -----------------------------
+    const rows = whereCondition
+      ? await db
+          .select()
+          .from(templates)
+          .where(whereCondition)
+          .orderBy(desc(templates.updatedAt))
+          .limit(limit)
+          .offset(offset)
+      : await db
+          .select()
+          .from(templates)
+          .orderBy(desc(templates.updatedAt))
+          .limit(limit)
+          .offset(offset);
 
     return NextResponse.json({
-      data: allTemplates,
+      data: rows,
       meta: {
-        total: totalTemplates.value,
+        total,
         limit,
         currentPage: page,
-        totalPages: Math.ceil(totalTemplates.value / limit),
+        totalPages: Math.ceil(total / limit),
       },
     });
   } catch (error) {

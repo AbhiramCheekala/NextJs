@@ -142,6 +142,18 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+// Function to play sound
+function playSound() {
+  // TODO: Replace 'notification.mp3' with the actual path to your sound file
+  // The sound file should be placed in the 'public' directory
+  const audio = new Audio('/notification.mp3');
+  audio.play().catch(error => {
+    // Autoplay was prevented, which is common in modern browsers.
+    // You might want to handle this gracefully, e.g., by logging the error.
+    console.error("Audio play failed:", error);
+  });
+}
+
 function toast({ ...props }: Toast) {
   const id = genId()
 
@@ -151,6 +163,9 @@ function toast({ ...props }: Toast) {
       toast: { ...props, id },
     })
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
+
+  // Play sound on toast
+  playSound();
 
   dispatch({
     type: "ADD_TOAST",
