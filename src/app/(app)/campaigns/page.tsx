@@ -38,7 +38,7 @@ export default function CampaignsPage() {
   const { campaigns, isLoading, pagination } = useCampaigns(page, 10);
 
   const handleViewAnalytics = (campaignId: number) => {
-    router.push(`/analytics?campaignId=${campaignId}`);
+    router.push(`/campaigns/${campaignId}/analytics`);
   };
 
   const handleEditCampaign = (campaignName: string) => {

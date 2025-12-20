@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chats } from "@/lib/drizzle/schema/chats";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
+import { messages } from "@/lib/drizzle/schema/messages";
 import { eq } from "drizzle-orm";
 import logger from "@/lib/logger";
 
@@ -63,7 +64,9 @@ export class WebhookModel {
     timestamp: Date
   ) {
     logger.info(`[DB_MODEL] Updating wamid: ${wamid} to status: ${newStatus}`);
-    const result = await db
+    
+    // Update chatMessages table
+    const chatMessagesResult = await db
       .update(chatMessages)
       .set({
         status: newStatus,
@@ -71,7 +74,19 @@ export class WebhookModel {
       })
       .where(eq(chatMessages.wamid, wamid));
     
-    logger.info(`[DB_MODEL] Update result for wamid ${wamid}: ${JSON.stringify(result)}`);
-    return result;
+    logger.info(`[DB_MODEL] Update result for chatMessages wamid ${wamid}: ${JSON.stringify(chatMessagesResult)}`);
+
+    // Update messages table
+    const messagesResult = await db
+      .update(messages)
+      .set({
+        status: newStatus,
+        updatedAt: timestamp,
+      })
+      .where(eq(messages.wamid, wamid));
+
+    logger.info(`[DB_MODEL] Update result for messages wamid ${wamid}: ${JSON.stringify(messagesResult)}`);
+
+    return { chatMessagesResult, messagesResult };
   }
 }

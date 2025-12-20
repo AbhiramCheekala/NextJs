@@ -5163,3 +5163,592 @@ params: 1,1,incoming,pending {"query":"select `chatMessages`.`id`, `chatMessages
 2025-12-16 22:24:53 [INFO]: Found 1 unread messages. 
 2025-12-16 22:25:53 [INFO]: Fetching unread messages 
 2025-12-16 22:25:53 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:18 [INFO]: Fetching unread messages 
+2025-12-19 19:08:18 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:21 [INFO]: Fetching unread messages 
+2025-12-19 19:08:21 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:26 [INFO]: Fetching unread messages 
+2025-12-19 19:08:26 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:31 [INFO]: Fetching unread messages 
+2025-12-19 19:08:31 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:36 [INFO]: Fetching unread messages 
+2025-12-19 19:08:36 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:41 [INFO]: Fetching unread messages 
+2025-12-19 19:08:41 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:46 [INFO]: Fetching unread messages 
+2025-12-19 19:08:46 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:51 [INFO]: Fetching unread messages 
+2025-12-19 19:08:51 [INFO]: Found 1 unread messages. 
+2025-12-19 19:08:56 [INFO]: Fetching unread messages 
+2025-12-19 19:08:56 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:01 [INFO]: Fetching unread messages 
+2025-12-19 19:09:01 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:06 [INFO]: Fetching unread messages 
+2025-12-19 19:09:06 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:11 [INFO]: Fetching unread messages 
+2025-12-19 19:09:11 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:15 [INFO]: Fetching unread messages 
+2025-12-19 19:09:16 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:20 [INFO]: Fetching unread messages 
+2025-12-19 19:09:21 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:25 [INFO]: Fetching unread messages 
+2025-12-19 19:09:26 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:31 [INFO]: Fetching unread messages 
+2025-12-19 19:09:31 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:33 [INFO]: Fetching contacts with page: 1, limit: 10, search:  
+2025-12-19 19:09:33 [INFO]: Total contacts retrieved: 10 
+2025-12-19 19:09:36 [INFO]: Fetching unread messages 
+2025-12-19 19:09:36 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:40 [INFO]: Fetching unread messages 
+2025-12-19 19:09:41 [INFO]: Found 1 unread messages. 
+2025-12-19 19:09:42 [INFO]: Marking messages as read for chat ID: kpi1qkj7brf4nmfzxw6ogeqx 
+2025-12-19 19:09:43 [INFO]: Messages marked as read for chat ID: kpi1qkj7brf4nmfzxw6ogeqx 
+2025-12-19 19:10:50 [INFO]: Fetching unread messages 
+2025-12-19 19:10:50 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:50 [INFO]: Fetching unread messages 
+2025-12-19 19:10:50 [INFO]: Fetching unread messages 
+2025-12-19 19:10:50 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:50 [INFO]: Fetching unread messages 
+2025-12-19 19:10:50 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:50 [INFO]: Fetching unread messages 
+2025-12-19 19:10:50 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:50 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:51 [INFO]: Fetching unread messages 
+2025-12-19 19:10:51 [INFO]: Fetching unread messages 
+2025-12-19 19:10:51 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:51 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:51 [INFO]: Fetching unread messages 
+2025-12-19 19:10:51 [INFO]: Fetching unread messages 
+2025-12-19 19:10:52 [INFO]: Found 0 unread messages. 
+2025-12-19 19:10:52 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:10 [INFO]: Fetching unread messages 
+2025-12-19 19:11:10 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:14 [INFO]: Fetching unread messages 
+2025-12-19 19:11:14 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:19 [INFO]: Fetching unread messages 
+2025-12-19 19:11:19 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:24 [INFO]: Fetching unread messages 
+2025-12-19 19:11:24 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:29 [INFO]: Fetching unread messages 
+2025-12-19 19:11:29 [INFO]: Found 0 unread messages. 
+2025-12-19 19:11:34 [INFO]: Fetching unread messages 
+2025-12-19 19:11:35 [INFO]: Found 0 unread messages. 
+2025-12-20 10:22:58 [INFO]: Fetching unread messages 
+2025-12-20 10:22:58 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:01 [INFO]: Fetching unread messages 
+2025-12-20 10:23:01 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:06 [INFO]: Fetching unread messages 
+2025-12-20 10:23:06 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:11 [INFO]: Fetching unread messages 
+2025-12-20 10:23:11 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:16 [INFO]: Fetching unread messages 
+2025-12-20 10:23:16 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:21 [INFO]: Fetching unread messages 
+2025-12-20 10:23:21 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:26 [INFO]: Fetching unread messages 
+2025-12-20 10:23:26 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:31 [INFO]: Fetching unread messages 
+2025-12-20 10:23:31 [INFO]: Found 1 unread messages. 
+2025-12-20 10:23:36 [INFO]: Fetching unread messages 
+2025-12-20 10:23:36 [INFO]: Found 1 unread messages. 
+2025-12-20 10:37:46 [INFO]: Fetching unread messages 
+2025-12-20 10:37:46 [INFO]: Found 1 unread messages. 
+2025-12-20 10:37:49 [INFO]: Fetching unread messages 
+2025-12-20 10:37:49 [INFO]: Found 1 unread messages. 
+2025-12-20 10:37:54 [INFO]: Fetching unread messages 
+2025-12-20 10:37:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:37:59 [INFO]: Fetching unread messages 
+2025-12-20 10:37:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:04 [INFO]: Fetching unread messages 
+2025-12-20 10:38:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:09 [INFO]: Fetching unread messages 
+2025-12-20 10:38:09 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:14 [INFO]: Fetching unread messages 
+2025-12-20 10:38:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:19 [INFO]: Fetching unread messages 
+2025-12-20 10:38:19 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:24 [INFO]: Fetching unread messages 
+2025-12-20 10:38:24 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:29 [INFO]: Fetching unread messages 
+2025-12-20 10:38:29 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:34 [INFO]: Fetching unread messages 
+2025-12-20 10:38:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:39 [INFO]: Fetching unread messages 
+2025-12-20 10:38:39 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:44 [INFO]: Fetching unread messages 
+2025-12-20 10:38:44 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:49 [INFO]: Fetching unread messages 
+2025-12-20 10:38:49 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:54 [INFO]: Fetching unread messages 
+2025-12-20 10:38:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:38:59 [INFO]: Fetching unread messages 
+2025-12-20 10:38:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:05 [INFO]: Fetching unread messages 
+2025-12-20 10:39:05 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:10 [INFO]: Fetching unread messages 
+2025-12-20 10:39:10 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:14 [INFO]: Fetching unread messages 
+2025-12-20 10:39:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:20 [INFO]: Fetching unread messages 
+2025-12-20 10:39:20 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:25 [INFO]: Fetching unread messages 
+2025-12-20 10:39:25 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:30 [INFO]: Fetching unread messages 
+2025-12-20 10:39:30 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:35 [INFO]: Fetching unread messages 
+2025-12-20 10:39:35 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:40 [INFO]: Fetching unread messages 
+2025-12-20 10:39:40 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:45 [INFO]: Fetching unread messages 
+2025-12-20 10:39:45 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:50 [INFO]: Fetching unread messages 
+2025-12-20 10:39:50 [INFO]: Found 1 unread messages. 
+2025-12-20 10:39:55 [INFO]: Fetching unread messages 
+2025-12-20 10:39:55 [INFO]: Found 1 unread messages. 
+2025-12-20 10:40:00 [INFO]: Fetching unread messages 
+2025-12-20 10:40:00 [INFO]: Found 1 unread messages. 
+2025-12-20 10:40:05 [INFO]: Fetching unread messages 
+2025-12-20 10:40:05 [INFO]: Found 1 unread messages. 
+2025-12-20 10:40:10 [INFO]: Fetching unread messages 
+2025-12-20 10:40:10 [INFO]: Found 1 unread messages. 
+2025-12-20 10:40:15 [INFO]: Fetching unread messages 
+2025-12-20 10:40:15 [INFO]: Found 1 unread messages. 
+2025-12-20 10:41:18 [INFO]: Fetching unread messages 
+2025-12-20 10:41:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:42:18 [INFO]: Fetching unread messages 
+2025-12-20 10:42:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:49:40 [INFO]: Fetching unread messages 
+2025-12-20 10:49:41 [INFO]: Found 1 unread messages. 
+2025-12-20 10:49:41 [INFO]: Fetching unread messages 
+2025-12-20 10:49:41 [INFO]: Found 1 unread messages. 
+2025-12-20 10:49:42 [INFO]: Fetching unread messages 
+2025-12-20 10:49:43 [INFO]: Found 1 unread messages. 
+2025-12-20 10:49:50 [ERROR]: Error fetching dashboard data: %o 
+2025-12-20 10:49:52 [INFO]: Fetching unread messages 
+2025-12-20 10:50:02 [ERROR]: Error fetching unread messages Failed query: select `chatMessages`.`id`, `chatMessages`.`chat_id`, `chatMessages`.`wamid`, `chatMessages`.`content`, `chatMessages`.`direction`, `chatMessages`.`status`, `chatMessages`.`is_template_message`, `chatMessages`.`message_timestamp`, `chatMessages`.`created_at`, `chatMessages`.`updated_at`, `chatMessages_chat`.`data` as `chat` from `chat_messages` `chatMessages` left join lateral (select json_array(`chatMessages_chat`.`id`, `chatMessages_chat`.`contact_id`, `chatMessages_chat`.`assigned_to`, `chatMessages_chat`.`status`, `chatMessages_chat`.`last_user_message_at`, `chatMessages_chat`.`created_at`, `chatMessages_chat`.`updated_at`, `chatMessages_chat_contact`.`data`) as `data` from (select * from `chats` `chatMessages_chat` where `chatMessages_chat`.`id` = `chatMessages`.`chat_id` limit ?) `chatMessages_chat` left join lateral (select json_array(`chatMessages_chat_contact`.`contact_id`, `chatMessages_chat_contact`.`name`, `chatMessages_chat_contact`.`phonenumber`, `chatMessages_chat_contact`.`email`, `chatMessages_chat_contact`.`label`, `chatMessages_chat_contact`.`assigned_to_user_id`, `chatMessages_chat_contact`.`created_at`, `chatMessages_chat_contact`.`updated_at`) as `data` from (select * from `contacts` `chatMessages_chat_contact` where `chatMessages_chat_contact`.`contact_id` = `chatMessages_chat`.`contact_id` limit ?) `chatMessages_chat_contact`) `chatMessages_chat_contact` on true) `chatMessages_chat` on true where (`chatMessages`.`direction` = ? and `chatMessages`.`status` = ?) order by `chatMessages`.`created_at` desc
+params: 1,1,incoming,pending {"query":"select `chatMessages`.`id`, `chatMessages`.`chat_id`, `chatMessages`.`wamid`, `chatMessages`.`content`, `chatMessages`.`direction`, `chatMessages`.`status`, `chatMessages`.`is_template_message`, `chatMessages`.`message_timestamp`, `chatMessages`.`created_at`, `chatMessages`.`updated_at`, `chatMessages_chat`.`data` as `chat` from `chat_messages` `chatMessages` left join lateral (select json_array(`chatMessages_chat`.`id`, `chatMessages_chat`.`contact_id`, `chatMessages_chat`.`assigned_to`, `chatMessages_chat`.`status`, `chatMessages_chat`.`last_user_message_at`, `chatMessages_chat`.`created_at`, `chatMessages_chat`.`updated_at`, `chatMessages_chat_contact`.`data`) as `data` from (select * from `chats` `chatMessages_chat` where `chatMessages_chat`.`id` = `chatMessages`.`chat_id` limit ?) `chatMessages_chat` left join lateral (select json_array(`chatMessages_chat_contact`.`contact_id`, `chatMessages_chat_contact`.`name`, `chatMessages_chat_contact`.`phonenumber`, `chatMessages_chat_contact`.`email`, `chatMessages_chat_contact`.`label`, `chatMessages_chat_contact`.`assigned_to_user_id`, `chatMessages_chat_contact`.`created_at`, `chatMessages_chat_contact`.`updated_at`) as `data` from (select * from `contacts` `chatMessages_chat_contact` where `chatMessages_chat_contact`.`contact_id` = `chatMessages_chat`.`contact_id` limit ?) `chatMessages_chat_contact`) `chatMessages_chat_contact` on true) `chatMessages_chat` on true where (`chatMessages`.`direction` = ? and `chatMessages`.`status` = ?) order by `chatMessages`.`created_at` desc","params":[1,1,"incoming","pending"],"cause":{"message":"connect ETIMEDOUT","code":"ETIMEDOUT"},"stack":"Error: Failed query: select `chatMessages`.`id`, `chatMessages`.`chat_id`, `chatMessages`.`wamid`, `chatMessages`.`content`, `chatMessages`.`direction`, `chatMessages`.`status`, `chatMessages`.`is_template_message`, `chatMessages`.`message_timestamp`, `chatMessages`.`created_at`, `chatMessages`.`updated_at`, `chatMessages_chat`.`data` as `chat` from `chat_messages` `chatMessages` left join lateral (select json_array(`chatMessages_chat`.`id`, `chatMessages_chat`.`contact_id`, `chatMessages_chat`.`assigned_to`, `chatMessages_chat`.`status`, `chatMessages_chat`.`last_user_message_at`, `chatMessages_chat`.`created_at`, `chatMessages_chat`.`updated_at`, `chatMessages_chat_contact`.`data`) as `data` from (select * from `chats` `chatMessages_chat` where `chatMessages_chat`.`id` = `chatMessages`.`chat_id` limit ?) `chatMessages_chat` left join lateral (select json_array(`chatMessages_chat_contact`.`contact_id`, `chatMessages_chat_contact`.`name`, `chatMessages_chat_contact`.`phonenumber`, `chatMessages_chat_contact`.`email`, `chatMessages_chat_contact`.`label`, `chatMessages_chat_contact`.`assigned_to_user_id`, `chatMessages_chat_contact`.`created_at`, `chatMessages_chat_contact`.`updated_at`) as `data` from (select * from `contacts` `chatMessages_chat_contact` where `chatMessages_chat_contact`.`contact_id` = `chatMessages_chat`.`contact_id` limit ?) `chatMessages_chat_contact`) `chatMessages_chat_contact` on true) `chatMessages_chat` on true where (`chatMessages`.`direction` = ? and `chatMessages`.`status` = ?) order by `chatMessages`.`created_at` desc\nparams: 1,1,incoming,pending\n    at MySql2PreparedQuery.queryWithCache (webpack-internal:///(rsc)/./node_modules/drizzle-orm/mysql-core/session.js:36:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async MySql2PreparedQuery.execute (webpack-internal:///(rsc)/./node_modules/drizzle-orm/mysql2/session.js:88:20)\n    at async GET (webpack-internal:///(rsc)/./src/app/api/chats/unread/route.ts:19:32)\n    at async AppRouteRouteModule.do (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:26:34112)\n    at async AppRouteRouteModule.handle (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\compiled\\next-server\\app-route.runtime.dev.js:26:41338)\n    at async doRender (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1518:42)\n    at async DevServer.renderToResponseWithComponentsImpl (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1920:28)\n    at async DevServer.renderPageComponent (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2408:24)\n    at async DevServer.renderToResponseImpl (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:2445:32)\n    at async DevServer.pipeImpl (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:1008:25)\n    at async NextNodeServer.handleCatchallRenderRequest (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\next-server.js:305:17)\n    at async DevServer.handleRequestImpl (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\base-server.js:900:17)\n    at async C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:371:20\n    at async Span.traceAsyncFn (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\trace\\trace.js:157:20)\n    at async DevServer.handleRequest (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:368:24)\n    at async invokeRender (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:237:21)\n    at async handleRequest (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:428:24)\n    at async requestHandlerImpl (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\router-server.js:452:13)\n    at async Server.requestListener (C:\\Users\\User\\Desktop\\NextJs\\node_modules\\next\\dist\\server\\lib\\start-server.js:158:13)"}
+2025-12-20 10:50:02 [INFO]: Fetching unread messages 
+2025-12-20 10:50:03 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:03 [INFO]: Fetching unread messages 
+2025-12-20 10:50:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:04 [INFO]: Fetching unread messages 
+2025-12-20 10:50:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:10 [INFO]: Fetching unread messages 
+2025-12-20 10:50:10 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:12 [INFO]: Fetching unread messages 
+2025-12-20 10:50:12 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:17 [INFO]: Fetching unread messages 
+2025-12-20 10:50:17 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:22 [INFO]: Fetching unread messages 
+2025-12-20 10:50:22 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:27 [INFO]: Fetching unread messages 
+2025-12-20 10:50:28 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:33 [INFO]: Fetching unread messages 
+2025-12-20 10:50:33 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:37 [INFO]: Fetching unread messages 
+2025-12-20 10:50:38 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:43 [INFO]: Fetching unread messages 
+2025-12-20 10:50:43 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:48 [INFO]: Fetching unread messages 
+2025-12-20 10:50:48 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:53 [INFO]: Fetching unread messages 
+2025-12-20 10:50:53 [INFO]: Found 1 unread messages. 
+2025-12-20 10:50:58 [INFO]: Fetching unread messages 
+2025-12-20 10:50:58 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:03 [INFO]: Fetching unread messages 
+2025-12-20 10:51:03 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:08 [INFO]: Fetching unread messages 
+2025-12-20 10:51:08 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:12 [INFO]: Fetching unread messages 
+2025-12-20 10:51:13 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:18 [INFO]: Fetching unread messages 
+2025-12-20 10:51:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:23 [INFO]: Fetching unread messages 
+2025-12-20 10:51:23 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:27 [INFO]: Fetching unread messages 
+2025-12-20 10:51:28 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:33 [INFO]: Fetching unread messages 
+2025-12-20 10:51:33 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:38 [INFO]: Fetching unread messages 
+2025-12-20 10:51:38 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:43 [INFO]: Fetching unread messages 
+2025-12-20 10:51:43 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:48 [INFO]: Fetching unread messages 
+2025-12-20 10:51:48 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:53 [INFO]: Fetching unread messages 
+2025-12-20 10:51:53 [INFO]: Found 1 unread messages. 
+2025-12-20 10:51:58 [INFO]: Fetching unread messages 
+2025-12-20 10:51:58 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:03 [INFO]: Fetching unread messages 
+2025-12-20 10:52:03 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:08 [INFO]: Fetching unread messages 
+2025-12-20 10:52:08 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:15 [INFO]: Fetching unread messages 
+2025-12-20 10:52:15 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:17 [INFO]: Fetching unread messages 
+2025-12-20 10:52:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:27 [INFO]: Fetching unread messages 
+2025-12-20 10:52:27 [INFO]: Found 1 unread messages. 
+2025-12-20 10:52:28 [INFO]: Fetching unread messages 
+2025-12-20 10:52:28 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:16 [INFO]: Fetching unread messages 
+2025-12-20 10:53:16 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:17 [INFO]: Fetching unread messages 
+2025-12-20 10:53:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:27 [INFO]: Fetching unread messages 
+2025-12-20 10:53:27 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:32 [INFO]: Fetching unread messages 
+2025-12-20 10:53:32 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:37 [INFO]: Fetching unread messages 
+2025-12-20 10:53:37 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:42 [INFO]: Fetching unread messages 
+2025-12-20 10:53:42 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:47 [INFO]: Fetching unread messages 
+2025-12-20 10:53:47 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:52 [INFO]: Fetching unread messages 
+2025-12-20 10:53:52 [INFO]: Found 1 unread messages. 
+2025-12-20 10:53:57 [INFO]: Fetching unread messages 
+2025-12-20 10:53:57 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:03 [INFO]: Fetching unread messages 
+2025-12-20 10:54:03 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:07 [INFO]: Fetching unread messages 
+2025-12-20 10:54:08 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:13 [INFO]: Fetching unread messages 
+2025-12-20 10:54:13 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:18 [INFO]: Fetching unread messages 
+2025-12-20 10:54:18 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:23 [INFO]: Fetching unread messages 
+2025-12-20 10:54:23 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:44 [INFO]: Fetching unread messages 
+2025-12-20 10:54:44 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:49 [INFO]: Fetching unread messages 
+2025-12-20 10:54:49 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:54 [INFO]: Fetching unread messages 
+2025-12-20 10:54:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:54:59 [INFO]: Fetching unread messages 
+2025-12-20 10:54:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:04 [INFO]: Fetching unread messages 
+2025-12-20 10:55:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:09 [INFO]: Fetching unread messages 
+2025-12-20 10:55:09 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:13 [INFO]: Fetching unread messages 
+2025-12-20 10:55:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:19 [INFO]: Fetching unread messages 
+2025-12-20 10:55:19 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:24 [INFO]: Fetching unread messages 
+2025-12-20 10:55:24 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:29 [INFO]: Fetching unread messages 
+2025-12-20 10:55:29 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:34 [INFO]: Fetching unread messages 
+2025-12-20 10:55:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:45 [INFO]: Fetching unread messages 
+2025-12-20 10:55:45 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:45 [INFO]: Fetching unread messages 
+2025-12-20 10:55:46 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:49 [INFO]: Fetching unread messages 
+2025-12-20 10:55:49 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:54 [INFO]: Fetching unread messages 
+2025-12-20 10:55:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:55:59 [INFO]: Fetching unread messages 
+2025-12-20 10:55:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:03 [INFO]: Fetching unread messages 
+2025-12-20 10:56:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:09 [INFO]: Fetching unread messages 
+2025-12-20 10:56:09 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:14 [INFO]: Fetching unread messages 
+2025-12-20 10:56:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:18 [INFO]: Fetching unread messages 
+2025-12-20 10:56:19 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:23 [INFO]: Fetching unread messages 
+2025-12-20 10:56:24 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:28 [INFO]: Fetching unread messages 
+2025-12-20 10:56:29 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:33 [INFO]: Fetching unread messages 
+2025-12-20 10:56:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:38 [INFO]: Fetching unread messages 
+2025-12-20 10:56:39 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:43 [INFO]: Fetching unread messages 
+2025-12-20 10:56:44 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:50 [INFO]: Fetching unread messages 
+2025-12-20 10:56:50 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:53 [INFO]: Fetching unread messages 
+2025-12-20 10:56:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:56:58 [INFO]: Fetching unread messages 
+2025-12-20 10:56:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:03 [INFO]: Fetching unread messages 
+2025-12-20 10:57:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:08 [INFO]: Fetching unread messages 
+2025-12-20 10:57:09 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:14 [INFO]: Fetching unread messages 
+2025-12-20 10:57:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:18 [INFO]: Fetching unread messages 
+2025-12-20 10:57:19 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:23 [INFO]: Fetching unread messages 
+2025-12-20 10:57:24 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:33 [INFO]: Fetching unread messages 
+2025-12-20 10:57:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:34 [INFO]: Fetching unread messages 
+2025-12-20 10:57:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:39 [INFO]: Fetching unread messages 
+2025-12-20 10:57:39 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:44 [INFO]: Fetching unread messages 
+2025-12-20 10:57:44 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:49 [INFO]: Fetching unread messages 
+2025-12-20 10:57:49 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:54 [INFO]: Fetching unread messages 
+2025-12-20 10:57:54 [INFO]: Found 1 unread messages. 
+2025-12-20 10:57:59 [INFO]: Fetching unread messages 
+2025-12-20 10:57:59 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:04 [INFO]: Fetching unread messages 
+2025-12-20 10:58:04 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:09 [INFO]: Fetching unread messages 
+2025-12-20 10:58:09 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:14 [INFO]: Fetching unread messages 
+2025-12-20 10:58:14 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:19 [INFO]: Fetching unread messages 
+2025-12-20 10:58:19 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:24 [INFO]: Fetching unread messages 
+2025-12-20 10:58:24 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:29 [INFO]: Fetching unread messages 
+2025-12-20 10:58:29 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:34 [INFO]: Fetching unread messages 
+2025-12-20 10:58:34 [INFO]: Found 1 unread messages. 
+2025-12-20 10:58:39 [INFO]: Fetching unread messages 
+2025-12-20 10:58:39 [INFO]: Found 1 unread messages. 
+2025-12-20 10:59:18 [INFO]: Fetching unread messages 
+2025-12-20 10:59:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:00:18 [INFO]: Fetching unread messages 
+2025-12-20 11:00:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:01:18 [INFO]: Fetching unread messages 
+2025-12-20 11:01:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:02:18 [INFO]: Fetching unread messages 
+2025-12-20 11:02:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:03:18 [INFO]: Fetching unread messages 
+2025-12-20 11:03:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:04:18 [INFO]: Fetching unread messages 
+2025-12-20 11:04:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:05:18 [INFO]: Fetching unread messages 
+2025-12-20 11:05:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:06:18 [INFO]: Fetching unread messages 
+2025-12-20 11:06:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:07:18 [INFO]: Fetching unread messages 
+2025-12-20 11:07:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:08:18 [INFO]: Fetching unread messages 
+2025-12-20 11:08:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:09:18 [INFO]: Fetching unread messages 
+2025-12-20 11:09:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:10:18 [INFO]: Fetching unread messages 
+2025-12-20 11:10:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:11:18 [INFO]: Fetching unread messages 
+2025-12-20 11:11:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:12:18 [INFO]: Fetching unread messages 
+2025-12-20 11:12:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:13:18 [INFO]: Fetching unread messages 
+2025-12-20 11:13:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:14:18 [INFO]: Fetching unread messages 
+2025-12-20 11:14:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:15:18 [INFO]: Fetching unread messages 
+2025-12-20 11:15:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:16:18 [INFO]: Fetching unread messages 
+2025-12-20 11:16:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:17:18 [INFO]: Fetching unread messages 
+2025-12-20 11:17:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:18:18 [INFO]: Fetching unread messages 
+2025-12-20 11:18:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:19:18 [INFO]: Fetching unread messages 
+2025-12-20 11:19:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:20:18 [INFO]: Fetching unread messages 
+2025-12-20 11:20:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:21:18 [INFO]: Fetching unread messages 
+2025-12-20 11:21:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:22:18 [INFO]: Fetching unread messages 
+2025-12-20 11:22:18 [INFO]: Found 1 unread messages. 
+2025-12-20 11:31:48 [INFO]: Fetching unread messages 
+2025-12-20 11:31:49 [INFO]: Found 1 unread messages. 
+2025-12-20 11:31:52 [INFO]: Fetching unread messages 
+2025-12-20 11:31:52 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:02 [INFO]: Fetching unread messages 
+2025-12-20 11:32:02 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:02 [INFO]: Fetching unread messages 
+2025-12-20 11:32:02 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:14 [INFO]: Fetching unread messages 
+2025-12-20 11:32:14 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:19 [INFO]: Fetching unread messages 
+2025-12-20 11:32:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:20 [INFO]: Fetching unread messages 
+2025-12-20 11:32:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:22 [INFO]: Fetching unread messages 
+2025-12-20 11:32:22 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:27 [INFO]: Fetching unread messages 
+2025-12-20 11:32:28 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:33 [INFO]: Fetching unread messages 
+2025-12-20 11:32:33 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:38 [INFO]: Fetching unread messages 
+2025-12-20 11:32:38 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:43 [INFO]: Fetching unread messages 
+2025-12-20 11:32:43 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:48 [INFO]: Fetching unread messages 
+2025-12-20 11:32:48 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:53 [INFO]: Fetching unread messages 
+2025-12-20 11:32:53 [INFO]: Found 1 unread messages. 
+2025-12-20 11:32:58 [INFO]: Fetching unread messages 
+2025-12-20 11:32:58 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:03 [INFO]: Fetching unread messages 
+2025-12-20 11:33:03 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:07 [INFO]: Fetching unread messages 
+2025-12-20 11:33:08 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:13 [INFO]: Fetching unread messages 
+2025-12-20 11:33:13 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:17 [INFO]: Fetching unread messages 
+2025-12-20 11:33:17 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:30 [INFO]: Fetching unread messages 
+2025-12-20 11:33:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:34 [INFO]: Fetching unread messages 
+2025-12-20 11:33:35 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:40 [INFO]: Fetching unread messages 
+2025-12-20 11:33:40 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:44 [INFO]: Fetching unread messages 
+2025-12-20 11:33:45 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:49 [INFO]: Fetching unread messages 
+2025-12-20 11:33:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:33:54 [INFO]: Fetching unread messages 
+2025-12-20 11:33:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:15 [INFO]: Fetching unread messages 
+2025-12-20 11:35:15 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:16 [INFO]: Fetching unread messages 
+2025-12-20 11:35:16 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:16 [INFO]: Fetching unread messages 
+2025-12-20 11:35:16 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:20 [INFO]: Fetching unread messages 
+2025-12-20 11:35:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:47 [INFO]: Fetching unread messages 
+2025-12-20 11:35:47 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:47 [INFO]: Fetching unread messages 
+2025-12-20 11:35:48 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:49 [INFO]: Fetching unread messages 
+2025-12-20 11:35:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:54 [INFO]: Fetching unread messages 
+2025-12-20 11:35:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:35:59 [INFO]: Fetching unread messages 
+2025-12-20 11:36:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:04 [INFO]: Fetching unread messages 
+2025-12-20 11:36:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:09 [INFO]: Fetching unread messages 
+2025-12-20 11:36:10 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:14 [INFO]: Fetching unread messages 
+2025-12-20 11:36:15 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:29 [INFO]: Fetching unread messages 
+2025-12-20 11:36:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:30 [INFO]: Fetching unread messages 
+2025-12-20 11:36:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:30 [INFO]: Fetching unread messages 
+2025-12-20 11:36:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:35 [INFO]: Fetching unread messages 
+2025-12-20 11:36:35 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:39 [INFO]: Fetching unread messages 
+2025-12-20 11:36:40 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:44 [INFO]: Fetching unread messages 
+2025-12-20 11:36:45 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:50 [INFO]: Fetching unread messages 
+2025-12-20 11:36:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:54 [INFO]: Fetching unread messages 
+2025-12-20 11:36:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:36:59 [INFO]: Fetching unread messages 
+2025-12-20 11:37:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:04 [INFO]: Fetching unread messages 
+2025-12-20 11:37:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:09 [INFO]: Fetching unread messages 
+2025-12-20 11:37:10 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:14 [INFO]: Fetching unread messages 
+2025-12-20 11:37:15 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:19 [INFO]: Fetching unread messages 
+2025-12-20 11:37:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:24 [INFO]: Fetching unread messages 
+2025-12-20 11:37:25 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:29 [INFO]: Fetching unread messages 
+2025-12-20 11:37:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:34 [INFO]: Fetching unread messages 
+2025-12-20 11:37:35 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:39 [INFO]: Fetching unread messages 
+2025-12-20 11:37:40 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:44 [INFO]: Fetching unread messages 
+2025-12-20 11:37:45 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:49 [INFO]: Fetching unread messages 
+2025-12-20 11:37:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:37:55 [INFO]: Fetching unread messages 
+2025-12-20 11:37:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:00 [INFO]: Fetching unread messages 
+2025-12-20 11:38:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:05 [INFO]: Fetching unread messages 
+2025-12-20 11:38:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:10 [INFO]: Fetching unread messages 
+2025-12-20 11:38:10 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:15 [INFO]: Fetching unread messages 
+2025-12-20 11:38:15 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:19 [INFO]: Fetching unread messages 
+2025-12-20 11:38:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:24 [INFO]: Fetching unread messages 
+2025-12-20 11:38:25 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:29 [INFO]: Fetching unread messages 
+2025-12-20 11:38:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:35 [INFO]: Fetching unread messages 
+2025-12-20 11:38:35 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:40 [INFO]: Fetching unread messages 
+2025-12-20 11:38:40 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:45 [INFO]: Fetching unread messages 
+2025-12-20 11:38:45 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:50 [INFO]: Fetching unread messages 
+2025-12-20 11:38:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:38:55 [INFO]: Fetching unread messages 
+2025-12-20 11:38:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:00 [INFO]: Fetching unread messages 
+2025-12-20 11:39:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:05 [INFO]: Fetching unread messages 
+2025-12-20 11:39:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:09 [INFO]: Fetching unread messages 
+2025-12-20 11:39:10 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:15 [INFO]: Fetching unread messages 
+2025-12-20 11:39:15 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:19 [INFO]: Fetching unread messages 
+2025-12-20 11:39:20 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:25 [INFO]: Fetching unread messages 
+2025-12-20 11:39:25 [INFO]: Found 1 unread messages. 
+2025-12-20 11:39:30 [INFO]: Fetching unread messages 
+2025-12-20 11:39:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:45:25 [INFO]: Fetching unread messages 
+2025-12-20 11:45:26 [INFO]: Found 1 unread messages. 
+2025-12-20 11:45:59 [INFO]: Fetching unread messages 
+2025-12-20 11:45:59 [INFO]: Found 1 unread messages. 
+2025-12-20 11:45:59 [INFO]: Fetching unread messages 
+2025-12-20 11:46:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:04 [INFO]: Fetching unread messages 
+2025-12-20 11:46:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:21 [INFO]: Fetching unread messages 
+2025-12-20 11:46:22 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:23 [INFO]: Fetching unread messages 
+2025-12-20 11:46:23 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:23 [INFO]: Fetching unread messages 
+2025-12-20 11:46:23 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:25 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-12-20 11:46:25 [INFO]: Fetching unread messages 
+2025-12-20 11:46:25 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:29 [INFO]: Fetching unread messages 
+2025-12-20 11:46:30 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:34 [INFO]: Fetching unread messages 
+2025-12-20 11:46:35 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:39 [INFO]: Fetching unread messages 
+2025-12-20 11:46:40 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:46 [INFO]: Fetching unread messages 
+2025-12-20 11:46:47 [INFO]: Fetching contacts with page: 1, limit: 6, search:  
+2025-12-20 11:46:47 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:47 [INFO]: Total contacts retrieved: 6 
+2025-12-20 11:46:49 [INFO]: Fetching unread messages 
+2025-12-20 11:46:50 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:54 [INFO]: Fetching unread messages 
+2025-12-20 11:46:55 [INFO]: Found 1 unread messages. 
+2025-12-20 11:46:59 [INFO]: Fetching unread messages 
+2025-12-20 11:47:00 [INFO]: Found 1 unread messages. 
+2025-12-20 11:47:05 [INFO]: Fetching unread messages 
+2025-12-20 11:47:05 [INFO]: Found 1 unread messages. 
+2025-12-20 11:47:09 [INFO]: Fetching unread messages 
+2025-12-20 11:47:10 [INFO]: Found 1 unread messages. 

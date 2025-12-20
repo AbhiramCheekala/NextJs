@@ -32,7 +32,7 @@ export function useCampaignAnalytics(campaignId: number | null) {
   };
 
   const { data, error, isLoading, mutate } = useSWR<CampaignAnalyticsData>(
-    campaignId ? `/api/campaigns/${campaignId}/analytics` : null,
+    campaignId ? `/api/analytics/campaigns/${campaignId}` : null, // Corrected URL
     fetcher
   );
 

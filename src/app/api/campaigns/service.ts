@@ -3,7 +3,31 @@ import * as CampaignModel from "./model";
 import * as ContactModel from "@/app/api/contacts/model";
 import { getTemplateById } from "@/app/api/templates/model";
 import { whatsapp } from "@/lib/whatsapp";
-import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts"; // Added
+import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts";
+import { messages } from "@/lib/drizzle/schema/messages";
+
+// ---------------------------------------------------
+// Save message for analytics
+// ---------------------------------------------------
+async function addCampaignMessageToAnalytics(
+  contactId: string,
+  campaignId: number,
+  wamid: string | null,
+  status: "sent" | "failed",
+  content: string,
+  error?: string
+) {
+  await db.insert(messages).values({
+    contactId,
+    campaignId,
+    wamid,
+    status,
+    content,
+    direction: "outgoing",
+    timestamp: new Date(),
+    error: error,
+  });
+}
 
 export async function createCampaignAndSendMessages(
   name: string,
@@ -31,6 +55,7 @@ export async function createCampaignAndSendMessages(
 
   // 4. Send messages and create message records in bulkCampaignContacts
   for (const contact of contacts) {
+    let messageContent = "";
     try {
       const components = template.components
         ? JSON.parse(JSON.stringify(template.components))
@@ -54,12 +79,22 @@ export async function createCampaignAndSendMessages(
         }
       });
 
+      // Build readable message for chat history
+      let finalMessage = "";
+      for (const comp of components) {
+        if (!comp.text) continue;
+        finalMessage += comp.text + "\n\n";
+      }
+      messageContent = finalMessage.trim();
+
       // Send the message using the actual template object
-      await whatsapp.sendMessage(contact.phone, {
+      const response = await whatsapp.sendMessage(contact.phone, {
         name: template.name,
         language: template.language,
         components,
       });
+
+      const wamid = response?.messages?.[0]?.id || null;
 
       // Create record in bulkCampaignContacts for sent message
       await db.insert(bulkCampaignContacts).values({
@@ -70,7 +105,17 @@ export async function createCampaignAndSendMessages(
         status: "sent",
         sentAt: new Date(),
       });
-    } catch (error) {
+
+      // Add to analytics
+      await addCampaignMessageToAnalytics(
+        contact.id,
+        campaign.id,
+        wamid,
+        "sent",
+        messageContent
+      );
+
+    } catch (error: any) {
       // Create record in bulkCampaignContacts for failed message
       await db.insert(bulkCampaignContacts).values({
         campaignId: campaign.id,
@@ -80,6 +125,16 @@ export async function createCampaignAndSendMessages(
         status: "failed",
         sentAt: null, // Message failed, so not sent at a specific time
       });
+
+      // Add to analytics
+      await addCampaignMessageToAnalytics(
+        contact.id,
+        campaign.id,
+        null,
+        "failed",
+        messageContent,
+        error.message
+      );
     }
   }
 

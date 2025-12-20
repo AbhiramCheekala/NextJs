@@ -11,9 +11,34 @@ import { db } from "@/lib/db";
 import { contactsTable } from "@/lib/drizzle/schema/contacts";
 import { chats } from "@/lib/drizzle/schema/chats";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
+import { messages } from "@/lib/drizzle/schema/messages";
 import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts";
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { templates } from "@/lib/drizzle/schema/templates";
+import { campaignToMessages } from "@/lib/drizzle/schema/campaignToMessages"; // Added import
+
+// ---------------------------------------------------
+// Save message for analytics
+// ---------------------------------------------------
+async function addCampaignMessageToAnalytics(
+  contactId: string,
+  campaignId: number,
+  wamid: string | null,
+  status: "sent" | "failed",
+  content: string,
+  error?: string
+) {
+  await db.insert(messages).values({
+    contactId,
+    campaignId,
+    wamid,
+    status,
+    content,
+    direction: "outgoing",
+    timestamp: new Date(),
+    error: error,
+  });
+}
 
 // ---------------------------------------------------
 // Save message into chat
@@ -23,7 +48,8 @@ async function addCampaignMessageToChat(
   whatsappNumber: string,
   content: string,
   wamid: string,
-  isTemplateMessage: boolean
+  isTemplateMessage: boolean,
+  campaignId: number // Add campaignId here
 ) {
   let [contact] = await db
     .select()
@@ -67,8 +93,10 @@ async function addCampaignMessageToChat(
       .limit(1);
   }
 
+  const newChatMessageId = createId(); // Generate ID before insert
+
   await db.insert(chatMessages).values({
-    id: createId(),
+    id: newChatMessageId, // Use the generated ID
     chatId: chat.id,
     wamid,
     content,
@@ -77,6 +105,14 @@ async function addCampaignMessageToChat(
     messageTimestamp: new Date(),
     isTemplateMessage,
   });
+
+  // NEW: Insert into campaignToMessages
+  await db.insert(campaignToMessages).values({
+    campaignId: campaignId,
+    messageId: newChatMessageId,
+  });
+
+  return { contact, chatMessageId: newChatMessageId }; // Return an object
 }
 
 // ---------------------------------------------------
@@ -148,21 +184,24 @@ async function sendBulkMessages() {
     }
 
     for (const row of pending) {
-      const contact = row.bulk_campaign_contacts;
+      const bulkContact = row.bulk_campaign_contacts;
       const campaign = row.campaigns;
       const template = row.templates;
 
-      if (!contact || !campaign || !template) continue;
+      if (!bulkContact || !campaign || !template) continue;
+      
+      let messageContent = "";
+      let contactId = "";
 
       try {
         // Parse variables from DB
         let variables: Record<string, string> = {};
-        if (contact.variables) {
+        if (bulkContact.variables) {
           try {
             variables =
-              typeof contact.variables === "string"
-                ? JSON.parse(contact.variables)
-                : contact.variables;
+              typeof bulkContact.variables === "string"
+                ? JSON.parse(bulkContact.variables)
+                : bulkContact.variables;
           } catch {
             variables = {};
           }
@@ -179,6 +218,8 @@ async function sendBulkMessages() {
           console.error("Invalid template.components JSON");
         }
 
+        messageContent = buildReadableMessage(templateParts, variables);
+
         // Build WhatsApp API payload
         const components = buildTemplateComponents(variables);
 
@@ -190,38 +231,58 @@ async function sendBulkMessages() {
 
         // Send message
         const response = await whatsapp.sendMessage(
-          contact.whatsappNumber,
+          bulkContact.whatsappNumber,
           templateMessage
         );
 
         const wamid = response?.messages?.[0]?.id || null;
 
-        // Build readable message for chat history
-        const messageContent = buildReadableMessage(templateParts, variables);
-
         // Save chat message
         if (wamid) {
-          await addCampaignMessageToChat(
-            contact.name,
-            contact.whatsappNumber,
+          const { contact, chatMessageId } = await addCampaignMessageToChat(
+            bulkContact.name,
+            bulkContact.whatsappNumber,
             messageContent,
             wamid,
-            true
+            true,
+            campaign.id // Pass campaign.id here
           );
+          contactId = contact.id;
+          // You might want to use chatMessageId here if needed later, but for now, just ensure it's saved.
         }
 
         // Mark contact as sent
         await db
           .update(bulkCampaignContacts)
           .set({ status: "sent", sentAt: new Date() })
-          .where(eq(bulkCampaignContacts.id, contact.id));
-      } catch (err) {
+          .where(eq(bulkCampaignContacts.id, bulkContact.id));
+
+        // Add to analytics
+        await addCampaignMessageToAnalytics(
+          contactId,
+          campaign.id,
+          wamid,
+          "sent",
+          messageContent
+        );
+
+      } catch (err: any) {
         console.error("Send error:", err);
 
         await db
           .update(bulkCampaignContacts)
           .set({ status: "failed" })
-          .where(eq(bulkCampaignContacts.id, contact.id));
+          .where(eq(bulkCampaignContacts.id, bulkContact.id));
+
+        // Add to analytics
+        await addCampaignMessageToAnalytics(
+          contactId,
+          campaign.id,
+          null,
+          "failed",
+          messageContent,
+          err.message
+        );
       }
 
       // rate limit
