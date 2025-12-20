@@ -1,5 +1,5 @@
 // src/hooks/useUnreadMessages.ts
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { apiRequest } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
 import { Message } from '@/types/chat';
@@ -19,7 +19,7 @@ export const useUnreadMessages = () => {
   useEffect(() => {
     const fetchUnread = async () => {
       try {
-        const messages: UnreadMessage[] = await apiRequest('/api/chats/unread');
+        const messages: UnreadMessage[] = await apiRequest('/api/chats/unread', 'GET');
         
         messages.forEach((message) => {
           if (!shownMessageIds.current.has(message.id)) {
