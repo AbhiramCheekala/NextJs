@@ -3,14 +3,15 @@ import { Parser } from "json2csv";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/drizzle/schema/messages";
-
+import { campaigns } from "@/lib/drizzle/schema/campaigns";
+import { contactsTable } from "@/lib/drizzle/schema/contacts";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; 
+    const { id } = await params;
     const campaignId = Number(id);
 
     if (Number.isNaN(campaignId)) {
@@ -21,8 +22,21 @@ export async function GET(
     }
 
     const analytics = await db
-      .select()
+      .select({
+        campaignName: campaigns.name,
+        contactName: contactsTable.name,
+        phoneNumber: contactsTable.phone,
+        messageStatus: messages.status,
+      })
       .from(messages)
+      .innerJoin(
+        campaigns,
+        eq(messages.campaignId, campaigns.id)
+      )
+      .innerJoin(
+        contactsTable,
+        eq(messages.contactId, contactsTable.id)
+      )
       .where(eq(messages.campaignId, campaignId));
 
     if (!analytics.length) {
@@ -33,17 +47,10 @@ export async function GET(
     }
 
     const fields = [
-      "id",
-      "contactId",
-      "campaignId",
-      "wamid",
-      "content",
-      "status",
-      "direction",
-      "timestamp",
-      "error",
-      "createdAt",
-      "updatedAt",
+      { label: "Campaign Name", value: "campaignName" },
+      { label: "Contact Name", value: "contactName" },
+      { label: "Phone Number", value: "phoneNumber" },
+      { label: "Message Status", value: "messageStatus" },
     ];
 
     const parser = new Parser({ fields });
@@ -52,7 +59,7 @@ export async function GET(
     return new NextResponse(csv, {
       headers: {
         "Content-Type": "text/csv",
-        "Content-Disposition": `attachment; filename="campaign-analytics-${campaignId}.csv"`,
+        "Content-Disposition": `attachment; filename="campaign-${campaignId}-analytics.csv"`,
       },
     });
   } catch (error) {
