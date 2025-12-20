@@ -22,7 +22,7 @@ interface CampaignsResponse {
   };
 }
 
-export function useCampaigns(page = 1, limit = 10) {
+export function useCampaigns(page = 1, limit = 10, searchTerm = '') {
   const apiClient = useApiClient();
 
   const fetcher = async (url: string) => {
@@ -36,7 +36,7 @@ export function useCampaigns(page = 1, limit = 10) {
   };
 
   const { data, error, isLoading, mutate } = useSWR<CampaignsResponse>(
-    `/api/campaigns?page=${page}&limit=${limit}`,
+    `/api/campaigns?page=${page}&limit=${limit}&search=${searchTerm}`,
     fetcher
   );
 

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wand2, ListFilter } from "lucide-react";
@@ -21,6 +21,8 @@ import { useCampaigns } from "@/hooks/useCampaigns";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useDebounce } from "@/hooks/useDebounce";
+
 const statusVariant = (status: string): BadgeVariantProps["variant"] => {
   switch (status) {
     case "sent": return "default";
@@ -35,7 +37,14 @@ export default function CampaignsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [page, setPage] = useState(1);
-  const { campaigns, isLoading, pagination } = useCampaigns(page, 10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm);
+  
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
+
+  const { campaigns, isLoading, pagination } = useCampaigns(page, 10, debouncedSearchTerm);
 
   const handleViewAnalytics = (campaignId: number) => {
     router.push(`/campaigns/${campaignId}/analytics`);
@@ -106,8 +115,13 @@ export default function CampaignsPage() {
             Create, schedule, and manage your WhatsApp campaigns.
           </CardDescription>
           <div className="flex items-center gap-2 pt-4">
-            <Input placeholder="Search campaigns..." className="max-w-sm" />
-            <Button variant="outline"><ListFilter className="mr-2 h-4 w-4" /> Filters</Button>
+            <Input 
+              placeholder="Search campaigns..." 
+              className="max-w-sm" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {/* <Button variant="outline"><ListFilter className="mr-2 h-4 w-4" /> Filters</Button> */}
           </div>
         </CardHeader>
         <CardContent>

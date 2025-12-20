@@ -141,6 +141,6 @@ export async function createCampaignAndSendMessages(
   return campaign;
 }
 
-export async function getAllCampaigns({ page, limit }: { page: number; limit: number }) {
-  return await CampaignModel.getAllCampaigns(db, { page, limit });
+export async function getAllCampaigns({ page, limit, search }: { page: number; limit: number, search?: string }) {
+  return await CampaignModel.getAllCampaigns(db, { page, limit, search });
 }

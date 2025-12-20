@@ -5752,3 +5752,7 @@ params: 1,1,incoming,pending {"query":"select `chatMessages`.`id`, `chatMessages
 2025-12-20 11:47:05 [INFO]: Found 1 unread messages. 
 2025-12-20 11:47:09 [INFO]: Fetching unread messages 
 2025-12-20 11:47:10 [INFO]: Found 1 unread messages. 
+2025-12-20 14:33:04 [INFO]: Fetching unread messages 
+2025-12-20 14:33:04 [INFO]: Found 4 unread messages. 
+2025-12-20 14:33:05 [INFO]: Fetching unread messages 
+2025-12-20 14:33:05 [INFO]: Found 4 unread messages. 
