@@ -87,20 +87,23 @@ export async function GET(req: NextRequest) {
     // -----------------------------
     // Fetch paginated data
     // -----------------------------
-    const rows = whereCondition
-      ? await db
-          .select()
-          .from(templates)
-          .where(whereCondition)
-          .orderBy(desc(templates.updatedAt))
-          .limit(limit)
-          .offset(offset)
-      : await db
-          .select()
-          .from(templates)
-          .orderBy(desc(templates.updatedAt))
-          .limit(limit)
-          .offset(offset);
+    let rows;
+    if (whereCondition) {
+      // Search query is present, fetch all matching templates
+      rows = await db
+        .select()
+        .from(templates)
+        .where(whereCondition)
+        .orderBy(desc(templates.updatedAt));
+    } else {
+      // No search query, use pagination
+      rows = await db
+        .select()
+        .from(templates)
+        .orderBy(desc(templates.updatedAt))
+        .limit(limit)
+        .offset(offset);
+    }
 
     return NextResponse.json({
       data: rows,

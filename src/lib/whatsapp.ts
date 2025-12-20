@@ -37,6 +37,7 @@ class WhatsApp {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        console.error("WhatsApp API Error Response:", JSON.stringify(error.response?.data, null, 2));
         logger.error(
           "WhatsApp API Error:",
           error.response?.data || error.message
