@@ -202,46 +202,62 @@ export function ChatView({
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex flex-col mb-2 ${message.direction === "outgoing"
-                ? "items-end"
-                : "items-start"
-                }`}
-            >
-              <div
-                className={`p-2 rounded-lg max-w-md ${message.direction === "outgoing"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200"
-                  }`}
-              >
-                {message.content}
-              </div>
-              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                {format(
-                  new Date(message.messageTimestamp),
-                  "p"
-                )}
-                {message.direction === "outgoing" && (
-                  <>
-                    {message.status === "sent" && (
-                      <Check className="h-3 w-3 ml-1 text-gray-500" />
-                    )}
-                    {message.status === "delivered" && (
-                      <CheckCheck className="h-3 w-3 ml-1 text-gray-500" />
-                    )}
-                    {message.status === "read" && (
-                      <CheckCheck className="h-3 w-3 ml-1 text-blue-500" />
-                    )}
-                    {message.status === "failed" && (
-                      <XCircle className="h-3 w-3 ml-1 text-red-500" />
-                    )}
-                  </>
-                )}
-              </p>
-            </div>
-          ))
+          (() => {
+            let lastDate: string | null = null;
+            return messages.map((message) => {
+              const messageDate = new Date(message.messageTimestamp);
+              const currentDate = format(messageDate, 'yyyy-MM-dd');
+              const showDateSeparator = currentDate !== lastDate;
+              lastDate = currentDate;
+
+              return (
+                <div key={message.id}>
+                  {showDateSeparator && (
+                    <div className="text-center text-sm text-gray-500 my-2">
+                      {format(new Date(message.messageTimestamp), 'PPP')}
+                    </div>
+                  )}
+                  <div
+                    className={`flex flex-col mb-2 ${message.direction === "outgoing"
+                      ? "items-end"
+                      : "items-start"
+                      }`}
+                  >
+                    <div
+                      className={`p-2 rounded-lg max-w-md ${message.direction === "outgoing"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200"
+                        }`}
+                    >
+                      {message.content}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1 flex items-center">
+                      {format(
+                        new Date(message.messageTimestamp),
+                        "p"
+                      )}
+                      {message.direction === "outgoing" && (
+                        <>
+                          {message.status === "sent" && (
+                            <Check className="h-3 w-3 ml-1 text-gray-500" />
+                          )}
+                          {message.status === "delivered" && (
+                            <CheckCheck className="h-3 w-3 ml-1 text-gray-500" />
+                          )}
+                          {message.status === "read" && (
+                            <CheckCheck className="h-3 w-3 ml-1 text-blue-500" />
+                          )}
+                          {message.status === "failed" && (
+                            <XCircle className="h-3 w-3 ml-1 text-red-500" />
+                          )}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              );
+            });
+          })()
         )}
       </div>
 
