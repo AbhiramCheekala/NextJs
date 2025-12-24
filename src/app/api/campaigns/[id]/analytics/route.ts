@@ -40,7 +40,18 @@ export async function GET(
       }
     });
 
-    return NextResponse.json(stats);
+    const sentCount = stats.sent || 0;
+    const deliveredCount = stats.delivered || 0;
+    const readCount = stats.read || 0;
+
+    const finalStats = {
+      sent: sentCount + deliveredCount + readCount,
+      delivered: deliveredCount + readCount,
+      read: readCount,
+      failed: stats.failed || 0,
+    };
+
+    return NextResponse.json(finalStats);
   } catch (error) {
     console.error("Error fetching campaign analytics:", error);
     return NextResponse.json(

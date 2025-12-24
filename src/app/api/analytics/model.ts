@@ -1,6 +1,7 @@
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts";
 import { chatMessages } from "@/lib/drizzle/schema/chatMessages";
+import { campaignToMessages } from "@/lib/drizzle/schema/campaignToMessages";
 import { sql, desc, eq, count } from "drizzle-orm";
 import { DB } from "@/lib/db";
 
@@ -52,30 +53,32 @@ export async function getAnalytics(
     .groupBy(bulkCampaignContacts.status);
 
   // Campaign Performance
-  const campaignSentSubquery = db
+  const campaignStatusCountsSubquery = db
     .select({
-      campaignId: bulkCampaignContacts.campaignId,
-      sentCount: count().as("sent_count"),
+      campaignId: campaignToMessages.campaignId,
+      sent: sql<number>`SUM(CASE WHEN ${chatMessages.status} = 'sent' THEN 1 ELSE 0 END)`.mapWith(Number),
+      delivered: sql<number>`SUM(CASE WHEN ${chatMessages.status} = 'delivered' THEN 1 ELSE 0 END)`.mapWith(Number),
+      read: sql<number>`SUM(CASE WHEN ${chatMessages.status} = 'read' THEN 1 ELSE 0 END)`.mapWith(Number),
     })
-    .from(bulkCampaignContacts)
-    .where(eq(bulkCampaignContacts.status, "sent"))
-    .groupBy(bulkCampaignContacts.campaignId)
-    .as("campaign_sent_subquery");
+    .from(campaignToMessages)
+    .innerJoin(chatMessages, eq(campaignToMessages.messageId, chatMessages.id))
+    .groupBy(campaignToMessages.campaignId)
+    .as("campaign_status_counts_subquery");
 
   const campaignPerformance = await db
     .select({
       id: campaigns.id,
       name: campaigns.name,
       createdAt: campaigns.createdAt,
-      messagesSent: sql<number>`coalesce(${campaignSentSubquery.sentCount}, 0)`.mapWith(
+      messagesSent: sql<number>`coalesce(${campaignStatusCountsSubquery.sent}, 0) + coalesce(${campaignStatusCountsSubquery.delivered}, 0) + coalesce(${campaignStatusCountsSubquery.read}, 0)`.mapWith(
         Number
       ),
       repliesReceived: sql<number>`0`.mapWith(Number),
     })
     .from(campaigns)
     .leftJoin(
-      campaignSentSubquery,
-      eq(campaigns.id, campaignSentSubquery.campaignId)
+      campaignStatusCountsSubquery,
+      eq(campaigns.id, campaignStatusCountsSubquery.campaignId)
     )
     .orderBy(desc(campaigns.createdAt))
     .limit(limit)
