@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.production" });
 
 import { createId } from "@paralleldrive/cuid2";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 
 import { whatsapp } from "../src/lib/whatsapp";
 import { db } from "@/lib/db";
@@ -15,11 +15,50 @@ import { messages } from "@/lib/drizzle/schema/messages";
 import { bulkCampaignContacts } from "@/lib/drizzle/schema/bulkCampaignContacts";
 import { campaigns } from "@/lib/drizzle/schema/campaigns";
 import { templates } from "@/lib/drizzle/schema/templates";
-import { campaignToMessages } from "@/lib/drizzle/schema/campaignToMessages"; // Added import
+import { campaignToMessages } from "@/lib/drizzle/schema/campaignToMessages";
 
-// ---------------------------------------------------
-// Save message for analytics
-// ---------------------------------------------------
+/* -------------------------------------------------- */
+/* Helpers                                            */
+/* -------------------------------------------------- */
+
+function buildTemplateComponents(variables: Record<string, string>) {
+  if (!variables || Object.keys(variables).length === 0) return undefined;
+
+  return [
+    {
+      type: "body",
+      parameters: Object.keys(variables)
+        .sort((a, b) => Number(a) - Number(b))
+        .map((key) => ({
+          type: "text",
+          text: variables[key],
+        })),
+    },
+  ];
+}
+
+function buildReadableMessage(
+  templateComponents: any[],
+  variables: Record<string, string>
+) {
+  let msg = "";
+
+  for (const comp of templateComponents || []) {
+    if (!comp.text) continue;
+
+    msg +=
+      comp.text.replace(/\{\{(\d+)\}\}/g, (_: any, n: string | number) => {
+        return variables[n] ?? `{{${n}}}`;
+      }) + "\n\n";
+  }
+
+  return msg.trim();
+}
+
+/* -------------------------------------------------- */
+/* Chat + Analytics                                   */
+/* -------------------------------------------------- */
+
 async function addCampaignMessageToAnalytics(
   contactId: string,
   campaignId: number,
@@ -36,40 +75,30 @@ async function addCampaignMessageToAnalytics(
     content,
     direction: "outgoing",
     timestamp: new Date(),
-    error: error,
+    error,
   });
 }
 
-// ---------------------------------------------------
-// Save message into chat
-// ---------------------------------------------------
 async function addCampaignMessageToChat(
   name: string,
-  whatsappNumber: string,
+  phone: string,
   content: string,
   wamid: string,
-  isTemplateMessage: boolean,
-  campaignId: number // Add campaignId here
+  campaignId: number
 ) {
   let [contact] = await db
     .select()
     .from(contactsTable)
-    .where(eq(contactsTable.phone, whatsappNumber))
+    .where(eq(contactsTable.phone, phone))
     .limit(1);
 
   if (!contact) {
-    const newContactId = createId();
-    await db.insert(contactsTable).values({
-      id: newContactId,
-      name,
-      phone: whatsappNumber,
-    });
-
+    const id = createId();
+    await db.insert(contactsTable).values({ id, name, phone });
     [contact] = await db
       .select()
       .from(contactsTable)
-      .where(eq(contactsTable.id, newContactId))
-      .limit(1);
+      .where(eq(contactsTable.id, id));
   }
 
   let [chat] = await db
@@ -79,98 +108,46 @@ async function addCampaignMessageToChat(
     .limit(1);
 
   if (!chat) {
-    const newChatId = createId();
+    const id = createId();
     await db.insert(chats).values({
-      id: newChatId,
+      id,
       contactId: contact.id,
       status: "open",
     });
-
-    [chat] = await db
-      .select()
-      .from(chats)
-      .where(eq(chats.id, newChatId))
-      .limit(1);
+    [chat] = await db.select().from(chats).where(eq(chats.id, id));
   }
 
-  const newChatMessageId = createId(); // Generate ID before insert
+  const messageId = createId();
 
   await db.insert(chatMessages).values({
-    id: newChatMessageId, // Use the generated ID
+    id: messageId,
     chatId: chat.id,
     wamid,
     content,
     direction: "outgoing",
     status: "sent",
     messageTimestamp: new Date(),
-    isTemplateMessage,
+    isTemplateMessage: true,
   });
 
-  // NEW: Insert into campaignToMessages
   await db.insert(campaignToMessages).values({
-    campaignId: campaignId,
-    messageId: newChatMessageId,
+    campaignId,
+    messageId,
   });
 
-  return { contact, chatMessageId: newChatMessageId }; // Return an object
+  return contact.id;
 }
 
-// ---------------------------------------------------
-// Helper: Builds WhatsApp API components from variables
-// ---------------------------------------------------
-function buildTemplateComponents(variables: Record<string, string>) {
-  const paramList = Object.keys(variables)
-    .sort((a, b) => Number(a) - Number(b))
-    .map((key) => ({
-      type: "text",
-      text: variables[key],
-    }));
+/* -------------------------------------------------- */
+/* BULK SENDER                                        */
+/* -------------------------------------------------- */
 
-  return paramList.length > 0 ? [{ type: "body", parameters: paramList }] : [];
-}
-
-// ---------------------------------------------------
-// Helper: Builds message preview for chat history
-// Replaces {{1}}, {{2}}, {{3}}... in HEADER + BODY
-// ---------------------------------------------------
-function buildReadableMessage(
-  templateComponents: any[],
-  variables: Record<string, string>
-) {
-  let finalMessage = "";
-
-  for (const comp of templateComponents) {
-    if (!comp.text) continue;
-
-    let text = comp.text;
-
-    text = text.replace(
-      /\{\{\s*(\d+)\s*\}\}/g,
-      (_: any, num: string | number) => {
-        return variables[num] ?? `{{${num}}}`;
-      }
-    );
-
-    finalMessage += text + "\n\n";
-  }
-
-  return finalMessage.trim();
-}
-
-// ---------------------------------------------------
-// Rate limit
-// ---------------------------------------------------
 const MESSAGE_RATE_LIMIT = 6;
 const INTERVAL_MS = (60 / MESSAGE_RATE_LIMIT) * 1000;
 
-// ---------------------------------------------------
-// BULK SENDER
-// ---------------------------------------------------
 async function sendBulkMessages() {
-  console.log("Bulk message sender running...");
-
   try {
-    const pending = await db
+    const rows = await db
       .select()
       .from(bulkCampaignContacts)
       .leftJoin(campaigns, eq(bulkCampaignContacts.campaignId, campaigns.id))
@@ -178,168 +155,147 @@ async function sendBulkMessages() {
       .where(
         and(
           eq(bulkCampaignContacts.status, "pending"),
-          eq(campaigns.status, "sending") // Only process 'sending' campaigns
+          eq(campaigns.status, "sending")
         )
       )
       .limit(MESSAGE_RATE_LIMIT);
 
-    if (pending.length === 0) {
-      console.log("No pending bulk messages for active campaigns.");
-      return;
-    }
+    if (!rows.length) return;
 
-    for (const row of pending) {
-      const bulkContact = row.bulk_campaign_contacts;
+    for (const row of rows) {
+      const contact = row.bulk_campaign_contacts;
       const campaign = row.campaigns;
       const template = row.templates;
 
-      if (!bulkContact || !campaign || !template) continue;
+      if (!contact || !campaign || !template) continue;
 
-      // Check if campaign is paused
-      const [currentCampaign] = await db
-        .select()
-        .from(campaigns)
-        .where(eq(campaigns.id, campaign.id))
-        .limit(1);
+      // Lock row
+      await db
+        .update(bulkCampaignContacts)
+        .set({ status: "sending" })
+        .where(eq(bulkCampaignContacts.id, contact.id));
 
-      if (currentCampaign.status === "paused") {
-        console.log(`Campaign ${campaign.name} is paused. Skipping.`);
+      // Recheck campaign
+      if (campaign.status === "paused") {
+        await db
+          .update(bulkCampaignContacts)
+          .set({ status: "pending" })
+          .where(eq(bulkCampaignContacts.id, contact.id));
         continue;
       }
-      
-      let messageContent = "";
-      let contactId = "";
+
+      let variables = {};
+      try {
+        variables =
+          typeof contact.variables === "string"
+            ? JSON.parse(contact.variables)
+            : contact.variables || {};
+      } catch {}
+
+      const templateParts =
+        typeof template.components === "string"
+          ? JSON.parse(template.components)
+          : template.components;
+
+      const messageText = buildReadableMessage(
+        templateParts,
+        variables
+      );
+
+      const components = buildTemplateComponents(variables);
+
+      const payload: any = {
+        name: template.name,
+        language: { code: template.language },
+      };
+
+      if (components) payload.components = components;
 
       try {
-        // Parse variables from DB
-        let variables: Record<string, string> = {};
-        if (bulkContact.variables) {
-          try {
-            variables =
-              typeof bulkContact.variables === "string"
-                ? JSON.parse(bulkContact.variables)
-                 : bulkContact.variables;
-          } catch {
-            variables = {};
-          }
-        }
-
-        // Parse template JSON (header/body/footer)
-        let templateParts = [];
-        try {
-          templateParts =
-            typeof template.components === "string"
-              ? JSON.parse(template.components)
-              : template.components;
-        } catch {
-          console.error("Invalid template.components JSON");
-        }
-
-        messageContent = buildReadableMessage(templateParts, variables);
-
-        // Build WhatsApp API payload
-        const components = buildTemplateComponents(variables);
-
-        const templateMessage = {
-          name: template.name,
-          language: { code: template.language },
-          components,
-        };
-
-        // Send message
-        const response = await whatsapp.sendMessage(
-          bulkContact.whatsappNumber,
-          templateMessage
+        const res = await whatsapp.sendMessage(
+          contact.whatsappNumber,
+          payload
         );
 
-        const wamid = response?.messages?.[0]?.id || null;
+        const wamid = res?.messages?.[0]?.id || null;
 
-        // Save chat message
-        if (wamid) {
-          const { contact, chatMessageId } = await addCampaignMessageToChat(
-            bulkContact.name,
-            bulkContact.whatsappNumber,
-            messageContent,
-            wamid,
-            true,
-            campaign.id // Pass campaign.id here
-          );
-          contactId = contact.id;
-          // You might want to use chatMessageId here if needed later, but for now, just ensure it's saved.
-        }
+        const contactId = await addCampaignMessageToChat(
+          contact.name,
+          contact.whatsappNumber,
+          messageText,
+          wamid,
+          campaign.id
+        );
 
-        // Mark contact as sent
         await db
           .update(bulkCampaignContacts)
           .set({ status: "sent", sentAt: new Date() })
-          .where(eq(bulkCampaignContacts.id, bulkContact.id));
+          .where(eq(bulkCampaignContacts.id, contact.id));
 
-        // Add to analytics
         await addCampaignMessageToAnalytics(
           contactId,
           campaign.id,
           wamid,
           "sent",
-          messageContent
+          messageText
         );
-
       } catch (err: any) {
-        console.error("Send error:", err);
-
         await db
           .update(bulkCampaignContacts)
           .set({ status: "failed" })
-          .where(eq(bulkCampaignContacts.id, bulkContact.id));
+          .where(eq(bulkCampaignContacts.id, contact.id));
 
-        // Add to analytics
         await addCampaignMessageToAnalytics(
-          contactId,
+          "",
           campaign.id,
           null,
           "failed",
-          messageContent,
+          messageText,
           err.message
         );
       }
 
-      // rate limit
-      await new Promise((res) => setTimeout(res, INTERVAL_MS));
+      await new Promise((r) => setTimeout(r, INTERVAL_MS));
     }
-  } catch (error) {
-    console.error("Cron error:", error);
+  } catch (err) {
+    console.error("Cron error:", err);
   } finally {
-    console.log("Cron finished.");
     await updateCompletedCampaigns();
   }
 }
 
-async function updateCompletedCampaigns() {
-  console.log("Checking for completed campaigns...");
-  try {
-    const sendingCampaigns = await db
-      .select()
-      .from(campaigns)
-      .where(eq(campaigns.status, "sending"));
+/* -------------------------------------------------- */
+/* Completion checker                                 */
+/* -------------------------------------------------- */
 
-    for (const campaign of sendingCampaigns) {
-      const pendingContacts = await db
-        .select()
-        .from(bulkCampaignContacts)
-        .where(and(eq(bulkCampaignContacts.campaignId, campaign.id),eq(bulkCampaignContacts.status, "pending")))
-        .limit(1);
-      if (pendingContacts.length === 0) {
-        await db
-          .update(campaigns)
-          .set({ status: "completed" })
-          .where(eq(campaigns.id, campaign.id));
-        console.log(`Campaign ${campaign.name} marked as completed.`);
-      }
+async function updateCompletedCampaigns() {
+  const active = await db
+    .select()
+    .from(campaigns)
+    .where(eq(campaigns.status, "sending"));
+
+  for (const c of active) {
+    const remaining = await db
+      .select()
+      .from(bulkCampaignContacts)
+      .where(
+        and(
+          eq(bulkCampaignContacts.campaignId, c.id),
+          inArray(bulkCampaignContacts.status, ["pending", "sending"])
+        )
+      )
+      .limit(1);
+
+    if (!remaining.length) {
+      await db
+        .update(campaigns)
+        .set({ status: "completed" })
+        .where(eq(campaigns.id, c.id));
     }
-  } catch (error) {
-    console.error("Error updating completed campaigns:", error);
   }
 }
 
-// ---------------------------------------------------
+/* -------------------------------------------------- */
+
 sendBulkMessages();
 setInterval(sendBulkMessages, 60 * 1000);
