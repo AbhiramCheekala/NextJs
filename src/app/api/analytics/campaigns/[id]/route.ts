@@ -10,7 +10,8 @@ type Params = {
 export async function GET(request: NextRequest, { params }: Params) {
   try {
     // ✅ Proper way to access dynamic route params
-    const campaignId = Number(params.id);
+    const parmss = await params;
+    const campaignId = Number(parmss.id);
 
     if (isNaN(campaignId)) {
       return NextResponse.json(
