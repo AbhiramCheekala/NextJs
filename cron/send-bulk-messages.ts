@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.production" });
 
 import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 import { whatsapp } from "../src/lib/whatsapp";
 import { db } from "@/lib/db";
@@ -175,11 +175,16 @@ async function sendBulkMessages() {
       .from(bulkCampaignContacts)
       .leftJoin(campaigns, eq(bulkCampaignContacts.campaignId, campaigns.id))
       .leftJoin(templates, eq(campaigns.templateId, templates.id))
-      .where(eq(bulkCampaignContacts.status, "pending"))
+      .where(
+        and(
+          eq(bulkCampaignContacts.status, "pending"),
+          eq(campaigns.status, "sending") // Only process 'sending' campaigns
+        )
+      )
       .limit(MESSAGE_RATE_LIMIT);
 
     if (pending.length === 0) {
-      console.log("No pending bulk messages.");
+      console.log("No pending bulk messages for active campaigns.");
       return;
     }
 
@@ -189,6 +194,18 @@ async function sendBulkMessages() {
       const template = row.templates;
 
       if (!bulkContact || !campaign || !template) continue;
+
+      // Check if campaign is paused
+      const [currentCampaign] = await db
+        .select()
+        .from(campaigns)
+        .where(eq(campaigns.id, campaign.id))
+        .limit(1);
+
+      if (currentCampaign.status === "paused") {
+        console.log(`Campaign ${campaign.name} is paused. Skipping.`);
+        continue;
+      }
       
       let messageContent = "";
       let contactId = "";
@@ -201,7 +218,7 @@ async function sendBulkMessages() {
             variables =
               typeof bulkContact.variables === "string"
                 ? JSON.parse(bulkContact.variables)
-                : bulkContact.variables;
+                 : bulkContact.variables;
           } catch {
             variables = {};
           }
@@ -292,6 +309,34 @@ async function sendBulkMessages() {
     console.error("Cron error:", error);
   } finally {
     console.log("Cron finished.");
+    await updateCompletedCampaigns();
+  }
+}
+
+async function updateCompletedCampaigns() {
+  console.log("Checking for completed campaigns...");
+  try {
+    const sendingCampaigns = await db
+      .select()
+      .from(campaigns)
+      .where(eq(campaigns.status, "sending"));
+
+    for (const campaign of sendingCampaigns) {
+      const pendingContacts = await db
+        .select()
+        .from(bulkCampaignContacts)
+        .where(and(eq(bulkCampaignContacts.campaignId, campaign.id),eq(bulkCampaignContacts.status, "pending")))
+        .limit(1);
+      if (pendingContacts.length === 0) {
+        await db
+          .update(campaigns)
+          .set({ status: "completed" })
+          .where(eq(campaigns.id, campaign.id));
+        console.log(`Campaign ${campaign.name} marked as completed.`);
+      }
+    }
+  } catch (error) {
+    console.error("Error updating completed campaigns:", error);
   }
 }
 

@@ -10,7 +10,7 @@ export interface AuthenticatedUser {
 }
 
 // Extend NextRequest to include the 'user' property
-interface AuthenticatedNextRequest extends NextRequest {
+export interface AuthenticatedNextRequest extends NextRequest {
   user?: AuthenticatedUser;
 }
 

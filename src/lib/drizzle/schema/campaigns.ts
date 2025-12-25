@@ -14,7 +14,7 @@ export const campaigns = mysqlTable("campaigns", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   templateId: int("template_id").notNull(),
-  status: mysqlEnum("status", ["draft", "sending", "sent", "failed"])
+  status: mysqlEnum("status", ["draft", "sending", "paused", "sent", "completed", "failed"])
     .default("draft")
     .notNull(),
   createdAt: timestamp("created_at").defaultNow(),
