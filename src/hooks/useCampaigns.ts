@@ -8,8 +8,9 @@ type Campaign = {
   id: number;
   name: string;
   templateId: number;
-  status: "draft" | "sending" | "sent" | "failed";
+  status: "draft" | "sending" | "paused" | "sent" | "completed" | "failed";
   createdAt: string;
+  contactCount?: number;
 };
 
 interface CampaignsResponse {

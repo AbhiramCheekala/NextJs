@@ -21,12 +21,15 @@ import { useCampaigns } from "@/hooks/useCampaigns";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { ViewContactsDialog } from "@/components/campaigns/view-contacts-dialog";
 import { useDebounce } from "@/hooks/useDebounce";
 
 const statusVariant = (status: string): BadgeVariantProps["variant"] => {
   switch (status) {
     case "sent": return "default";
+    case "completed": return "default";
     case "sending": return "secondary";
+    case "paused": return "outline";
     case "draft": return "outline";
     case "failed": return "destructive";
     default: return "outline";
@@ -39,6 +42,8 @@ export default function CampaignsPage() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm);
+  const [isViewContactsOpen, setIsViewContactsOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<{id: number, name: string} | null>(null);
   
   useEffect(() => {
     setPage(1);
@@ -52,6 +57,11 @@ export default function CampaignsPage() {
 
   const handleEditCampaign = (campaignName: string) => {
     toast({ title: "Edit Campaign", description: `Opening editor for ${campaignName}. (Not implemented)` });
+  };
+
+  const handleViewContacts = (campaign: {id: number, name: string}) => {
+    setSelectedCampaign(campaign);
+    setIsViewContactsOpen(true);
   };
 
   if (isLoading || !campaigns) {
@@ -77,6 +87,7 @@ export default function CampaignsPage() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Contacts</TableHead>
                     <TableHead>Created At</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -85,6 +96,7 @@ export default function CampaignsPage() {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell><Skeleton className="h-5 w-3/4" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-1/4" /></TableCell>
                       <TableCell><Skeleton className="h-5 w-1/4" /></TableCell>
                       <TableCell><Skeleton className="h-5 w-1/2" /></TableCell>
                       <TableCell className="text-right"><Skeleton className="h-5 w-20" /></TableCell>
@@ -101,6 +113,12 @@ export default function CampaignsPage() {
 
   return (
     <div className="flex flex-col gap-6">
+       <ViewContactsDialog 
+        isOpen={isViewContactsOpen}
+        onOpenChange={setIsViewContactsOpen}
+        campaignId={selectedCampaign?.id || null}
+        campaignName={selectedCampaign?.name || null}
+      />
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-headline font-semibold">Campaigns</h1>
         <Button onClick={() => router.push('/campaigns/new')}>
@@ -131,6 +149,7 @@ export default function CampaignsPage() {
                 <TableRow>
                   <TableHead>Name</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Contacts</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -143,6 +162,11 @@ export default function CampaignsPage() {
                       <Badge variant={statusVariant(campaign.status)}>
                         {campaign.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="link" className="p-0" onClick={() => handleViewContacts(campaign)}>
+                        {campaign.contactCount}
+                      </Button>
                     </TableCell>
                     <TableCell>{format(new Date(campaign.createdAt), "PPP")}</TableCell>
                     <TableCell className="text-right">
