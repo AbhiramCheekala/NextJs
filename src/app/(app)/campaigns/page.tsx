@@ -24,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ViewContactsDialog } from "@/components/campaigns/view-contacts-dialog";
 import { useDebounce } from "@/hooks/useDebounce";
 
-const statusVariant = (status: string): BadgeVariantProps["variant"] => {
+const statusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
   switch (status) {
     case "sent": return "default";
     case "completed": return "default";
@@ -55,8 +55,8 @@ export default function CampaignsPage() {
     router.push(`/campaigns/${campaignId}/analytics`);
   };
 
-  const handleEditCampaign = (campaignName: string) => {
-    toast({ title: "Edit Campaign", description: `Opening editor for ${campaignName}. (Not implemented)` });
+  const handleEditCampaign = (campaignId: number) => {
+    router.push(`/campaigns/${campaignId}/edit`);
   };
 
   const handleViewContacts = (campaign: {id: number, name: string}) => {
@@ -171,7 +171,7 @@ export default function CampaignsPage() {
                     <TableCell>{format(new Date(campaign.createdAt), "PPP")}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" className="mr-2" onClick={() => handleViewAnalytics(campaign.id)}>View Analytics</Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleEditCampaign(campaign.name)}>Edit</Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleEditCampaign(campaign.id)}>Edit</Button>
                     </TableCell>
                   </TableRow>
                 ))

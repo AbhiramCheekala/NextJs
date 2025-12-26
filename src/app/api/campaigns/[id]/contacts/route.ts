@@ -44,3 +44,45 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     );
   }
 }
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+    try {
+        const campaignId = Number(params.id);
+        if (isNaN(campaignId)) {
+            return NextResponse.json({ message: "Invalid campaign ID" }, { status: 400 });
+        }
+
+        const body = await req.json();
+        const { contacts } = body; // contacts is an array of objects
+
+        if (!contacts || !Array.isArray(contacts) || contacts.length === 0) {
+            return NextResponse.json({ message: "Contacts array is required" }, { status: 400 });
+        }
+
+        const contactsToInsert = contacts.map((contact: any) => ({
+            campaignId,
+            name: contact.name,
+            whatsappNumber: contact.whatsappNumber,
+            variables: JSON.stringify(
+              Object.keys(contact).reduce((acc: { [key: string]: string }, key: string) => {
+                if (key !== "name" && key !== "whatsappNumber") {
+                  acc[key] = contact[key];
+                }
+                return acc;
+              }, {})
+            ),
+            status: "pending",
+        }));
+
+        await db.insert(bulkCampaignContacts).values(contactsToInsert);
+
+        return NextResponse.json({ message: "Contacts added successfully." });
+
+    } catch (error) {
+        console.error("Error adding contacts to campaign:", error);
+        return NextResponse.json(
+            { message: "Internal server error" },
+            { status: 500 }
+        );
+    }
+}
