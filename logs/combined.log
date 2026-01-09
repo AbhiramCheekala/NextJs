@@ -6816,3 +6816,15 @@ params: 1,1,incoming,pending {"query":"select `chatMessages`.`id`, `chatMessages
 2025-12-26 18:39:49 [INFO]: Found 0 unread messages. 
 2025-12-26 18:39:54 [INFO]: Fetching unread messages 
 2025-12-26 18:39:54 [INFO]: Found 0 unread messages. 
+2026-01-09 13:46:40 [INFO]: Creating new book with data: %o 
+2026-01-09 13:46:40 [INFO]: Book created successfully: 2 
+2026-01-09 13:46:40 [INFO]: Book created successfully with ID: %s 
+2026-01-09 13:47:20 [INFO]: Fetching books 
+2026-01-09 13:47:20 [INFO]: Total books retrieved: 2 
+2026-01-09 13:47:34 [INFO]: Fetching book with ID: %s 
+2026-01-09 13:48:13 [INFO]: Fetching books 
+2026-01-09 13:48:13 [INFO]: Total books retrieved: 2 
+2026-01-09 13:48:57 [INFO]: Book deleted successfully: 2 
+2026-01-09 13:52:40 [INFO]: Updating book with ID: %s 
+2026-01-09 13:52:40 [INFO]: Updating book with ID: 1 
+2026-01-09 13:52:40 [INFO]: Book updated successfully: 1 
